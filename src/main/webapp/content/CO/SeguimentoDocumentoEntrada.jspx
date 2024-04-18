@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:c="http://java.sun.com/jstl/core" >
+ <body>
+ <!-- Ventana de consulta de seguimiento de documentos de entrada
+	 Realizado Por : Eli Diaz Horna
+	 Fecha Creacion : 24/01/2011
+	 Descripcion  : visualizacion de los seguimietno de documentos de entrada a nivel alta direccion
+	-->
+    	<ice:form>
+              	<ice:panelTabSet id="icePnlTbSet1">
+                <!-- Panel Tab 1 defined with some basic content -->
+                <ice:panelTab label="Seguimiento Documentos Entrada" title="Seguimiento Documentos De Entrada">  
+                        
+            <ice:panelGroup>
+            	<ice:panelGrid columns="10" cellpadding="5">									
+														
+						<ice:dataExporter for="idProductos" ignorePagination="true"
+									label="Excel" 
+									type="excel"
+									image="/images/excel2010.jpg"
+									style="border:0;"								
+									popupBlockerLabel="Popup Blocker detected - click here to resume download..."																									
+									clickToCreateFileText="Excel" />
+								
+						<ice:commandButton value="Refrescar"
+							actionListener="#{mBeanseguimientoDocEntrada.eventRefrescar}"
+							title="Refrescar" image="/images/resert.png"
+							style="size: width: 25px; height: 25px">
+						</ice:commandButton>
+						<ice:outputText value="" />
+				</ice:panelGrid>
+				
+				<ice:panelGrid columns="7">
+						<ice:outputLabel value="F.INICIAL:" style="font-size: 9px; color: green;"></ice:outputLabel>
+						<ice:selectInputDate renderMonthAsDropdown="true"
+							renderYearAsDropdown="true" value="#{mBeanseguimientoDocEntrada.fechaIni}"
+							title="F Inicio" popupDateFormat="dd/MM/yyyy"
+							renderAsPopup="true">
+							<f:convertDateTime pattern="dd/MM/yyyy"
+								timeZone="#{dateSelect.timeZone}" />
+						</ice:selectInputDate>
+
+						<ice:outputLabel value="F.FINAL:" style="font-size: 9px; color: green;"></ice:outputLabel>
+						<ice:selectInputDate renderMonthAsDropdown="true"
+							renderYearAsDropdown="true" value="#{mBeanseguimientoDocEntrada.fechaFin}"
+							title="F Fin" renderAsPopup="true">
+							<f:convertDateTime pattern="dd/MM/yyyy"
+								timeZone="#{dateSelect.timeZone}" />
+						</ice:selectInputDate>	
+										
+						<ice:outputLabel value="ESTADO DOC:" style="font-size: 9px; color: green;"></ice:outputLabel>
+						<ice:selectOneMenu binding="#{mBeanseguimientoDocEntrada.combo}"
+							style="font-size: 9px"
+							value="#{mBeanseguimientoDocEntrada.item2Seleccionado}" title="Tipos">
+							<f:selectItems id="slctCreacionUsuario"
+								value="#{mBeanseguimientoDocEntrada.items7}" />
+						</ice:selectOneMenu>
+						 
+						<ice:commandButton value="Buscar"
+							actionListener="#{mBeanseguimientoDocEntrada.eventBusquedas}"
+							image="/images/buscar2.png"
+							style="size: width: 25px; height: 25px">
+						</ice:commandButton>
+
+				</ice:panelGrid>				
+                
+            </ice:panelGroup>
+            
+           
+            <ice:panelGroup rendered="#{mBeanseguimientoDocEntrada.verCatalogo}">
+					<ice:dataTable var="pro" value="#{mBeanseguimientoDocEntrada.grupos}"
+						columnClasses="tableCol" style="font-size: 9px;" rows="10" 
+						sortColumn="#{mBeanseguimientoDocEntrada.sortColumnName}"
+						sortAscending="#{mBeanseguimientoDocEntrada.ascending}" 
+						id="idProductos" scrollable="false">						
+						<ice:column>
+							<ice:rowSelector id="selected" value="#{pro.selected}"
+								multiple="#{mBeanseguimientoDocEntrada.multiple}"
+								enhancedMultiple="#{mBeanseguimientoDocEntrada.enhancedMultiple}"
+								preStyleOnSelection="true" />
+							<f:facet name="header">
+								<ice:outputText value="Reg" />
+								<ice:commandSortHeader columnName="ncorrelativo" arrow="true">
+									<ice:outputLabel value="Reg" />
+								</ice:commandSortHeader>
+							</f:facet>
+							<ice:outputText id="idCB" value="#{pro.ncorrelativo}" />
+						</ice:column>								
+						
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Num.Doc" style="font-size: 9px; color: blue;"/>
+								<ice:commandSortHeader columnName="vnumdoc" arrow="true">
+									<ice:outputLabel value="Num.Doc" />
+								</ice:commandSortHeader>
+							</f:facet>
+							<ice:outputText value="#{pro.vnumdoc}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Origen" style="font-size: 9px; color: blue;"/>
+								<ice:commandSortHeader columnName="origen" arrow="true">
+									<ice:outputLabel value="origen" />
+								</ice:commandSortHeader>
+							</f:facet>
+							<ice:outputText value="#{pro.origen}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Tipo Doc" style="font-size: 9px; color: blue;"/>
+								<ice:commandSortHeader columnName="tipodoc" arrow="true">
+									<ice:outputLabel value="Tipo Doc" />
+								</ice:commandSortHeader>
+							</f:facet>
+							<ice:outputText value="#{pro.tipodoc}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Fec.Doc." style="font-size: 9px; color: blue;"/>
+								<ice:commandSortHeader columnName="dfecdoc" arrow="true">
+									<ice:outputLabel value="Fec.Doc." />
+								</ice:commandSortHeader>
+							</f:facet>
+							<ice:outputText value="#{pro.dfecdoc}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</ice:outputText>
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Fec.Recep." style="font-size: 9px; color: blue;"/>
+								<ice:commandSortHeader columnName="dfecregistro" arrow="true">
+									<ice:outputLabel value="Fec.Recep." />
+								</ice:commandSortHeader>
+							</f:facet>
+							<ice:outputText value="#{pro.dfecregistro}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</ice:outputText>
+						</ice:column>
+						
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Remitente" style="font-size: 9px; color: blue;"/>
+								<ice:commandSortHeader columnName="vdirigido" arrow="true">
+									<ice:outputLabel value="Remitente" />
+								</ice:commandSortHeader>
+							</f:facet>
+							<ice:outputText value="#{pro.vdirigido}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Asunto" style="font-size: 9px; color: blue;"/>
+								<ice:commandSortHeader columnName="vasunto" arrow="true">
+									<ice:outputLabel value="Asunto" />
+								</ice:commandSortHeader>
+							</f:facet>
+							<ice:outputText value="#{pro.vasunto}" />
+						</ice:column>	
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Prio." style="font-size: 9px; color: blue;"/>
+							</f:facet>
+							<ice:outputText value="#{pro.vprioridad}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Fec. Plazo" style="font-size: 9px; color: blue;"/>
+								<ice:commandSortHeader columnName="dfecplazo" arrow="true">
+									<ice:outputLabel value="Fec. Plazo" />
+								</ice:commandSortHeader>
+							</f:facet>
+							<ice:outputText value="#{pro.dfecplazo}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</ice:outputText>
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Dias" style="font-size: 9px; color: blue;"/>
+							</f:facet>
+							<ice:outputText value="#{pro.ndiasplazo}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Estado" style="font-size: 9px; color: blue;"/>
+							</f:facet>
+							<ice:outputText value="#{pro.vestado}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Derivado" style="font-size: 9px; color: blue;"/>
+							</f:facet>
+							<ice:outputText value="#{pro.vremitente}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Persona Derivado" style="font-size: 9px; color: blue;"/>
+							</f:facet>
+							<ice:outputText value="#{pro.personaderivado}" />
+						</ice:column>												
+					</ice:dataTable>
+
+					<ice:panelGrid columns="2" style="font-size: 10px">
+						<ice:outputText value=" " />
+						
+						<ice:dataPaginator id="dataScroll_3" for="idProductos"
+							paginator="true" fastStep="3" paginatorMaxPages="5">
+							<f:facet name="first">
+								<ice:graphicImage
+									url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+									style="border:none;" title="First Page" />
+							</f:facet>
+							<f:facet name="last">
+								<ice:graphicImage
+									url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+									style="border:none;" title="Last Page" />
+							</f:facet>
+							<f:facet name="previous">
+								<ice:graphicImage
+									url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+									style="border:none;" title="Previous Page" />
+							</f:facet>
+							<f:facet name="next">
+								<ice:graphicImage
+									url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+									style="border:none;" title="Next Page" />
+							</f:facet>
+							<f:facet name="fastforward">
+								<ice:graphicImage
+									url="./xmlhttp/css/rime/css-images/arrow-ff.gif"
+									style="border:none;" title="Fast Forward" />
+							</f:facet>
+							<f:facet name="fastrewind">
+								<ice:graphicImage
+									url="./xmlhttp/css/rime/css-images/arrow-fr.gif"
+									style="border:none;" title="Fast Backwards" />
+							</f:facet>
+						</ice:dataPaginator>
+
+						<ice:outputText value="" />
+
+						
+						<ice:dataPaginator id="dataScroll_2" for="idProductos"
+							style="font-size: 9px;" rowsCountVar="rowsCount"
+							displayedRowsCountVar="displayedRowsCount"
+							firstRowIndexVar="firstRowIndex" lastRowIndexVar="lastRowIndex"
+							pageCountVar="pageCount" pageIndexVar="pageIndex">
+							<ice:outputFormat
+								value="{0} registros encontrados, mostrando {1}, de {2} hasta {3}. Pagina {4} / {5}."
+								styleClass="standard">
+								<f:param value="#{rowsCount}" />
+								<f:param value="#{displayedRowsCount}" />
+								<f:param value="#{firstRowIndex}" />
+								<f:param value="#{lastRowIndex}" />
+								<f:param value="#{pageIndex}" />
+								<f:param value="#{pageCount}" />
+							</ice:outputFormat>
+						</ice:dataPaginator>
+					</ice:panelGrid>					
+				</ice:panelGroup>  
+						
+               </ice:panelTab>               
+               <!-- Alerta de mensaje-->
+			<ice:panelPopup id="modalPnlPopError"  draggable="false" modal="true"
+				style="width: 270px; height: 160px; background-color: #0085BC;"
+				visible="#{mBeanseguimientoDocEntrada.ver}" autoCentre="true"
+				styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Aviso" styleClass="popupHeaderText" style="font-size: 12px; color: blue;" />
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+				
+				   <ice:panelGrid columns="1" style="text-align: center;">
+						<ice:outputText value="#{mBeanseguimientoDocEntrada.error}" style="font-size: 12px; color: white;" />
+						 <br></br>
+						 <br></br>
+						<ice:commandButton type="submit" value="Aceptar"
+							actionListener="#{mBeanseguimientoDocEntrada.cerrar}" />
+					</ice:panelGrid>					
+				</f:facet>
+			</ice:panelPopup>
+            </ice:panelTabSet>
+        </ice:form>
+    </body>
+</html>

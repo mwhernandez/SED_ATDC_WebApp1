@@ -1,0 +1,241 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+<body>
+<!-- Ventana de consulta de trabajadores de la empresa
+	 Realizado Por : Eli Diaz Horna
+	 Fecha Creacion : 24/01/2011
+	 Descripcion  : visualizacion de los trabajadores de la empresa
+	-->
+<ice:form partialSubmit="true">
+	<ice:panelTabSet id="icePnlTbSet1">
+
+		<!-- Panel Tab 1 defined with some basic content -->
+		<ice:panelTab label="Lista de Trabajadores" title="Catalogo">
+			<ice:panelGroup rendered="#{mBeanTrabajador.verCatalogo}">
+				<ice:panelGrid columns="7" style="font-size: 9px;">					
+					<ice:commandButton value="Visualizar"
+						actionListener="#{mBeanTrabajador.eventActualizar}" title="Visualizar" image="/images/visualizar.png" style="size: width: 20px; height: 20px"/>
+					<ice:outputText value="" />
+					<ice:outputText value="" />
+					<ice:outputText value="" />
+					<ice:outputText value="" />
+				</ice:panelGrid>
+				 <ice:panelGrid columns="14">						
+						<ice:outputText value="Visualizar" style="font-size: 10px; color: blue;"/>					
+						<ice:outputText value=" " />						
+				 </ice:panelGrid>
+				<ice:panelGrid columns="7" cellpadding="1" border="1" style="font-size: 9px;">
+					<h:selectOneRadio value="#{mBeanTrabajador.opcion}" style="font-size: 9px; color: green;">
+						<f:selectItem itemValue="CODIGO" itemLabel="FICHA :"/>
+						<f:selectItem itemValue="DESCRIPCION" itemLabel="APELLIDO PAT :"/>
+					</h:selectOneRadio>					
+					<ice:inputText value="#{mBeanTrabajador.detalle}" size="50"/>
+					<ice:commandButton value="Ejecutar"
+						actionListener="#{mBeanTrabajador.eventFiltros}" title="Buscar" image="/images/buscar2.png" style="size: width: 25px; height: 25px">
+					</ice:commandButton>
+					<ice:commandButton value="Regresar" 
+						actionListener="#{mBeanTrabajador.eventRefrescar}" title="Refrescar" image="/images/resert.png" style="size: width: 20px; height: 20px">
+					</ice:commandButton>
+				</ice:panelGrid>
+				
+			</ice:panelGroup>
+			
+			<ice:panelGroup rendered="#{mBeanTrabajador.verCatalogo}">
+				<ice:dataTable var="pro" value="#{mBeanTrabajador.trabajador}"
+					columnClasses="tableCol" style="font-size: 9px;" rows="10" id="idProductos" 
+					scrollable="false"> 
+					<ice:column>
+						<ice:rowSelector id="selected" value="#{pro.selected}"
+							multiple="#{mBeanTrabajador.multiple}"
+							enhancedMultiple="#{mBeanTrabajador.enhancedMultiple}"
+							selectionListener="#{mBeanTrabajador.rowSelectionListener}"
+							preStyleOnSelection="true" />
+
+						<f:facet name="header">
+							<ice:outputText value="Codigo" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText id="idCB" value="#{pro.codigo}" />						
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Ficha" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro.ficha}" />
+					</ice:column>
+					
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Nombre" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro.nombre_completo}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Anexo" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro.anexo}" />
+					</ice:column>					
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Equipo" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro.equipo}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Cargo" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro.cargo}" />
+					</ice:column>
+				</ice:dataTable>
+
+
+				<ice:panelGrid columns="2">
+					<ice:outputText value=" " />
+					<!-- Paginator with page controls -->
+					<ice:dataPaginator id="dataScroll_3"
+						for="idProductos" paginator="true" fastStep="3"
+						paginatorMaxPages="5">
+						<f:facet name="first">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+								style="border:none;" title="First Page" />
+						</f:facet>
+						<f:facet name="last">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+								style="border:none;" title="Last Page" />
+						</f:facet>
+						<f:facet name="previous">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+								style="border:none;" title="Previous Page" />
+						</f:facet>
+						<f:facet name="next">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+								style="border:none;" title="Next Page" />
+						</f:facet>
+						<f:facet name="fastforward">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-ff.gif"
+								style="border:none;" title="Fast Forward" />
+						</f:facet>
+						<f:facet name="fastrewind">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-fr.gif"
+								style="border:none;" title="Fast Backwards" />
+						</f:facet>
+					</ice:dataPaginator>
+
+					<ice:outputText value="" />
+
+					<!-- Display counts about the table and the currently displayed page -->
+					<ice:dataPaginator id="dataScroll_2" for="idProductos"
+						rowsCountVar="rowsCount"
+						displayedRowsCountVar="displayedRowsCount"
+						firstRowIndexVar="firstRowIndex" lastRowIndexVar="lastRowIndex"
+						pageCountVar="pageCount" pageIndexVar="pageIndex">
+						<ice:outputFormat
+							value="{0} trabajador encontrados, mostrando {1}, de {2} hasta {3}. Pagina {4} / {5}."
+							styleClass="standard">
+							<f:param value="#{rowsCount}" />
+							<f:param value="#{displayedRowsCount}" />
+							<f:param value="#{firstRowIndex}" />
+							<f:param value="#{lastRowIndex}" />
+							<f:param value="#{pageIndex}" />
+							<f:param value="#{pageCount}" />
+						</ice:outputFormat>
+					</ice:dataPaginator>
+
+				</ice:panelGrid>
+			</ice:panelGroup>
+
+
+			
+			<ice:panelGroup rendered="#{mBeanTrabajador.verActualizar}">
+				<ice:panelGrid columns="4" cellpadding="1" border="1" style="font-size: 9px;">
+					<!--
+					<ice:outputText value="Ficha" />
+					<ice:inputText value="#{mBeanTrabajador.fichaA}" size ="20" readonly = "True" style = "background: #c2dfef"/>
+					-->
+					<ice:outputText value="FICHA :" />
+					<ice:inputText value="#{mBeanTrabajador.fichaA}" size ="20" readonly = "True" style = "background: #c2dfef"/>						
+					<ice:outputText value="FOTO :" />					
+					<h:graphicImage id="gi" alt="Foto"
+					value="images/#{mBeanTrabajador.fichaA}.jpg"></h:graphicImage>					
+					<!-- <misTags:showProductImage product="${producto.codigo}"/> <h:column></h:column>	-->								
+					<ice:outputText value="NOMBRE :" />
+					<ice:inputText value="#{mBeanTrabajador.nombreA}" size ="50" readonly = "True" style = "background: #c2dfef"/>												
+					<ice:outputText value="APELLIDO PARTERNO :" />
+					<ice:inputText value="#{mBeanTrabajador.apellidopaternoA}" size ="50" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="APELLIDO MATERNO :" />
+					<ice:inputText value="#{mBeanTrabajador.apellidomaternoA}" size ="50" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="CODIGO :" />
+					<ice:inputText value="#{mBeanTrabajador.codigoA}" size ="20" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="ONOMASTICO :" />
+					<ice:inputText value="#{mBeanTrabajador.mesA}" size="20" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="DIA :" />
+					<ice:inputText value="#{mBeanTrabajador.onomasticoA}" size="20" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="CONDICION :" />
+					<ice:inputText value="#{mBeanTrabajador.tipoA}" size="20" readonly = "True" style = "background: #c2dfef"/>	
+					<ice:outputText value="ANEXO :" />
+					<ice:inputText value="#{mBeanTrabajador.anexoA}" size="20" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="CARGO :" />
+					<ice:inputText value="#{mBeanTrabajador.cargoA}" size="50" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="EQUIPO :" />
+					<ice:inputText value="#{mBeanTrabajador.equipoA}" size="50" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="CORREO :" />
+					<ice:inputText value="#{mBeanTrabajador.correoA}" size="50" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="LOCAL :" />
+					<ice:inputText value="#{mBeanTrabajador.localA}" size="50" readonly = "True" style = "background: #c2dfef"/>
+					
+					</ice:panelGrid>
+					<ice:commandButton value="Regresar"
+						actionListener="#{mBeanTrabajador.eventCancelar}"  title="Regresar" image="/images/retorno.png" style="size: width: 20px; height: 20px"/>					
+			</ice:panelGroup>
+			<!-- Alerta de mensaje -->
+			<ice:panelPopup id="modalPnlPopError" draggable="false" modal="false"
+				style="width: 200px; height: 120px;" visible="#{mBeanTrabajador.ver}"
+				autoCentre="true" styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Error" styleClass="popupHeaderText" />
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+					<ice:panelGroup styleClass="popupBody">
+						<ice:outputText value="#{mBeanTrabajador.error}" />
+						<br></br>
+						<ice:commandButton id="modalPnlCBError" type="submit"
+							value="Aceptar" actionListener="#{mBeanTrabajador.cerrar}" />
+					</ice:panelGroup>
+				</f:facet>
+			</ice:panelPopup>
+
+		</ice:panelTab>
+	</ice:panelTabSet>
+
+
+
+	<ice:menuPopup id="menuPopupEffects">		
+		<ice:menuItem id="mnuModificar" value="Modificar"
+			title="Modificar perfil">
+		</ice:menuItem>
+
+		<ice:menuItem id="mnuAuditoria" value="Auditoria"
+			title="Consultar auditoria">
+		</ice:menuItem>
+
+
+	</ice:menuPopup>
+
+
+</ice:form>
+</body>
+</html>

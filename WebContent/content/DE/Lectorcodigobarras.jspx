@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component"
+	xmlns:c="http://java.sun.com/jstl/core">
+<body>
+	<!--
+	<script> alert('hola');
+	    selectText();
+		function selectText() {
+		alert('texto seleccionado');
+  		const input = document.getElementById('registros');
+  		alert(input + ' -> valor del input');
+  		input.focus();
+  		input.select();
+	}
+	</script>
+	-->
+	<!-- Ventana de lector de codigo de barras
+	 Realizado Por : Eli Diaz Horna
+	 Fecha Creacion : 05/05/2021
+	 Descripcion  : visualizacion de los documentos mediante lector de codigo de barras
+	-->
+	<ice:form>
+		<ice:panelTabSet id="icePnlTbSet1">
+			<!-- Panel Tab 1 defined with some basic content -->
+			<ice:panelTab label="Lector de Codigo de Barras"
+				title="Consultas Documentos De Entrada">
+
+				<ice:panelGroup>
+					<ice:panelGrid columns="7" style="border: 1px solid #333;">
+						<ice:outputLabel value="NUMERO REGISTRO:"
+							style="font-size: 13px; color: green;"></ice:outputLabel>						 
+						<ice:inputText value="#{mBeanconsultaDocEntrada.registro}"							
+							onchange="this.value = this.value.toUpperCase();" size="30"
+							partialSubmit="true" immediate="true" 							
+							id="registros"				
+							style="font-size: 11px;" maxlength="35" />						
+						<ice:outputLabel value="AÑO DOCUMENTO:"
+							style="font-size: 13px; color: green;"></ice:outputLabel>
+						<ice:selectOneMenu value="#{mBeanconsultaDocEntrada.anodocumento}"
+							style="font-size: 13px;">
+							<f:selectItems value="#{mBeanconsultaDocEntrada.itemsannio}" />
+						</ice:selectOneMenu>
+						<ice:commandButton value="Ejecutar"
+							actionListener="#{mBeanconsultaDocEntrada.eventBusquedas}"
+							image="/images/buscar2.png"
+							style="size: width: 30px; height: 30px">
+						</ice:commandButton>
+						<ice:commandButton value="Limpiar"
+							actionListener="#{mBeanconsultaDocEntrada.eventLimpiar}"
+							image="/images/resert.png"
+							style="size: width: 25px; height: 25px">
+						</ice:commandButton>
+
+					</ice:panelGrid>
+				</ice:panelGroup>
+				<ice:panelGroup rendered="#{mBeanconsultaDocEntrada.verCatalogo}"
+					id="pg1">
+					<ice:dataTable var="pro"
+						value="#{mBeanconsultaDocEntrada.consulta}"
+						style="font-size: 10px;" rows="6" id="idDocUltEst"
+						scrollable="false" width="70%">
+
+						<ice:column>
+							<ice:panelGrid columns="4" width="90%">
+								<ice:outputText value="AÑO                :"
+									style="font-weight: bold" />
+								<ice:outputText id="idNANO" value="#{pro.nano}" />
+
+								<ice:outputText value="CORRELATIVO        :"
+									style="font-weight: bold" />
+								<ice:outputText value="#{pro.ncorrelativo}" />
+								
+								<ice:outputText value="NRO. DOCUMENTO     :"
+									style="font-weight: bold" />
+								<ice:outputText value="#{pro.vnumdoc}" />
+
+								<ice:outputText value="TIPO DE DOCUMENTO  :"
+									style="font-weight: bold" />
+								<ice:outputText value="#{pro.tipodoc}" />
+
+								
+								<ice:outputText value="FECHA DE DOCUMENTO :"
+									style="font-weight: bold" />
+								<ice:outputText value="#{pro.dfecdoc}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</ice:outputText>
+
+								<ice:outputText value="HORA DEL DOCUMENTO :"
+									style="font-weight: bold" />
+								<ice:outputText value="#{pro.dthoradoc}" />
+
+								<ice:outputText value="REMITENTE          :"
+									style="font-weight: bold" />
+								<ice:outputText value="#{pro.vdirigido}" />
+
+
+								<ice:outputText value="DIA PLAZO DOCUMENTO :"
+									style="font-weight: bold" />
+								<ice:outputText value="#{pro.ndiasplazo}" />
+
+								<ice:outputText value="USUARIO CREADOR     :"
+									style="font-weight: bold" />
+								<ice:outputText value="#{pro.vrescre}" />
+
+
+								<ice:outputText value="ESTADO             :"
+									style="font-weight: bold" />
+								<ice:outputText value="#{pro.vestado}" />
+
+								<ice:outputText value="NUMERO DE FOLIO   :"
+									style="font-weight: bold" />
+								<ice:outputText value="#{pro.nfolio}">
+								</ice:outputText>
+
+								<ice:outputText value="TIPO INGRESO   :"
+									style="font-weight: bold" />
+								<ice:outputText value="#{pro.vtipoorigen}" />
+								
+								
+
+
+							</ice:panelGrid>
+
+							<ice:panelGrid columns="2" width="70%">
+								<ice:outputText value="ASUNTO" style="font-weight: bold" />
+								<ice:inputTextarea value="#{pro.vasunto}"
+									onchange="this.value = this.value.toUpperCase();" rows="3"
+									cols="130" style="font-size: 10px; font: bold" 
+									maxlength="800" disabled="true">
+								</ice:inputTextarea>
+								<ice:outputText value="REFERENCIA" style="font-weight: bold" />
+								<ice:inputTextarea value="#{pro.vreferencia}"
+									onchange="this.value = this.value.toUpperCase();" rows="3"
+									cols="130" style="font-size: 10px;" maxlength="800" 
+									disabled="true" >
+								</ice:inputTextarea>
+								<ice:outputText value="NUNERO DE LOTE" style="font-weight: bold" />
+								<ice:inputText value="#{mBeanconsultaDocEntrada.nloteN}"
+									onchange="this.value = this.value.toUpperCase();" size="10"
+									maxlength="10" />
+							</ice:panelGrid>
+
+							<ice:panelGrid columns="2" cellpadding="10"
+								style="font-size: 9px;">
+
+								<ice:commandButton value="Adjuntar"
+									actionListener="#{mBeanconsultaDocEntrada.eventDetalles}"
+									title="Adjuntar" image="/images/clip.png"
+									style="size: width: 30px; height: 30px" />
+								<ice:commandButton value="Aceptar" title="Grabar"
+									image="/images/grabar.png"
+									style="size: width: 30px; height: 30px"
+									actionListener="#{mBeanconsultaDocEntrada.eventRegistrarEntrante}" />
+									
+								<ice:outputText value="Adjuntar" style="font-size: 10px; color: blue;" />
+								
+								<ice:outputText value="Grabar" style="font-size: 10px; color: blue;" />
+
+							</ice:panelGrid>
+
+						</ice:column>
+						<ice:column>
+
+							<ice:panelGrid columns="1" width="90%">
+
+								<ice:outputLink value="#{pro.ubicacion_entrada}" target="_blank"
+									rendered="#{pro.atachment}">
+									<ice:graphicImage id="gi1" value="images/#{pro.nindicador}.jpg"
+										style="border:0; size: width: 60px; height: 60px">
+									</ice:graphicImage>
+								</ice:outputLink>
+								<!--
+							<ice:outputLink value="#{pro.ubicacion_entrada}" target="_blank" 
+							rendered="#{pro.atachment}">
+							<h:graphicImage id="gi1" alt="La imagen no pudo ser encontrado"
+							value="images/#{pro.nindicador}.jpg"
+							style="border:0; size: width: 25px; height: 25px">
+							</h:graphicImage>
+							</ice:outputLink>
+							-->
+							</ice:panelGrid>
+
+						</ice:column>
+
+
+					</ice:dataTable>
+					<br />
+					<br />
+					<ice:panelGrid>
+
+					</ice:panelGrid>
+				</ice:panelGroup>
+
+				<!-- Popup para cargar un archivo adjunto" />-->
+				<ice:panelPopup draggable="false" modal="true"
+					style="width: 550px; height: 350px; color: white; background-color: #0085BC;"
+					visible="#{mBeanconsultaDocEntrada.verDetalles}" autoCentre="true"
+					styleClass="icePnlPop">
+					<f:facet name="header">
+						<ice:panelGroup styleClass="popupHeaderWrapper">
+							<ice:outputText value="Archivo Adjunto"
+								styleClass="popupHeaderText"
+								style="font-size: 12px; color: blue;" />
+						</ice:panelGroup>
+					</f:facet>
+					<f:facet name="body">
+						<ice:panelGroup styleClass="popupBody">
+							<ice:panelGrid columns="2">
+								<ice:panelTab label="Carga de Datos" title="Carga de Datos">
+									<ice:panelGroup>
+										<!-- file upload usage with progress callback. -->
+										<ice:panelGrid>
+											<ice:outputText value="Seleccione un archivo a cargar:"
+												style="font-size: 12px; color: white;" />
+											<ice:inputFile id="inputFileName2" uniqueFolder="false"
+												uploadDirectoryAbsolute="true" autoUpload="true"
+												uploadDirectory="#{msg['path.entrada']}"
+												progressListener="#{mCarga.fileUploadProgress}"
+												actionListener="#{mCarga.uploadFile}" />
+											<!-- progress bar, percent value is upated via progressListener-->
+
+											<ice:outputProgress value="#{mCarga.fileProgress}"
+												styleClass="uploadProgressBar" />
+											<ice:message for="inputFileName" />
+											<br />
+											<ice:outputText value="#{mCarga.componentStatus}"
+												style="color: white;font: bold;" />
+
+										</ice:panelGrid>
+
+
+									</ice:panelGroup>
+								</ice:panelTab>
+
+							</ice:panelGrid>
+							<ice:commandButton id="modalPnlCBError" type="submit"
+								value="Salir" image="/images/cerrar.png"
+								style="size: width: 35px; height: 35px"
+								actionListener="#{mBeanconsultaDocEntrada.cerrarDetalles}" />
+						</ice:panelGroup>
+					</f:facet>
+				</ice:panelPopup>
+
+				<!-- Popup para la carga -->
+				<ice:panelPopup id="modalPnlPopCarga" draggable="false" modal="true"
+					style="width: 200px; height: 120px;"
+					visible="#{mCarga.verConfirmacion}" autoCentre="true"
+					styleClass="icePnlPop">
+					<f:facet name="header">
+						<ice:panelGroup styleClass="popupHeaderWrapper">
+							<ice:outputText value="Alerta" styleClass="popupHeaderText" />
+						</ice:panelGroup>
+					</f:facet>
+					<f:facet name="body">
+						<ice:panelGroup styleClass="popupBody">
+							<ice:outputText value="#{mCarga.msg}"
+								style="font-size: 12px; color: white;" />
+							<br></br>
+							<ice:commandButton type="submit" value="Aceptar" title="Aceptar"
+								image="/images/actualizar.png"
+								style="size: width: 25px; height: 20px"
+								actionListener="#{mCarga.okConfirm}" />
+							<ice:outputText value="   " />
+							<ice:commandButton value="Cancelar" title="Cancelar"
+								image="/images/eliminar2.png"
+								style="size: width: 25px; height: 20px"
+								actionListener="#{mCarga.cancelar}" />
+						</ice:panelGroup>
+					</f:facet>
+				</ice:panelPopup>
+
+
+
+
+			</ice:panelTab>
+
+			<!-- Alerta de mensaje-->
+			<ice:panelPopup id="modalPnlPopError" draggable="false" modal="true"
+				style="width: 270px; height: 160px; background-color: #0085BC;"
+				visible="#{mBeanconsultaDocEntrada.ver}" autoCentre="true"
+				styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Aviso" styleClass="popupHeaderText"
+							style="font-size: 12px; color: blue;" />
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+
+					<ice:panelGrid columns="1" style="text-align: center;">
+						<ice:outputText value="#{mBeanconsultaDocEntrada.error}"
+							style="font-size: 12px; color: white;" />
+						<br></br>
+						<br></br>
+						<ice:commandButton type="submit" value="Aceptar"
+							actionListener="#{mBeanconsultaDocEntrada.cerrar}" />
+					</ice:panelGrid>
+				</f:facet>
+			</ice:panelPopup>
+		</ice:panelTabSet>
+	</ice:form>
+</body>
+</html>

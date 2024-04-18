@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+<body>
+	<!-- Ventana de secuenciales
+	 Realizado Por : Eli Diaz Horna
+	 Fecha Creacion : 24/01/2011
+	 Descripcion  : Ingreso y Modificacion de secuenciales para el despacho
+	-->
+	<ice:form partialSubmit="true">
+		<ice:panelTabSet id="icePnlTbSet1">
+			<ice:panelTab label="Secuenciales" title="Listado">
+				<!-- Barra de Herramientas y Tabla - Listado -->
+				<ice:panelGroup rendered="#{mBeanSecuenciales.verListado}">
+					<ice:panelGrid columns="2">
+						<ice:commandButton value="Actualizar"
+							actionListener="#{mBeanSecuenciales.showActualizar}"
+							title="Modificar" image="/images/modificar2.png"
+							style="width: 40px; height: 40px;" />
+						<ice:commandButton value="Refrescar"
+							actionListener="#{mBeanSecuenciales.reiniciarListadoSecuenciales}"
+							title="Refrescar" image="/images/resert.png"
+							style="width: 25px; height: 25px;" />
+						<ice:outputText value="Actualizar" style="font-size: 10px; color: blue;" />
+						<ice:outputText value="Refrescar"  style="font-size: 10px; color: blue;" />
+					</ice:panelGrid>
+				</ice:panelGroup>
+				<ice:panelGroup rendered="#{mBeanSecuenciales.verListado}">
+					<ice:dataTable var="sec"
+						value="#{mBeanSecuenciales.listadoSecuenciales}"
+						columnClasses="tableCol" style="font-size: 9px;" rows="10"
+						id="idProductos" scrollable="false">
+						<ice:column>
+							<ice:rowSelector id="selected" value="#{sec.selected}"
+								selectionListener="#{mBeanSecuenciales.rowSelectionListener}"
+								preStyleOnSelection="true" />
+							<f:facet name="header">
+								<ice:outputText value="Cod. Documento" style="color: blue;" />
+							</f:facet>
+							<ice:outputText value="#{sec.codTipoDocumento}"
+								style="font-size: 9px;" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Documento" style="color: blue;" />
+							</f:facet>
+							<ice:outputText value="#{sec.descTipoDocumento}"
+								style="font-size: 9px;" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Cod. Area" style="color: blue;" />
+							</f:facet>
+							<ice:outputText value="#{sec.codArea}" style="font-size: 9px;" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Area" style="color: blue;" />
+							</f:facet>
+							<ice:outputText value="#{sec.descArea}" style="font-size: 9px;" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Valor" style="color: blue;" />
+							</f:facet>
+							<ice:outputText value="#{sec.valorSecuencial}"
+								style="font-size: 9px;" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Estado" style="color: blue;" />
+							</f:facet>
+							<ice:outputText value="#{sec.descEstado}" style="font-size: 9px;" />
+						</ice:column>
+					</ice:dataTable>
+					<!-- Paginacion -->
+					<ice:panelGrid columns="5">
+						<ice:outputText value=" " />
+						<!-- Paginator with page controls hh:mm:ss-->
+						<ice:dataPaginator id="dataScroll_3" for="idProductos"
+							paginator="true" fastStep="3" paginatorMaxPages="5">
+							<f:facet name="first">
+								<ice:graphicImage
+									url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+									style="border:none;" title="First Page" />
+							</f:facet>
+							<f:facet name="last">
+								<ice:graphicImage
+									url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+									style="border:none;" title="Last Page" />
+							</f:facet>
+							<f:facet name="previous">
+								<ice:graphicImage
+									url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+									style="border:none;" title="Previous Page" />
+							</f:facet>
+							<f:facet name="next">
+								<ice:graphicImage
+									url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+									style="border:none;" title="Next Page" />
+							</f:facet>
+							<f:facet name="fastforward">
+								<ice:graphicImage
+									url="./xmlhttp/css/rime/css-images/arrow-ff.gif"
+									style="border:none;" title="Fast Forward" />
+							</f:facet>
+							<f:facet name="fastrewind">
+								<ice:graphicImage
+									url="./xmlhttp/css/rime/css-images/arrow-fr.gif"
+									style="border:none;" title="Fast Backwards" />
+							</f:facet>
+						</ice:dataPaginator>
+						<ice:outputText value="" />
+						<ice:dataPaginator id="dataScroll_2" for="idProductos"
+							rowsCountVar="rowsCount"
+							displayedRowsCountVar="displayedRowsCount"
+							firstRowIndexVar="firstRowIndex" lastRowIndexVar="lastRowIndex"
+							pageCountVar="pageCount" pageIndexVar="pageIndex">
+							<ice:outputFormat
+								value="{0} registros encontrados, mostrando {1}, de {2} hasta {3}. Pagina {4} / {5}."
+								styleClass="standard">
+								<f:param value="#{rowsCount}" />
+								<f:param value="#{displayedRowsCount}" />
+								<f:param value="#{firstRowIndex}" />
+								<f:param value="#{lastRowIndex}" />
+								<f:param value="#{pageIndex}" />
+								<f:param value="#{pageCount}" />
+							</ice:outputFormat>
+						</ice:dataPaginator>
+					</ice:panelGrid>
+				</ice:panelGroup>
+				<!-- Actualizar Registro - Manteminiento -->
+				<ice:panelGroup rendered="#{mBeanSecuenciales.verActualizar}">
+					<ice:panelGrid columns="1" border="1" >
+					<ice:panelGrid columns="3" style="font-size: 9px;">
+						<ice:outputText value="AÑO :" />
+						<ice:inputText value="#{mBeanSecuenciales.annio}" readonly="true"
+							style="font-size: 9px; background: #c2dfef" size="20" />
+						<ice:outputText value="" />
+						<ice:outputText value="AREA :" />
+						<ice:inputText value="#{mBeanSecuenciales.codArea}"
+							readonly="true" style="font-size: 9px; background: #c2dfef"
+							size="20" />
+						<ice:inputText value="#{mBeanSecuenciales.descArea}"
+							readonly="true" style="font-size: 9px; background: #c2dfef"
+							size="100" />
+						<ice:outputText value="DOCUMENTO" />
+						<ice:inputText value="#{mBeanSecuenciales.codTipDoc}"
+							readonly="true" style="font-size: 9px; background: #c2dfef"
+							size="20" />
+						<ice:inputText value="#{mBeanSecuenciales.descTipDoc}"
+							readonly="true" style="font-size: 9px; background: #c2dfef"
+							size="50" />
+						<ice:outputText value="VALOR SECUENCIAL :" />
+						<ice:inputText value="#{mBeanSecuenciales.valSecuencial}"
+							style="font-size: 9px;"
+							valueChangeListener="#{mBeanSecuenciales.invalidarSecuencial}"
+							size="20" />
+						<ice:commandButton value="Validar" image="/images/actualizar.png"
+							title="Validar" style="border: 0; width: 20px; height: 20px;"
+							actionListener="#{mBeanSecuenciales.processValidarSecuencial}" />
+						<ice:outputText value="ESTADO :" />
+						<h:selectOneMenu value="#{mBeanSecuenciales.estado}"
+							style="font-size: 9px;" size="20">
+							<f:selectItem itemValue="0" itemLabel="INACTIVO" />
+							<f:selectItem itemValue="1" itemLabel="ACTIVO" />
+						</h:selectOneMenu>
+						<ice:outputText value="" />
+					</ice:panelGrid>
+					</ice:panelGrid>
+					<ice:panelGrid columns="2" style="font-size: 9px;">	
+						<ice:commandButton value="Actualizar"
+							actionListener="#{mBeanSecuenciales.processActualizar}"
+							title="Grabar" image="/images/grabar.png"
+							style="width: 30px; height: 30px" />						
+						<ice:commandButton value="Regresar"
+							actionListener="#{mBeanSecuenciales.processRegresar}"
+							title="Regresar" image="/images/retorno.png"
+							style="width: 30px; height: 30px" />
+					</ice:panelGrid>
+					<ice:panelGrid columns="5" style="font-size: 9px;">
+						<ice:outputText value="Grabar" />
+						<ice:outputText value="" />
+						<ice:outputText value="Regresar" />
+					</ice:panelGrid>
+				</ice:panelGroup>
+				<!-- Ingresar Registro - Mantenimiento -->
+				<ice:panelGroup rendered="#{mBeanSecuenciales.verRegistro}">
+					<ice:panelGrid columns="1" border="1" >
+					<ice:panelGrid columns="3" style="font-size: 9px;">
+						<ice:outputText value="AÑO :" />
+						<ice:inputText value="#{mBeanSecuenciales.annio}" readonly="true"
+							style="font-size: 9px; background: #c2dfef" size="20" />
+						<ice:outputText value="" />
+						<ice:outputText value="AREA :" />
+						<ice:inputText value="#{mBeanSecuenciales.codArea}"
+							readonly="true" style="font-size: 9px; background: #c2dfef"
+							size="20" />
+						<ice:inputText value="#{mBeanSecuenciales.descArea}"
+							readonly="true" style="font-size: 9px; background: #c2dfef"
+							size="100" />
+						<ice:outputText value="DOCUMENTO" />
+						<ice:inputText value="#{mBeanSecuenciales.codTipDoc}"
+							readonly="true" style="font-size: 9px; background: #c2dfef"
+							size="20" />
+						<ice:inputText value="#{mBeanSecuenciales.descTipDoc}"
+							readonly="true" style="font-size: 9px; background: #c2dfef"
+							size="50" />
+						<ice:outputText value="VALOR SECUENCIAL :" />
+						<ice:inputText value="#{mBeanSecuenciales.valSecuencial}"
+							style="font-size: 9px;"
+							valueChangeListener="#{mBeanSecuenciales.invalidarSecuencial}"
+							size="20" />
+						<ice:commandButton value="Validar" image="/images/actualizar.png"
+							title="Validar" style="border: 0; width: 18px; height: 18px;"
+							actionListener="#{mBeanSecuenciales.processValidarSecuencial}" />
+						<ice:outputText value="ESTADO :" />
+						<h:selectOneMenu value="#{mBeanSecuenciales.estado}"
+							style="font-size: 9px;" size="20">
+							<f:selectItem itemValue="0" itemLabel="INACTIVO" />
+							<f:selectItem itemValue="1" itemLabel="ACTIVO" />
+						</h:selectOneMenu>
+						<ice:outputText value="" />
+					</ice:panelGrid>
+					</ice:panelGrid>
+					<ice:panelGrid columns="2" style="font-size: 9px;">
+						<ice:commandButton value="Registrar"
+							actionListener="#{mBeanSecuenciales.processRegistrar}"
+							title="Grabar" image="/images/grabar.png"
+							style="width: 20px; height: 20px" />						
+						<ice:commandButton value="Regresar"
+							actionListener="#{mBeanSecuenciales.processRegresar}"
+							title="Regresar" image="/images/retorno.png"
+							style="width: 30px; height: 30px" />					
+						<ice:outputText value="Grabar" />						
+						<ice:outputText value="Regresar" />
+					</ice:panelGrid>
+				</ice:panelGroup>
+				<!-- Popup Busqueda de Documentos -->
+				<ice:panelPopup id="modalBusDoc" draggable="false" modal="true"
+					style="width: 550px; height: 350px; color: white;"
+					visible="#{mBeanSecuenciales.verPopupBusDoc}" autoCentre="true"
+					styleClass="icePnlPop">
+					<f:facet name="header">
+						<ice:panelGroup styleClass="popupHeaderWrapper">
+							<ice:outputText value="Busqueda de Tipo de Documentos"
+								styleClass="popupHeaderText" />
+						</ice:panelGroup>
+					</f:facet>
+					<f:facet name="body">
+						<ice:panelGroup styleClass="popupBody">
+							<ice:panelGrid columns="1">
+								<ice:panelGrid columns="7" cellpadding="1" border="1">
+									<h:selectOneRadio value="#{mBeanSecuenciales.valRadioBusDoc}"
+										style="font-size: 9px;">
+										<f:selectItem itemValue="descDoc" itemLabel="DESCRIPCION" />
+									</h:selectOneRadio>
+									<ice:inputText value="#{mBeanSecuenciales.valBusquedaBusDoc}"
+										style="font-size: 9px;" size="50"
+										onchange="this.value = this.value.toUpperCase();" />
+									<ice:commandButton value="Buscar"
+										actionListener="#{mBeanSecuenciales.processBusquedaBusDoc}"
+										title="Buscar" image="/images/buscar.png"
+										style="width: 25px; height: 25px" />
+									<ice:commandButton value="Ver Todos"
+										actionListener="#{mBeanSecuenciales.processResetBusquedaBusDoc}"
+										title="Ver Todos" image="/images/resert.png"
+										style="width: 25px; height: 25px" />
+								</ice:panelGrid>
+								<ice:dataTable var="doc"
+									value="#{mBeanSecuenciales.listadoDocumentos}"
+									scrollable="true" scrollHeight="140px"
+									columnWidths="100px,300px;">
+									<ice:column>
+										<ice:rowSelector value="#{doc.selected}" />
+										<f:facet name="header">
+											<ice:outputText value="Codigo" />
+										</f:facet>
+										<ice:outputText value="#{doc.codigo}" style="font-size: 9px;" />
+									</ice:column>
+									<ice:column>
+										<f:facet name="header">
+											<ice:outputText value="Descripcion" />
+										</f:facet>
+										<ice:outputText value="#{doc.descripcion}"
+											style="font-size: 9px;" />
+									</ice:column>
+								</ice:dataTable>
+							</ice:panelGrid>
+							<ice:panelGrid columns="2" style="font-size: 9px;">
+								<ice:commandButton type="submit" value="Aceptar"
+									actionListener="#{mBeanSecuenciales.processSeleccBusDoc}" />								
+								<ice:commandButton type="submit" value="Cancelar"
+									actionListener="#{mBeanSecuenciales.processCerrarBusDoc}" />							
+								<ice:outputText value="Grabar" />								
+								<ice:outputText value="Regresar" />
+							</ice:panelGrid>
+						</ice:panelGroup>
+					</f:facet>
+				</ice:panelPopup>
+				<!-- Mensaje de Alerta -->
+				<ice:panelPopup id="popupAlerta" draggable="false" modal="true"
+					style="width: 270px; height: 160px; background-color: #0085BC;"
+					visible="#{mBeanSecuenciales.verAlerta}" autoCentre="true"
+					styleClass="icePnlPop">
+					<f:facet name="header">
+						<ice:panelGroup styleClass="popupHeaderWrapper">
+							<ice:outputText value="Aviso" styleClass="popupHeaderText" style="font-size: 12px; color: blue;" />
+						</ice:panelGroup>
+					</f:facet>
+					<f:facet name="body">
+						<ice:panelGroup styleClass="popupBody">
+							<ice:outputText value="#{mBeanSecuenciales.msgAlerta}" style="font-size: 12px; color: white;" />
+							<br></br>
+							<br></br>
+							<ice:commandButton type="submit" value="Aceptar"
+								actionListener="#{mBeanSecuenciales.processCerrarAlerta}" />
+						</ice:panelGroup>
+					</f:facet>
+				</ice:panelPopup>
+				<!-- Mensaje de Alerta con confirmacion -->
+				<ice:panelPopup id="popupConfirm" draggable="false" modal="false"
+					style="width: 220px; height: 120px; background-color: #0085BC;"
+					visible="#{mBeanSecuenciales.verAlertaConfirm}" autoCentre="true"
+					styleClass="icePnlPop">
+					<f:facet name="header">
+						<ice:panelGroup styleClass="popupHeaderWrapper">
+							<ice:outputText value="Mensaje" styleClass="popupHeaderText" 
+							style="font-size: 12px; color: blue;" />
+						</ice:panelGroup>
+					</f:facet>
+					<f:facet name="body">
+						<ice:panelGroup styleClass="popupBody">
+							<ice:outputText value="#{mBeanSecuenciales.msgAlertaConfirm}" 
+								style="font-size: 12px; color: white;" />
+							<br></br>
+							<br></br>
+							<ice:commandButton type="submit" value="    SI    "
+								actionListener="#{mBeanSecuenciales.processConfirmOK}" />
+							<ice:outputText value=" "/>
+							<ice:commandButton type="submit" value="    NO    "
+								actionListener="#{mBeanSecuenciales.processConfirmNO}" />
+						</ice:panelGroup>
+					</f:facet>
+				</ice:panelPopup>
+			</ice:panelTab>
+		</ice:panelTabSet>
+	</ice:form>
+</body>
+</html>

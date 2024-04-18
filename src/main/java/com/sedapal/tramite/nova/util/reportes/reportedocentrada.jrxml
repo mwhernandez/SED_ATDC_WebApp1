@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="entradas" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.callouts" value="##Wed Mar 21 09:28:43 COT 2012"/>
+	<parameter name="P_AREA" class="java.lang.String"/>
+	<parameter name="P_INICIO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_FIN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_TIPO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_AREA_ORIGEN" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT  DISTINCT
+			A.NANO,
+   			A.NORIGEN,
+  			(CASE A.NORIGEN
+   			WHEN 1 THEN 'INTERNO'
+   			WHEN 2 THEN 'EXTERNO'
+  			END) ORIGEN,
+		  	A.VTIPODOC,
+  			T.VDESCRIPCION AS TIPODOC,
+			A.NCORRELATIVO,
+	  		A.VNUMDOC,
+	  		A.VMESAPARTE,
+	  		A.NREMITENTE,
+	  		A.VREMITENTE,
+	  		A.DFECDOC,
+	  		A.DFECREGISTRO,
+			A.NDIRIGIDO AS NDIRIGIDO,
+	  		UPPER(D.VDESCRIPCION) AS AREADIRIGIDO,
+	  		A.VASUNTO,
+	  		A.VREFERENCIA,
+	  		A.VOBSERVACION,
+	  		A.VPRIORIDAD,
+	  		A.VACCION,
+	  		A.VUBIARCHIVO,
+	  		A.DFECPLAZO,
+	  		A.NDIASPLAZO,
+			seg.codEstado AS VESTADO,
+			seg.descEstado AS ESTADO,
+	  		A.NINDICADOR,
+	  		A.DFECCRE,
+	  		A.DFECACT,
+	  		A.VRESCRE,
+	  		A.VRESACT,
+	  		A.NCODAREA,
+	  		UPPER(R.VDESCRIPCION) AS AREA,
+	  		A.VUBIARCHIVO,
+	  		P.NFICHA_DIRIGIDO,
+	  		A.NCODAREA_ORIGEN,
+	  		UPPER(O.VDESCRIPCION) AS AREAORIGEN,
+	  		A.NCODCENTRO,
+	  		UPPER(C.VNOMBRE) AS CENTRO
+	  		FROM ATD_DOC_ENTR A,
+			ATD_DOC_ENTR_DIRIGIDO P,
+	  		TIPO T,
+	  		AREA D,
+	  		TIPO E,
+	  		AREA R,
+	  		AREA O,
+	  		CENTRO C,
+			(SELECT DISTINCT des.ncorrelativo nroDoc,des.nano anodoc, des.nareaderivado areaderivado, des.norigen desorigen,
+                        max(des.ncodseg) nroSeg,
+                        max(des.vestado) codEstado,
+                        (CASE max(des.vestado)
+                           WHEN 'ESTA001' THEN
+                             'PENDIENTE'
+                           WHEN 'ESTA002' THEN
+                             'DERIVADO'
+                           WHEN 'ESTA003' THEN
+                             'ATENDIDO'
+                          END) descEstado
+                   FROM atd_doc_entr_seg des,
+			atd_doc_entr entr
+                  WHERE entr.nano=des.nano
+			AND entr.norigen=des.norigen
+			AND entr.ncorrelativo=des.ncorrelativo
+			AND entr.ncodarea = des.nareaderivado
+			AND entr.ncodarea = $P{P_AREA}
+		        AND des.vestado <> 'ESTA004'
+		        AND des.vestado = $P{P_TIPO}
+			AND entr.vestado <> 'ESTA004'
+		        AND entr.vestado = $P{P_TIPO}
+			AND TRUNC(DES.DFECCRE) >= TO_DATE($P{P_INICIO},'DD-MM-YYYY')
+        AND TRUNC(DES.DFECCRE) <= TO_DATE($P{P_FIN},'DD-MM-YYYY')
+        GROUP BY des.ncorrelativo,des.nano,des.nareaderivado, des.norigen) seg
+	  		WHERE
+			A.NANO=P.NANO AND
+	  		A.NORIGEN=P.NORIGEN AND
+	  		A.NCORRELATIVO=P.NCORRELATIVO AND
+			A.NCODAREA=P.NCODAREA AND
+			P.NESTADO=1 AND
+	  		P.NCODAREA=$P{P_AREA} AND
+	  		A.VTIPODOC=T.VCODTIPO AND
+	  		T.VOBSERVACIONES ='TIPO DE DOCUMENTO ATD' AND
+	  		T.VESTADO = 'A' AND
+	    		A.NDIRIGIDO=D.NCODAREA AND
+	  		D.CTIPAREA IN  ('E ','G', 'D','P','M') AND
+	  		D.NINDICADOR=0 AND
+	  		A.VESTADO=E.VCODTIPO AND
+	  		E.VOBSERVACIONES ='ESTADO ATD' AND
+	  		E.VESTADO = 'A' AND
+	  		A.NCODAREA=R.NCODAREA AND
+	  		R.CTIPAREA IN  ('E ','G', 'D','P','M') AND
+	  		R.NINDICADOR=0 AND
+			A.NCODAREA_ORIGEN=O.NCODAREA AND
+	  		O.CTIPAREA IN  ('E ','G', 'D','P','M') AND
+	  		O.NINDICADOR=0 AND
+	  		A.NCODCENTRO=C.NCODCENTRO AND
+	  		C.NESTADO=1 AND
+			TRUNC(A.DFECREGISTRO) >= TO_DATE($P{P_INICIO},'DD-MM-YYYY') AND        TRUNC(A.DFECREGISTRO) <= TO_DATE($P{P_FIN},'DD-MM-YYYY') AND
+    			A.VESTADO<>'ESTA004' AND
+			A.NCORRELATIVO=seg.nroDoc AND
+			A.NANO=seg.anodoc  AND
+			A.NCODAREA=seg.areaderivado AND
+			A.NORIGEN=seg.desorigen AND
+		        seg.codEstado=$P{P_TIPO}
+			UNION
+    			SELECT  DISTINCT
+			A.NANO,
+   			A.NORIGEN,
+  			(CASE A.NORIGEN
+   			WHEN 1 THEN 'INTERNO'
+   			WHEN 2 THEN 'EXTERNO'
+  			END) ORIGEN,
+  			A.VTIPODOC,
+  			T.VDESCRIPCION AS TIPODOC,
+			A.NCORRELATIVO,
+	  		A.VNUMDOC,
+	  		A.VMESAPARTE,
+	  		A.NREMITENTE,
+	  		A.VREMITENTE,
+	  		A.DFECDOC,
+	  		A.DFECREGISTRO,
+			A.NDIRIGIDO AS NDIRIGIDO,
+	  		UPPER(D.VDESCRIPCION) AS AREADIRIGIDO,
+	  		A.VASUNTO,
+	  		A.VREFERENCIA,
+	  		A.VOBSERVACION,
+	  		A.VPRIORIDAD,
+	  		A.VACCION,
+	  		A.VUBIARCHIVO,
+	  		A.DFECPLAZO,
+	  		A.NDIASPLAZO,
+			seg.codEstado AS VESTADO,
+			seg.descEstado AS ESTADO,
+	  		A.NINDICADOR,
+	  		A.DFECCRE,
+	  		A.DFECACT,
+	  		A.VRESCRE,
+	  		A.VRESACT,
+	  		A.NCODAREA,
+	  		UPPER(R.VDESCRIPCION) AS AREA,
+	  		A.VUBIARCHIVO,
+	  		P.NFICHA_DIRIGIDO,
+	  		A.NCODAREA_ORIGEN,
+	  		UPPER(O.VDESCRIPCION) AS AREAORIGEN,
+	  		A.NCODCENTRO,
+	  		UPPER(C.VNOMBRE) AS CENTRO
+	  		FROM ATD_DOC_ENTR A,
+			ATD_DOC_ENTR_DIRIGIDO P,
+	  		TIPO T,
+	  		ATD_REMITENTE D,
+	  		TIPO E,
+	  		AREA R,
+	  		AREA O,
+	  		CENTRO C,
+			(SELECT DISTINCT des.ncorrelativo nroDoc,des.nano anodoc, des.nareaderivado areaderivado, des.norigen desorigen,
+                        max(des.ncodseg) nroSeg,
+                        max(des.vestado) codEstado,
+                        (CASE max(des.vestado)
+                           WHEN 'ESTA001' THEN
+                             'PENDIENTE'
+                           WHEN 'ESTA002' THEN
+                             'DERIVADO'
+                           WHEN 'ESTA003' THEN
+                             'ATENDIDO'
+                          END) descEstado
+                   FROM atd_doc_entr_seg des,								atd_doc_entr entr,
+                        atd_doc_entr_dirigido dir
+                  WHERE entr.nano=des.nano
+			AND entr.norigen=des.norigen
+			AND entr.ncorrelativo=des.ncorrelativo
+			AND entr.ncodarea = des.nareaderivado
+        		AND entr.nano=dir.nano
+			AND entr.norigen=dir.norigen
+			AND entr.ncorrelativo=dir.ncorrelativo
+			AND entr.ncodarea = dir.ncodarea
+			AND dir.ncodarea=$P{P_AREA}
+        		AND des.vestado <> 'ESTA004'
+        		AND des.vestado = $P{P_TIPO}
+			AND entr.vestado <> 'ESTA004'
+        		AND entr.vestado = $P{P_TIPO}
+			AND TRUNC(des.DFECCRE) >= TO_DATE($P{P_INICIO},'DD-MM-YYYY')
+        		AND TRUNC(des.DFECCRE) <= TO_DATE($P{P_FIN},'DD-MM-YYYY')
+		        GROUP BY des.ncorrelativo,des.nano,des.nareaderivado,des.norigen) seg
+	  		WHERE
+			A.NANO=P.NANO AND
+	  		A.NORIGEN=P.NORIGEN AND
+	  		A.NCORRELATIVO=P.NCORRELATIVO AND
+			A.NCODAREA=P.NCODAREA AND
+			P.NESTADO=1 AND
+	  		P.NCODAREA=$P{P_AREA} AND
+	  		A.VTIPODOC=T.VCODTIPO AND
+	  		T.VOBSERVACIONES ='TIPO DE DOCUMENTO ATD' AND
+	  		T.VESTADO = 'A' AND
+		    	A.NDIRIGIDO=D.NCODREMITENTE AND
+		    	D.VESTADO='A' AND
+	  		A.VESTADO=E.VCODTIPO AND
+	  		E.VOBSERVACIONES ='ESTADO ATD' AND
+	  		E.VESTADO = 'A' AND
+	  		A.NCODAREA=R.NCODAREA AND
+	  		R.CTIPAREA IN  ('E ','G', 'D','P','M') AND
+	  		R.NINDICADOR=0 AND
+	  		A.NCODAREA_ORIGEN=O.NCODAREA AND
+	  		O.CTIPAREA IN  ('E ','G', 'D','P','M') AND
+	  		O.NINDICADOR=0 AND
+	  		A.NCODCENTRO=C.NCODCENTRO AND
+	  		C.NESTADO=1 AND
+			TRUNC(A.DFECREGISTRO) >= TO_DATE($P{P_INICIO},'DD-MM-YYYY') AND
+        		TRUNC(A.DFECREGISTRO) <= TO_DATE($P{P_FIN},'DD-MM-YYYY') AND
+		    		A.VESTADO<>'ESTA004' AND
+				A.NCORRELATIVO=seg.nroDoc AND
+				A.NANO=seg.anodoc AND
+				A.NCODAREA=seg.areaderivado AND
+				A.NORIGEN=seg.desorigen AND
+        seg.codEstado=$P{P_TIPO}
+    		ORDER BY NANO DESC, NCORRELATIVO DESC]]>
+	</queryString>
+	<field name="NANO" class="java.math.BigDecimal"/>
+	<field name="NORIGEN" class="java.math.BigDecimal"/>
+	<field name="ORIGEN" class="java.lang.String"/>
+	<field name="VTIPODOC" class="java.lang.String"/>
+	<field name="TIPODOC" class="java.lang.String"/>
+	<field name="NCORRELATIVO" class="java.math.BigDecimal"/>
+	<field name="VNUMDOC" class="java.lang.String"/>
+	<field name="VMESAPARTE" class="java.lang.String"/>
+	<field name="NREMITENTE" class="java.math.BigDecimal"/>
+	<field name="VREMITENTE" class="java.lang.String"/>
+	<field name="DFECDOC" class="java.sql.Timestamp"/>
+	<field name="DFECREGISTRO" class="java.sql.Timestamp"/>
+	<field name="NDIRIGIDO" class="java.math.BigDecimal"/>
+	<field name="AREADIRIGIDO" class="java.lang.String"/>
+	<field name="VASUNTO" class="java.lang.String"/>
+	<field name="VREFERENCIA" class="java.lang.String"/>
+	<field name="VOBSERVACION" class="java.lang.String"/>
+	<field name="VPRIORIDAD" class="java.lang.String"/>
+	<field name="VACCION" class="java.lang.String"/>
+	<field name="VUBIARCHIVO" class="java.lang.String"/>
+	<field name="DFECPLAZO" class="java.sql.Timestamp"/>
+	<field name="NDIASPLAZO" class="java.math.BigDecimal"/>
+	<field name="VESTADO" class="java.lang.String"/>
+	<field name="ESTADO" class="java.lang.String"/>
+	<field name="NINDICADOR" class="java.math.BigDecimal"/>
+	<field name="DFECCRE" class="java.sql.Timestamp"/>
+	<field name="DFECACT" class="java.sql.Timestamp"/>
+	<field name="VRESCRE" class="java.lang.String"/>
+	<field name="VRESACT" class="java.lang.String"/>
+	<field name="NCODAREA" class="java.math.BigDecimal"/>
+	<field name="AREA" class="java.lang.String"/>
+	<field name="NFICHA_DIRIGIDO" class="java.math.BigDecimal"/>
+	<field name="NCODAREA_ORIGEN" class="java.math.BigDecimal"/>
+	<field name="AREAORIGEN" class="java.lang.String"/>
+	<field name="NCODCENTRO" class="java.math.BigDecimal"/>
+	<field name="CENTRO" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="94" splitType="Stretch">
+			<image>
+				<reportElement x="11" y="3" width="147" height="56"/>
+				<imageExpression class="java.lang.String"><![CDATA["sedapal.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement mode="Transparent" x="231" y="19" width="382" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[LISTA DE DOCUMENTOS DE ENTRADA POR ESTADO]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Transparent" x="11" y="60" width="133" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_AREA_ORIGEN}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="655" y="60" width="83" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="738" y="60" width="37" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="655" y="39" width="120" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="31" width="802" height="2" forecolor="#003366"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="800" height="2" forecolor="#003366"/>
+			</line>
+			<staticText>
+				<reportElement x="507" y="11" width="295" height="20" forecolor="#003366"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASUNTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="11" width="44" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REGISTRO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="385" y="11" width="61" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[TIPO DOC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="182" y="11" width="202" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[REMITE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="117" y="11" width="64" height="20" forecolor="#003366"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="447" y="11" width="60" height="20" forecolor="#003366"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="44" y="11" width="72" height="20" forecolor="#003366"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NUM DOC]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement x="447" y="3" width="60" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ESTADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="44" y="3" width="72" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VNUMDOC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="3" width="44" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{NCORRELATIVO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="385" y="3" width="61" height="20"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TIPODOC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="507" y="3" width="293" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VASUNTO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="117" y="3" width="64" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{DFECREGISTRO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="182" y="3" width="202" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{AREADIRIGIDO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="127" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="8" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="555" height="2" forecolor="#003366"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

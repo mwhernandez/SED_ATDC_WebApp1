@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteMaterial" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="18"/>
+	<parameter name="P_AREA" class="java.lang.String"/>
+	<parameter name="P_NAREA" class="java.lang.String"/>
+	<parameter name="P_NCODSOL" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+S.NCODSOL AS CODSOL,
+S.NANO AS ANO,
+S.NCODTIPO_SOLICITUD AS CODTIPO_SOLICITUD,
+(SELECT UPPER(T.VDESCRIPCION) FROM CFS_TIPO T WHERE T.VFLAT='TIPOSOLICITUD' AND T.NCODTIPO=S.NCODTIPO_SOLICITUD) AS TIPO_SOLICITUD,
+S.VDIRECCION AS DIRECCION,
+S.VURBANIZACION AS URBANIZACION,
+S.VFICHA_REGISTRAL AS FICHA_REGISTRAL,
+S.NTIPO_SERVICIO AS NTIPO_SERVICIO,
+(SELECT UPPER(T.VDESCRIPCION) FROM CFS_TIPO T WHERE T.VFLAT='TIPOSERVICIO' AND T.NCODTIPO=S.NTIPO_SERVICIO) AS TIPO_SERVICIO,
+S.DFECHA_INGRESO AS FECHA_INGRESO,
+S.VNUMERO_SOLICITUD AS NUMERO_SOLICITUD,
+S.VNOMBRE_CLIENTE AS NOMBRE_CLIENTE,
+S.VDNI_RUC AS DNI_RUC,
+S.VDIRECCION_FISCAL AS DIRECCION_FISCAL,
+S.VURBANIZACION_FISCAL AS URBANIZACION_FISCAL,
+S.NCODDEPARTAMENTO_LEGAL AS CODDEPARTAMENTO_LEGAL,
+(SELECT UPPER(E.VDESCRIPCION) FROM SGP_DEPARTAMENTO E WHERE E.NCODDEPARTAMENTO=S.NCODDEPARTAMENTO_LEGAL) AS DEPARTAMENTO_LEGAL,
+S.NCODPROVINCIA_LEGAL AS CODPROVINCIA_LEGAL,
+(SELECT UPPER(P.VDESCRIPCION) FROM SGP_PROVINCIA P WHERE P.NCODPROVINCIA=S.NCODPROVINCIA_LEGAL AND P.NCODDEPARTAMENTO=S.NCODDEPARTAMENTO_LEGAL) AS PROVINCIA_LEGAL,
+S.NCODDISTRITO_LEGAL AS CODDISTRITO_LEGAL,
+(SELECT UPPER(D.VDESCRIPCION) FROM SGP_DISTRITO D WHERE D.NCODPROVINCIA=S.NCODPROVINCIA_LEGAL AND D.NCODDEPARTAMENTO=S.NCODDEPARTAMENTO_LEGAL AND D.NCODDISTRITO=S.NCODDISTRITO_LEGAL) AS DISTRITO_LEGAL,
+S.VTELEFONO_FISCAL AS TELEFONO_FISCAL,
+S.VEMAIL_FISCAL AS EMAIL_FISCAL,
+S.VNOMBRE_LEGAL AS NOMBRE_LEGAL,
+S.VDNI_RUC_LEGAL AS DNI_RUC_LEGAL,
+S.VDIRECCION_LEGAL AS DIRECCION_LEGAL,
+S.VURBANIZACION_LEGAL AS URBANIZACION_LEGAL,
+S.VTELEFONO_LEGAL AS TELEFONO_LEGAL,
+S.VEMAIL_LEGAL AS EMAIL_LEGAL,
+S.VNOMBRE_ING AS NOMBRE_ING,
+S.VCIP_ING AS CIP_ING,
+S.VDNI_ING AS DNI_ING,
+S.VTELEFONO_ING AS TELEFONO_ING,
+S.VEMAIL_ING AS EMAIL_ING,
+S.NOPCION1 AS OPCION1,
+(CASE WHEN S.NOPCION1=1 THEN 'SI' WHEN  S.NOPCION1=2 THEN 'NO' END) AS VOPCION1,
+S.NOPCION2 AS OPCION2,
+(CASE WHEN S.NOPCION2=1 THEN 'SI' WHEN  S.NOPCION2=2 THEN 'NO' END) AS VOPCION2,
+S.NOPCION3A AS OPCION3A,
+(CASE WHEN S.NOPCION3A=1 THEN 'SI' WHEN S.NOPCION3A=2 THEN 'NO' END) AS VOPCION3A,
+S.NOPCION3B AS OPCION3B,
+(CASE WHEN S.NOPCION3B=1 THEN 'SI' WHEN S.NOPCION3B=2 THEN 'NO' END) AS VOPCION3B,
+S.NOPCION3C AS OPCION3C,
+(CASE WHEN S.NOPCION3C=1 THEN 'SI' WHEN S.NOPCION3C=2 THEN 'NO' END) AS VOPCION3C,
+S.NOPCION4 AS OPCION4,
+(CASE WHEN S.NOPCION4=1 THEN 'SI' WHEN S.NOPCION4=2 THEN 'NO' END) AS VOPCION4,
+S.NOPCION5 AS OPCION5,
+(CASE WHEN S.NOPCION5=1 THEN 'SI' WHEN S.NOPCION5=2 THEN 'NO' END) AS VOPCION5,
+S.NOPCION6 AS OPCION6,
+(CASE WHEN S.NOPCION6=1 THEN 'SI' WHEN S.NOPCION6=2 THEN 'NO' END) AS VOPCION6,
+S.NOPCION7 AS OPCION7,
+(CASE WHEN S.NOPCION7=1 THEN 'SI' WHEN S.NOPCION7=2 THEN 'NO' END) AS VOPCION7,
+S.NOPCION8 AS OPCION8,
+(CASE WHEN S.NOPCION8=1 THEN 'SI' WHEN S.NOPCION8=2 THEN 'NO' END) AS VOPCION8,
+S.NOPCION9 AS OPCION9,
+(CASE WHEN S.NOPCION9=1 THEN 'SI' WHEN S.NOPCION9=2 THEN 'NO' END) AS VOPCION9,
+S.NOPCION10 AS OPCION10,
+(CASE WHEN S.NOPCION10=1 THEN 'SI' WHEN S.NOPCION10=2 THEN 'NO' END) AS VOPCION10,
+S.NOPCION11 AS OPCION11,
+(CASE WHEN S.NOPCION11=1 THEN 'SI' WHEN S.NOPCION11=2 THEN 'NO' END) AS VOPCION11,
+S.NCODCENTRO AS CODCENTRO,
+S.NCODDEPARTAMENTO_FISCAL AS CODDEPARTAMENTO_FISCAL,
+(SELECT UPPER(E.VDESCRIPCION) FROM SGP_DEPARTAMENTO E WHERE E.NCODDEPARTAMENTO=S.NCODDEPARTAMENTO_FISCAL) AS DEPARTAMENTO_FISCAL,
+S.NCODPROVINCIA_FISCAL AS CODPROVINCIA_FISCAL,
+(SELECT UPPER(P.VDESCRIPCION) FROM SGP_PROVINCIA P WHERE P.NCODPROVINCIA=S.NCODPROVINCIA_FISCAL AND P.NCODDEPARTAMENTO=S.NCODDEPARTAMENTO_FISCAL) AS PROVINCIA_FISCAL,
+S.NCODDISTRITO_FISCAL AS CODDISTRITO_FISCAL,
+(SELECT UPPER(D.VDESCRIPCION) FROM SGP_DISTRITO D WHERE D.NCODPROVINCIA=S.NCODPROVINCIA_FISCAL AND D.NCODDEPARTAMENTO=S.NCODPROVINCIA_FISCAL AND D.NCODDISTRITO=S.NCODDISTRITO_FISCAL) AS DISTRITO_FISCAL,
+S.NCODDEPARTAMENTO_PREDIO AS CODDEPARTAMENTO_PREDIO,
+(SELECT UPPER(E.VDESCRIPCION) FROM SGP_DEPARTAMENTO E WHERE E.NCODDEPARTAMENTO=S.NCODDEPARTAMENTO_PREDIO) AS DEPARTAMENTO_PREDIO,
+S.NCODPROVINCIA_PREDIO AS CODPROVINCIA_PREDIO,
+(SELECT UPPER(P.VDESCRIPCION) FROM SGP_PROVINCIA P WHERE P.NCODDEPARTAMENTO=S.NCODDEPARTAMENTO_PREDIO AND P.NCODPROVINCIA=S.NCODPROVINCIA_PREDIO) AS PROVINCIA_PREDIO,
+S.NCODDISTRITO_PREDIO AS CODDISTRITO_PREDIO,
+(SELECT UPPER(D.VDESCRIPCION) FROM SGP_DISTRITO D WHERE D.NCODDEPARTAMENTO=S.NCODDEPARTAMENTO_PREDIO AND D.NCODPROVINCIA=S.NCODPROVINCIA_PREDIO AND D.NCODDISTRITO=S.NCODDISTRITO_PREDIO) AS DISTRITO_PREDIO,
+S.NCODAREA AS CODAREA,
+S.NCODGERENCIA AS NCODGERENCIA,
+S.NAREA_ORIGEN AS AREA_ORIGEN,
+S.NESTADO AS NESTADO,
+(SELECT UPPER(E.VDESCRIPCION) FROM CFS_TIPO E WHERE E.VFLAT='ESTADO_SOL' AND E.NCODTIPO=S.NESTADO) AS ESTADO,
+S.NINDICADOR AS INDICADOR,
+S.DFECRE AS DFECCRE,
+S.DFEACT AS DFECACT,
+S.VRESCRE AS RESCRE
+FROM CFS_SOLICITUD S,
+CFS_SOLICITUD_DIRIGIDO D
+WHERE S.NCODSOL = D.NCODSOL AND
+S.NANO = D.NANO AND
+D.NAREA_DESTINO = $P{P_NAREA} AND
+S.NCODSOL = $P{P_NCODSOL}]]>
+	</queryString>
+	<field name="CODSOL" class="java.math.BigDecimal"/>
+	<field name="ANO" class="java.math.BigDecimal"/>
+	<field name="CODTIPO_SOLICITUD" class="java.math.BigDecimal"/>
+	<field name="TIPO_SOLICITUD" class="java.lang.String"/>
+	<field name="DIRECCION" class="java.lang.String"/>
+	<field name="URBANIZACION" class="java.lang.String"/>
+	<field name="FICHA_REGISTRAL" class="java.lang.String"/>
+	<field name="NTIPO_SERVICIO" class="java.math.BigDecimal"/>
+	<field name="TIPO_SERVICIO" class="java.lang.String"/>
+	<field name="FECHA_INGRESO" class="java.sql.Timestamp"/>
+	<field name="NUMERO_SOLICITUD" class="java.lang.String"/>
+	<field name="NOMBRE_CLIENTE" class="java.lang.String"/>
+	<field name="DNI_RUC" class="java.lang.String"/>
+	<field name="DIRECCION_FISCAL" class="java.lang.String"/>
+	<field name="URBANIZACION_FISCAL" class="java.lang.String"/>
+	<field name="CODDEPARTAMENTO_LEGAL" class="java.math.BigDecimal"/>
+	<field name="DEPARTAMENTO_LEGAL" class="java.lang.String"/>
+	<field name="CODPROVINCIA_LEGAL" class="java.math.BigDecimal"/>
+	<field name="PROVINCIA_LEGAL" class="java.lang.String"/>
+	<field name="CODDISTRITO_LEGAL" class="java.math.BigDecimal"/>
+	<field name="DISTRITO_LEGAL" class="java.lang.String"/>
+	<field name="TELEFONO_FISCAL" class="java.lang.String"/>
+	<field name="EMAIL_FISCAL" class="java.lang.String"/>
+	<field name="NOMBRE_LEGAL" class="java.lang.String"/>
+	<field name="DNI_RUC_LEGAL" class="java.lang.String"/>
+	<field name="DIRECCION_LEGAL" class="java.lang.String"/>
+	<field name="URBANIZACION_LEGAL" class="java.lang.String"/>
+	<field name="TELEFONO_LEGAL" class="java.lang.String"/>
+	<field name="EMAIL_LEGAL" class="java.lang.String"/>
+	<field name="NOMBRE_ING" class="java.lang.String"/>
+	<field name="CIP_ING" class="java.lang.String"/>
+	<field name="DNI_ING" class="java.lang.String"/>
+	<field name="TELEFONO_ING" class="java.lang.String"/>
+	<field name="EMAIL_ING" class="java.lang.String"/>
+	<field name="OPCION1" class="java.math.BigDecimal"/>
+	<field name="VOPCION1" class="java.lang.String"/>
+	<field name="OPCION2" class="java.math.BigDecimal"/>
+	<field name="VOPCION2" class="java.lang.String"/>
+	<field name="OPCION3A" class="java.math.BigDecimal"/>
+	<field name="VOPCION3A" class="java.lang.String"/>
+	<field name="OPCION3B" class="java.math.BigDecimal"/>
+	<field name="VOPCION3B" class="java.lang.String"/>
+	<field name="OPCION3C" class="java.math.BigDecimal"/>
+	<field name="VOPCION3C" class="java.lang.String"/>
+	<field name="OPCION4" class="java.math.BigDecimal"/>
+	<field name="VOPCION4" class="java.lang.String"/>
+	<field name="OPCION5" class="java.math.BigDecimal"/>
+	<field name="VOPCION5" class="java.lang.String"/>
+	<field name="OPCION6" class="java.math.BigDecimal"/>
+	<field name="VOPCION6" class="java.lang.String"/>
+	<field name="OPCION7" class="java.math.BigDecimal"/>
+	<field name="VOPCION7" class="java.lang.String"/>
+	<field name="OPCION8" class="java.math.BigDecimal"/>
+	<field name="VOPCION8" class="java.lang.String"/>
+	<field name="OPCION9" class="java.math.BigDecimal"/>
+	<field name="VOPCION9" class="java.lang.String"/>
+	<field name="OPCION10" class="java.math.BigDecimal"/>
+	<field name="VOPCION10" class="java.lang.String"/>
+	<field name="OPCION11" class="java.math.BigDecimal"/>
+	<field name="VOPCION11" class="java.lang.String"/>
+	<field name="CODCENTRO" class="java.math.BigDecimal"/>
+	<field name="CODDEPARTAMENTO_FISCAL" class="java.math.BigDecimal"/>
+	<field name="DEPARTAMENTO_FISCAL" class="java.lang.String"/>
+	<field name="CODPROVINCIA_FISCAL" class="java.math.BigDecimal"/>
+	<field name="PROVINCIA_FISCAL" class="java.lang.String"/>
+	<field name="CODDISTRITO_FISCAL" class="java.math.BigDecimal"/>
+	<field name="DISTRITO_FISCAL" class="java.lang.String"/>
+	<field name="CODDEPARTAMENTO_PREDIO" class="java.math.BigDecimal"/>
+	<field name="DEPARTAMENTO_PREDIO" class="java.lang.String"/>
+	<field name="CODPROVINCIA_PREDIO" class="java.math.BigDecimal"/>
+	<field name="PROVINCIA_PREDIO" class="java.lang.String"/>
+	<field name="CODDISTRITO_PREDIO" class="java.math.BigDecimal"/>
+	<field name="DISTRITO_PREDIO" class="java.lang.String"/>
+	<field name="CODAREA" class="java.math.BigDecimal"/>
+	<field name="NCODGERENCIA" class="java.math.BigDecimal"/>
+	<field name="AREA_ORIGEN" class="java.math.BigDecimal"/>
+	<field name="NESTADO" class="java.math.BigDecimal"/>
+	<field name="ESTADO" class="java.lang.String"/>
+	<field name="INDICADOR" class="java.math.BigDecimal"/>
+	<field name="DFECCRE" class="java.sql.Timestamp"/>
+	<field name="DFECACT" class="java.sql.Timestamp"/>
+	<field name="RESCRE" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="82" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Transparent" x="104" y="17" width="368" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[SOLICITUD DE CERTIFICADO DE FACTIBILIDAD DE SERVICIO PARA]]></text>
+			</staticText>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="518" y="59" width="37" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="8" width="104" height="46"/>
+				<imageExpression class="java.lang.String"><![CDATA["sedapal.jpg"]]></imageExpression>
+			</image>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="435" y="59" width="83" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="435" y="39" width="120" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="172" y="37" width="229" height="20" forecolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TIPO_SOLICITUD}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="11" y="54" width="128" height="20" forecolor="#003366"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_AREA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="563" splitType="Stretch">
+			<rectangle>
+				<reportElement key="2" x="0" y="2" width="555" height="560"/>
+			</rectangle>
+			<textField>
+				<reportElement x="356" y="22" width="195" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{URBANIZACION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="113" y="41" width="181" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DISTRITO_PREDIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="354" y="42" width="197" height="19"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{FICHA_REGISTRAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="113" y="62" width="181" height="19"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TIPO_SERVICIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="354" y="62" width="197" height="19"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{FECHA_INGRESO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="22" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Dirección :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="42" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Distrito :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="62" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Servicio Solicitado:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="22" width="44" height="20"/>
+				<textElement/>
+				<text><![CDATA[Urb.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="41" width="42" height="20"/>
+				<textElement/>
+				<text><![CDATA[Ficha :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="62" width="42" height="20"/>
+				<textElement/>
+				<text><![CDATA[Fecha :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="0" width="100" height="20" forecolor="#003366"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATOS DEL PREDIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="82" width="149" height="20" forecolor="#003366"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATOS GENERALES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="308" y="102" width="48" height="20"/>
+				<textElement/>
+				<text><![CDATA[DNI/RUC:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="246" y="141" width="48" height="20"/>
+				<textElement/>
+				<text><![CDATA[Telefono: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="142" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Distrito :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="102" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Nombre :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="122" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Dirección Fiscal :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="308" y="121" width="46" height="20"/>
+				<textElement/>
+				<text><![CDATA[Urb :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="387" y="142" width="36" height="20"/>
+				<textElement/>
+				<text><![CDATA[Email:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="104" y="121" width="190" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DIRECCION_FISCAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="104" y="102" width="190" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NOMBRE_CLIENTE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="356" y="102" width="100" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DNI_RUC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="104" y="141" width="142" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DISTRITO_FISCAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="356" y="122" width="195" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{URBANIZACION_FISCAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="296" y="144" width="91" height="17"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TELEFONO_FISCAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="423" y="144" width="128" height="17"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{EMAIL_FISCAL}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="248" y="221" width="48" height="20"/>
+				<textElement/>
+				<text><![CDATA[Telefono: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="162" width="200" height="20" forecolor="#003366"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATOS DEL REPRESENTANTE LEGAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="202" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Dirección :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="222" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Distrito :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="222" width="33" height="20"/>
+				<textElement/>
+				<text><![CDATA[Email:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="182" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Nombre    :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="182" width="48" height="20"/>
+				<textElement/>
+				<text><![CDATA[DNI:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="201" width="46" height="20"/>
+				<textElement/>
+				<text><![CDATA[Urb :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="104" y="222" width="142" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DISTRITO_LEGAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="104" y="202" width="190" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DIRECCION_LEGAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="104" y="182" width="190" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NOMBRE_LEGAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="358" y="182" width="114" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DNI_RUC_LEGAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="301" y="224" width="86" height="17"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TELEFONO_LEGAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="423" y="224" width="128" height="17"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{EMAIL_LEGAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="358" y="203" width="193" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{URBANIZACION_LEGAL}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="245" width="514" height="20"/>
+				<textElement/>
+				<text><![CDATA[Verificación de documentos para la obtención del Certificado de Factibilidad de Servicios]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="4" y="265" width="350" height="16" forecolor="#003366"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TIPO_SOLICITUD}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="4" y="281" width="499" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[1.- Ficha de Inscripcion de la Junta Directiva en los Registros Públicos o Representante Legal.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="301" width="499" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[2.- Copia simple del Título de propiedad del Terreno inscrito en los Registros Públicos y/o Resolución de]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="19" y="321" width="484" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[adjudicacion. Los Documentos deben indicar el area del terreno a habilitar o Ficha Registral Vigente del terreno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="341" width="499" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[3.- Memoria Descripctiva elaborada y firmada por el Ingeniero Sanitario Proyectista, en el cual se indique :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="19" y="361" width="484" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[a. La finalidad de la edificación (residencial multifamiliar, comercial, industrial)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="19" y="381" width="499" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[b. Cálculo hidráulico para determinar el diámetro de la(s) conexión(es) con los datos básicos de diseño y ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="19" y="401" width="499" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[    planeamiento general para los sistemas de agua potable y alcantarillado, considerando tiempo de]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="19" y="421" width="499" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[    llenado de la cisterna no memor a doce (12) horas.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="19" y="441" width="499" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[c. Número de suministro(s) - NIS de la(s) conexión(es) existente(s) de agua potable y la cantidad de]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="19" y="461" width="499" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[    conexiones de desague existentes.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="481" width="499" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[4.- Certificado Original de Habilidad del Colegio de Ingenieros del Perú.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="501" width="499" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[5.- Plano de Trazado y Lotización (anteproyecto).]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="521" width="499" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[6.- Plano Topográfico con curvas de nivel cada metros, elaborado a partir de un BM oficial del IGN o de Sedapal.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="541" width="499" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[7.- Pago por concepto de Certificado de Factibilidad de Servicios S/. (incluye IGV y todos los costos)]]></text>
+			</staticText>
+			<line>
+				<reportElement x="26" y="0" width="464" height="1"/>
+			</line>
+			<textField>
+				<reportElement x="113" y="21" width="181" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DIRECCION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="521" y="281" width="34" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VOPCION1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="521" y="301" width="34" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VOPCION2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="521" y="361" width="34" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VOPCION3A}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="521" y="421" width="34" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VOPCION3B}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="521" y="461" width="34" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VOPCION3C}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="521" y="481" width="34" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VOPCION4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="521" y="501" width="34" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VOPCION5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="521" y="521" width="34" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VOPCION6}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="521" y="541" width="34" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VOPCION7}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="280" width="551" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="162" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement x="4" y="80" width="551" height="1"/>
+			</line>
+			<line>
+				<reportElement x="4" y="240" width="551" height="1"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement x="56" y="12" width="212" height="20"/>
+				<textElement/>
+				<text><![CDATA[Firma del Propietario o Representante Legal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="328" y="12" width="162" height="20"/>
+				<textElement/>
+				<text><![CDATA[Firma del Ingeniero Proyectista]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="22" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="16" splitType="Stretch"/>
+	</summary>
+</jasperReport>

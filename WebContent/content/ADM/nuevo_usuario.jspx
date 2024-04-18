@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component" > 
+    <body>
+
+     <ice:form partialSubmit="true">
+     <ice:panelTabSet>
+     <ice:panelTab label="Usuarios">
+     <ice:panelGrid columns="1">
+       <ice:panelGrid columns="6">
+         <ice:commandButton
+              image="images/New.jpg"
+              style="height: 30px; width: 30px;"
+              value="Exportar"
+              title="Exportar a PDF"/>
+              <ice:outputLabel value="Nuevo" style="font-size:x-small"/>
+               <ice:commandButton
+              image="images/New.jpg"
+              style="height: 30px; width: 30px;"
+               value="Exportar"
+              title="Exportar a PDF"/>
+                <ice:outputLabel value="Imprimir" style="font-size:x-small"/>
+               <ice:commandButton
+              image="images/New.jpg"
+              style="height: 30px; width: 30px;"
+               value="Exportar"
+              title="Exportar a PDF "/>
+                <ice:outputLabel value="Ayuda" style="font-size:x-small"/>             		
+       </ice:panelGrid>
+       
+           </ice:panelGrid>
+           </ice:panelTab>
+            <ice:panelTab label="Usuarios">
+            </ice:panelTab>
+           </ice:panelTabSet>
+       </ice:form>
+ 
+    </body>
+</html>

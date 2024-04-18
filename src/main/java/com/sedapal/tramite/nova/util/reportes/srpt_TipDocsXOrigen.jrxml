@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="srpt_TipDocsXOrigen" language="groovy" pageWidth="285" pageHeight="85" whenNoDataType="AllSectionsNoDetail" columnWidth="285" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="P_AREA" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_FECHAINICIO" class="java.lang.String"/>
+	<parameter name="P_FECHAFIN" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT de.norigen codOrigen,
+       DECODE(de.norigen, 1, 'INTERNO',
+                          2, 'EXTERNO') descOrigen,
+       de.vtipodoc codTipDoc,
+       (SELECT t.vdescripcion
+          FROM tipo t
+         WHERE t.vcodtipo = de.vtipodoc) descTipDoc,
+       count(de.vtipodoc) cantTipDoc
+  FROM atd_doc_entr de
+ WHERE de.vestado != 'ESTA004'
+   AND trunc(de.dfeccre) BETWEEN to_date($P{P_FECHAINICIO}, 'dd-MM-yyyy') AND to_date($P{P_FECHAFIN}, 'dd-MM-yyyy')
+   AND EXISTS (SELECT di.ncodarea FROM atd_doc_entr_dirigido di WHERE di.nano = de.nano AND di.norigen=de.norigen AND di.ncorrelativo = de.ncorrelativo AND di.ncodarea= $P{P_AREA})
+GROUP BY de.norigen, de.vtipodoc
+ORDER BY 1, 3]]>
+	</queryString>
+	<field name="CODORIGEN" class="java.math.BigDecimal"/>
+	<field name="DESCORIGEN" class="java.lang.String"/>
+	<field name="CODTIPDOC" class="java.lang.String"/>
+	<field name="DESCTIPDOC" class="java.lang.String"/>
+	<field name="CANTTIPDOC" class="java.math.BigDecimal"/>
+	<variable name="totalTipDocs" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTTIPDOC}]]></variableExpression>
+	</variable>
+	<variable name="totalXOrigen" class="java.lang.Integer" resetType="Group" resetGroup="grpOrigen" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTTIPDOC}]]></variableExpression>
+	</variable>
+	<group name="grpOrigen">
+		<groupExpression><![CDATA[$F{CODORIGEN}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement x="0" y="0" width="285" height="20" forecolor="#003366"/>
+					<box rightPadding="5">
+						<pen lineWidth="0.5" lineColor="#003366"/>
+						<topPen lineWidth="0.5" lineColor="#003366"/>
+						<leftPen lineWidth="0.5" lineColor="#003366"/>
+						<bottomPen lineWidth="0.5" lineColor="#003366"/>
+						<rightPen lineWidth="0.5" lineColor="#003366"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["ORIGEN "+$F{DESCORIGEN}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement x="0" y="0" width="200" height="20" forecolor="#003366"/>
+					<box rightPadding="5">
+						<pen lineWidth="0.5" lineColor="#003366"/>
+						<topPen lineWidth="0.5" lineColor="#003366"/>
+						<leftPen lineWidth="0.5" lineColor="#003366"/>
+						<bottomPen lineWidth="0.5" lineColor="#003366"/>
+						<rightPen lineWidth="0.5" lineColor="#003366"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="11" isBold="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["TOTAL "+$F{DESCORIGEN}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="200" y="0" width="85" height="20"/>
+					<box>
+						<pen lineWidth="0.5" lineColor="#003366"/>
+						<topPen lineWidth="0.5" lineColor="#003366"/>
+						<leftPen lineWidth="0.5" lineColor="#003366"/>
+						<bottomPen lineWidth="0.5" lineColor="#003366"/>
+						<rightPen lineWidth="0.5" lineColor="#003366"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{totalXOrigen}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="200" height="20" forecolor="#000000"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.5" lineColor="#003366"/>
+					<topPen lineWidth="0.5" lineColor="#003366"/>
+					<leftPen lineWidth="0.5" lineColor="#003366"/>
+					<bottomPen lineWidth="0.5" lineColor="#003366"/>
+					<rightPen lineWidth="0.5" lineColor="#003366"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DESCTIPDOC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="200" y="0" width="85" height="20"/>
+				<box>
+					<pen lineWidth="0.5" lineColor="#003366"/>
+					<topPen lineWidth="0.5" lineColor="#003366"/>
+					<leftPen lineWidth="0.5" lineColor="#003366"/>
+					<bottomPen lineWidth="0.5" lineColor="#003366"/>
+					<rightPen lineWidth="0.5" lineColor="#003366"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{CANTTIPDOC}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="25" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement x="200" y="0" width="85" height="25"/>
+				<box>
+					<pen lineWidth="0.5" lineColor="#003366"/>
+					<topPen lineWidth="0.5" lineColor="#003366"/>
+					<leftPen lineWidth="0.5" lineColor="#003366"/>
+					<bottomPen lineWidth="0.5" lineColor="#003366"/>
+					<rightPen lineWidth="0.5" lineColor="#003366"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{totalTipDocs}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="200" height="25" forecolor="#003366"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.5" lineColor="#003366"/>
+					<topPen lineWidth="0.5" lineColor="#003366"/>
+					<leftPen lineWidth="0.5" lineColor="#003366"/>
+					<bottomPen lineWidth="0.5" lineColor="#003366"/>
+					<rightPen lineWidth="0.5" lineColor="#003366"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total General]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

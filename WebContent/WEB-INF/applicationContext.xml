@@ -1,0 +1,2170 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+>
+	
+	<context:component-scan base-package="com.sedapal.tramite" />
+	<aop:aspectj-autoproxy />
+	<!-- property -->
+	<!-- <context:property-placeholder location="classpath:com/sedapal/tramite/files/jdbc.properties" 
+		/> -->
+	<!-- inicio de configuracion de la ecriuptacion del password 16 mayo 2016 -->
+	
+	<bean id="environmentVariablesConfiguration"
+		class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig"
+	>
+		<property name="algorithm" value="PBEWithMD5AndDES" />
+		<property name="password" value="hiejhe" />
+	</bean>
+
+
+	<bean id="configurationEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+		<property name="config" ref="environmentVariablesConfiguration" />
+	</bean>
+
+
+	<bean id="propertyConfigurer"
+		class="org.jasypt.spring2.properties.EncryptablePropertyPlaceholderConfigurer"
+	>
+		<constructor-arg ref="configurationEncryptor" />
+		<property name="locations">
+			<list>
+				<value>classpath:com/sedapal/tramite/files/jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!-- fin de la encriptacion de clave de acceso -->
+
+	<!-- Configuracion de Correos -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"
+		p:host="${mail.Host}" p:defaultEncoding="UTF-8" />
+
+	<bean id="templateMessage" class="org.springframework.mail.SimpleMailMessage"
+		p:from="${mail.From}" p:subject="${mail.Titulo}" />
+
+	<bean id="mailConstante" class="com.sedapal.tramite.util.MailConstante"
+		p:sendTo="${mail.To}" p:sendCC="${mail.CC}" p:sendBCC="${mail.BCC}"
+		p:token="${mail.Token}" />
+	<!-- Configuracion de Correos -->
+
+	<!-- Ingreso de Logs -->
+	<bean id="mBeanDireccionip" class="com.sedapal.tramite.mbeans.MBeanDireccionIP"
+		lazy-init="true" scope="session"
+	>
+		<property name="usuariosDAO" ref="usuarioDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+	<!-- DAO SED-FON-161 -->
+	<bean id="credencialesApiDao" class="com.sedapal.tramite.dao.CredencialesApiDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedCredencialesBpmAPI" ref="storedCredencialesBpmAPI" /> 
+		<property name="storedRutasBpmAPI" ref="storedRutasBpmAPI" />
+	</bean>
+
+
+	<bean id="consultaDAO" class="com.sedapal.tramite.dao.ConsultaDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+
+	</bean>
+
+	<bean id="documentogerenciaDAO" class="com.sedapal.tramite.dao.DocumentoGerenciaDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedbusquedadocumentogerencia" ref="storedbusquedadocumentogerencia" />
+
+	</bean>
+
+
+
+
+
+
+	<!-- Salida de Logs -->
+
+	<!-- Managed Bean - Estadisticas de Doc. de Entrada -->
+	<bean id="mBeanEstadisticaDocEntrada" class="com.sedapal.tramite.mbeans.MBeanEstadisticasDocEntrada"
+		lazy-init="true" scope="session"
+	>
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="mBeanconsultaDocEntrada" class="com.sedapal.tramite.mbeans.MBeanConsultaDocEntrada"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosEntrante" ref="serviciosEntrante" />
+		<property name="entranteDAO" ref="entranteconsultaDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mBeanbusquedaseguimientoDocEntrada"
+		class="com.sedapal.tramite.mbeans.MBeanBusquedaSeguimientoDocEntrada"
+		lazy-init="true" scope="session">
+		<property name="serviciosEntrante" ref="serviciosEntrante" />
+		<property name="entranteDAO" ref="entranteconsultaDAO"></property>
+		<property name="mBeanEntrantes" ref="mBeanEntrantes"></property>
+		<property name="navigation" ref="navigation" />
+		<aop:scoped-proxy />
+	</bean>
+
+
+	<bean id="mBeanconsultaRegistroEntrada" class="com.sedapal.tramite.mbeans.MBeanConsultaRegistroEntrada"
+		lazy-init="true" scope="session">
+		<property name="serviciosEntrante" ref="serviciosEntrante" />
+		<property name="consultaregistroentradaDAO" ref="consultaregistroentradaDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mBeanconsultaConsultaDocExterno"
+		class="com.sedapal.tramite.mbeans.MBeanConsultaDocumentoExterno"
+		lazy-init="true" scope="session">
+		<property name="serviciosEntrante" ref="serviciosEntrante" />
+		<property name="consultaregistroentradaDAO" ref="consultaregistroentradaDAO"></property>		
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+	<!-- eli comenta 14/10/2014 -->
+	<bean id="mBeanseguimientoDocEntrada" class="com.sedapal.tramite.mbeans.MBeanseguimientoDocEntrada"
+		lazy-init="true" scope="session">
+		<property name="serviciosEntranteGrupo" ref="serviciosEntrantegrupo" />
+		<property name="entranteGrupoDAO" ref="entrantegrupoDAO"></property>
+		<property name="entrante" ref="entrantegrupoDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+	<bean id="mConsultas" class="com.sedapal.tramite.mbeans.MConsultas"
+		scope="session"
+	>
+		<property name="entranteDAO" ref="entranteDAO"></property>
+		<property name="reporte" ref="recursoReport"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mBeanEstadisticaEstadoExp" class="com.sedapal.tramite.mbeans.MBeanEstadisticasEstadoExp"
+		lazy-init="true" scope="session"
+	>
+		<property name="consultaDAO" ref="consultaDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<!-- Managed Bean - Estadisticas de Doc. de Entrada por Origen -->
+	<bean id="mBeanEstadisticaOrigenDocEntrada"
+		class="com.sedapal.tramite.mbeans.MBeanEstadisticasOrigenDocEntrada"
+		lazy-init="true" scope="session"
+	>
+		<property name="reporte" ref="recursoReport"></property>
+		<aop:scoped-proxy />
+	</bean>
+	<!-- Managed Bean - Secuenciales -->
+	<bean id="mBeanSecuenciales" class="com.sedapal.tramite.mbeans.MBeanSecuenciales"
+		lazy-init="true" scope="session">
+		<property name="secuencialDAO" ref="secuencialDAO"></property>
+		<property name="areaDAO" ref="areaDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+	<!-- Managed Bean - Jefes de Equipo -->
+	<bean id="mBeanJefesEquipo" class="com.sedapal.tramite.mbeans.MBeanJefesEquipo"
+		lazy-init="true" scope="session"
+	>
+		<property name="jefesEquipoDAO" ref="jefesEquipoDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+	<!-- DAO - Log/Bitacora de Corres enviados -->
+	<bean id="logMailDAO" class="com.sedapal.tramite.dao.LogMailDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
+	<!-- DAO - Estadisticas de Doc. de Entrada -->
+	<bean id="estadisticasDao" class="com.sedapal.tramite.dao.EstadisticasDAO">
+		<property name="storedResumenDocEntrantes" ref="storedResumenDocEntrantes" />
+		<property name="storedResumenMateriaExpedientes" ref="storedresumenmateriaexpedientes" />
+		<property name="storedresumenestados" ref="storedresumenestados" />
+		<property name="storedResumenporSituacionDoc" ref="storedResumenporSituacionDoc" />
+	</bean>
+
+	<!-- Stored Procedure - Estadisticas de Doc. de Entrada -->
+	<bean id="storedResumenDocEntrantes" class="com.sedapal.tramite.dao.StoredResumenDocEntrantes">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedResumenporSituacionDoc" class="com.sedapal.tramite.dao.StoredResumenPorSituacionDoc">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedresumenmateriaexpedientes" class="com.sedapal.tramite.dao.StoredResumenMateriaExpedientes">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedbusquedadocumentogerencia" class="com.sedapal.tramite.dao.StoredBusquedaDocumentoGerencia">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+	<bean id="storedresumenestados" class="com.sedapal.tramite.dao.StoredResumenEstados">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+	<!-- Managed Beans -->
+	<bean id="navigation" class="com.icesoft.icefaces.tutorial.facelets.NavigationBean"
+		scope="session"
+	>
+		<aop:scoped-proxy /> <!-- Necesario solo para request -->
+	</bean>
+	<bean id="treeNavigation" class="com.icesoft.icefaces.tutorial.facelets.TreeNavigation"
+		lazy-init="true" scope="session"
+	>
+		<aop:scoped-proxy />
+	</bean>
+
+	<!--
+	<bean id="paises" class="com.sedapal.tramite.mbeans.PaisesImpl"
+		scope="session"
+	>
+		<property name="navigation" ref="navigation" />
+		<property name="reporte" ref="recursoReport"></property>
+	</bean>
+	<bean id="mPais" class="com.sedapal.tramite.mbeans.MPais" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	-->
+	<!-- Managed Bean Agrega Eli -->
+	<!-- <managed-bean-name>SelectionBean</managed-bean-name> <managed-bean-class>com.icesoft.main.SelectionBean</managed-bean-class> 
+		<managed-bean> <managed-bean-name>selectManyCheckBoxBean</managed-bean-name> 
+		<managed-bean-class>net.javabeat.myfaces.checkbox.SelectManyCheckBoxBean</managed-bean-class> 
+		<managed-bean-scope>request</managed-bean-scope> </managed-bean> <navigation-case> 
+		<from-outcome>selectManyCheckBox</from-outcome> <to-view-id>/pages/checkbox/selectManyCheckBoxResult.jsp</to-view-id> 
+		</navigation-case> -->
+	<!-- <bean id="mBeanSelection" class="com.sedapal.tramite.mbeans.SelectionBean"> 
+		<aop:scoped-proxy /> </bean> -->
+
+	<!-- Managed Bean Agrega Eli -->
+	<bean id="mBeanSession" class="com.sedapal.tramite.mbeans.MBeanSession"
+		scope="session"
+	>
+		<aop:scoped-proxy />
+	</bean>
+
+
+	<!-- Managed Bean Agrega Eli Diaz -->
+	<bean id="mBeanEntrantes" class="com.sedapal.tramite.mbeans.MBeanEntrantes"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosEntrante" ref="serviciosEntrante" />
+		<property name="entranteDAO" ref="entranteDAO"></property>
+		<property name="mBeanSeguimiento" ref="mBeanSeguimiento"></property>				
+		<property name="serviciosseguimientoentrante" ref="serviciosseguimientoentrante"></property>
+		<property name="mCarga" ref="mCarga"></property>		
+		<property name="reporte" ref="recursoReport"></property>
+		<property name="treeController" ref="treeController"></property>
+		<property name="secuencialDAO" ref="secuencialDAO"></property>
+		<property name="reportes" ref="recursoReporte"></property>
+		<property name="reporteNuevo" ref="recursoReporteNuevo"></property>
+		<!-- <property name="reportenuevo" ref="recursoReporteNuevo"></property> -->
+		<aop:scoped-proxy />
+	</bean>
+
+	<!-- Managed Bean Agrega Eli Diaz -->
+	<bean id="mBeanEntrantesDerivado" class="com.sedapal.tramite.mbeans.MBeanEntrantesDerivado"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosEntrante" ref="serviciosEntranteDerivado" />
+		<property name="entranteDerivadoDAO" ref="entranteDerivadoDAO"></property>
+		<property name="mBeanSeguimiento" ref="mBeanSeguimiento"></property>
+		<property name="serviciosseguimientoentrante" ref="serviciosseguimientoentrante"></property>
+		<property name="mCarga" ref="mCarga"></property>
+		<property name="reporte" ref="recursoReport"></property>
+		<property name="treeControllerDerivador" ref="treeControllerDerivador"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mBeanGerencial" class="com.sedapal.tramite.mbeans.MBeanGerencial"
+		lazy-init="true" scope="session"
+	>
+		<property name="reportegerenciaDAO" ref="reportegerencialDAO"></property>
+		<property name="reportes" ref="recursoReporte"></property>
+		<property name="reporteNuevo" ref="recursoReporteNuevo"></property>
+
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mBeanEstadisticaGerenciasles" class="com.sedapal.tramite.mbeans.MBeanEstadisticasGerenciales"
+		lazy-init="true" scope="session"
+	>
+		<property name="consultaDAO" ref="consultaDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mBeanDocumentoGerencial" class="com.sedapal.tramite.mbeans.MBeanDocumentoGerencial"
+		lazy-init="true" scope="session"
+	>
+		<property name="documentogerenciaDAO" ref="documentogerenciaDAO"></property>
+		<property name="reportes" ref="recursoReporte"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<!-- Managed Bean Agrega Eli Diaz 25 mayo 2011 -->
+	<bean id="mBeanEntrantesGrupo" class="com.sedapal.tramite.mbeans.MBeanEntrantesGrupo"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosEntranteGrupo" ref="serviciosEntrantegrupo" />
+		<property name="entranteGrupoDAO" ref="entrantegrupoDAO"></property>
+		<property name="mBeanSeguimiento" ref="mBeanSeguimiento"></property>
+		<property name="serviciosseguimientoentrante" ref="serviciosseguimientoentrante"></property>
+		<property name="mCarga" ref="mCarga"></property>
+		<property name="reporte" ref="recursoReport"></property>
+		<property name="treeController" ref="treeController"></property>
+		<property name="secuencialDAO" ref="secuencialDAO"></property>
+		<property name="reportes" ref="recursoReporte"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mBeanEntrantesGerencias" class="com.sedapal.tramite.mbeans.MBeanEntrantesGerencias"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosEntranteGerencias" ref="serviciosEntranteGerencias" />
+		<property name="entranteGerenciasDAO" ref="entranteGerenciasDAO"></property>
+		<property name="mBeanSeguimientogerencias" ref="mBeanSeguimientogerencias"></property>
+		<property name="serviciosseguimientoentrantegerencia" ref="serviciosseguimientoentrantegerencia"></property>
+		<property name="mCarga" ref="mCarga"></property>
+		<property name="reporte" ref="recursoReport"></property>
+		<property name="treeController" ref="treeController"></property>
+		<property name="secuencialDAO" ref="secuencialDAO"></property>
+		<property name="reportes" ref="recursoReporte"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+	<!-- Managed Bean Agrega Eli -->
+	<bean id="mBeandocumentosalida" class="com.sedapal.tramite.mbeans.MBeanDocumentosSalientes"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosDocumentoSalida" ref="serviciosdocumentosaliente" />
+		<property name="documentoSalidaDAO" ref="documentosalidaDAO"></property>
+		<property name="mCarga" ref="mCarga"></property>
+		<property name="reporte" ref="recursoReport"></property>
+		<property name="secuencialDAO" ref="secuencialDAO"></property>
+		<property name="entranteDAO" ref="entranteDAO"></property>
+		<property name="reporteNuevo" ref="recursoReporteNuevo"></property>
+		<property name="serviciosAPI" ref="serviciosAPI"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+	<!-- Managed Bean Agrega Eli -->
+	<bean id="mBeanEntrantesMesa" class="com.sedapal.tramite.mbeans.MBeanEntrantesMesa"
+		lazy-init="true" scope="session"	>
+		<property name="serviciosEntranteMesa" ref="serviciosEntranteMesa" />
+		<property name="entranteMesaDAO" ref="entrantemesaDAO"></property>
+		<property name="mCarga" ref="mCarga"></property>
+		<property name="reporte" ref="recursoReport"></property>
+		<property name="treeControllerMesa" ref="treeControllerMesa"></property>
+		<property name="secuencialDAO" ref="secuencialDAO"></property>
+		<property name="navigation" ref="navigation" />
+		<property name="reportes" ref="recursoReporte"></property>
+		<property name="reporteNuevo" ref="recursoReporteNuevo"></property>
+		<aop:scoped-proxy />
+	</bean>
+	
+	<!-- Managed Bean Agrega Eli Linea Digital 26/05/2021 -->
+	<bean id="mBeanEntrantesMesaLinea" class="com.sedapal.tramite.mbeans.MBeanEntrantesMesaLinea"
+		lazy-init="true" scope="session"	>
+		<property name="serviciosentrantemesalinea" ref="serviciosEntranteMesaLinea" />
+		<property name="entranteMesalineaDAO" ref="entrantemesalineaDAO"></property>
+		<property name="mCarga" ref="mCarga"></property>
+		<property name="reporte" ref="recursoReport"></property>
+		<property name="treeControllerMesa" ref="treeControllerMesa"></property>
+		<property name="secuencialDAO" ref="secuencialDAO"></property>
+		<property name="navigation" ref="navigation" />
+		<property name="reportes" ref="recursoReporte"></property>
+		<property name="reporteNuevo" ref="recursoReporteNuevo"></property>
+		<aop:scoped-proxy />
+	</bean>
+	
+	
+	
+	
+	<!-- Managed Bean Agrega Eli 03/07/2020 -->
+	<bean id="mBeanEntrantesMesaVirtual" class="com.sedapal.tramite.mbeans.MBeanEntrantesMesaVirtual"
+		lazy-init="true" scope="session">
+		<property name="serviciosEntranteMesaVirtual" ref="serviciosEntranteMesaVirtual" />
+		<property name="entranteMesaVirtualDAO" ref="entrantemesavirtualDAO"></property>		
+		<property name="mCarga" ref="mCarga"></property>		
+		<property name="secuencialDAO" ref="secuencialDAO"></property>
+		<property name="navigation" ref="navigation" />	
+		<property name="reporteNuevo" ref="recursoReporteNuevo"></property>	
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="mBeanConsultaEntrantesMesaVirtual" class="com.sedapal.tramite.mbeans.MBeanConsultaEntrantesMesaVirtual"
+		lazy-init="true" scope="session">
+		<property name="serviciosEntranteMesaVirtual" ref="serviciosEntranteMesaVirtual" />
+		<property name="entranteMesaVirtualDAO" ref="entrantemesavirtualDAO"></property>		
+		<property name="mCarga" ref="mCarga"></property>		
+		<property name="secuencialDAO" ref="secuencialDAO"></property>
+		<property name="navigation" ref="navigation" />	
+		<property name="reporteNuevo" ref="recursoReporteNuevo"></property>	
+		<property name="reportes" ref="recursoReporte"></property>
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="mBeanTiempoAtencionEntrantesMesa" class="com.sedapal.tramite.mbeans.MBeanTiempoAtencionEntrantesMesa"
+		lazy-init="true" scope="session">
+		<property name="serviciosEntranteMesaVirtual" ref="serviciosEntranteMesaVirtual" />
+		<property name="entranteMesaVirtualDAO" ref="entrantemesavirtualDAO"></property>		
+		<property name="navigation" ref="navigation" />	
+		<property name="reporteNuevo" ref="recursoReporteNuevo"></property>	
+		<property name="reportes" ref="recursoReporte"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<!-- Managed Bean Agrega Eli -->
+	<bean id="mBeanSeguimiento" class="com.sedapal.tramite.mbeans.MBeanSegDocuEntrates"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosseguimientoDocuEntrante" ref="serviciosseguimientoentrante" />
+		<property name="seguimientodocumentoDAO" ref="seguimientoDAO"></property>
+		<property name="mCarga" ref="mCarga"></property>
+		<property name="secuencialDAO" ref="secuencialDAO"></property>
+		<property name="mBeanEntrantes" ref="mBeanEntrantes"></property>
+		<property name="mBeanEntrantesGrupo" ref="mBeanEntrantesGrupo"></property>
+		<!-- <property name="mBeanEntrantesGerencias" ref="mBeanEntrantesGerencias"></property> -->
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mBeanSeguimientogerencias"
+		class="com.sedapal.tramite.mbeans.MBeanSegDocuEntratesGerencias"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosseguimientoDocuEntrantegerencia"
+			ref="serviciosseguimientoentrantegerencia" />
+		<property name="seguimientodocumentogerenciasDAO" ref="seguimientodocumentogerenciasDAO"></property>
+		<property name="mCarga" ref="mCarga"></property>
+		<property name="secuencialDAO" ref="secuencialDAO"></property>
+		<!--<property name="mBeanEntrantes" ref="mBeanEntrantes"></property> -->
+		<!-- <property name="mBeanEntrantesGrupo" ref="mBeanEntrantesGrupo"></property> -->
+		<property name="mBeanEntrantesGerencias" ref="mBeanEntrantesGerencias"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+
+
+	<bean id="mBeanRepresentante" class="com.sedapal.tramite.mbeans.MBeanRepresentantante"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosrepresentante" ref="serviciosrepresentante" />
+		<property name="representanteDAO" ref="representanteDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+	<!-- Managed Bean Agrega Eli -->
+	<bean id="mBeanPerfiles" class="com.sedapal.tramite.mbeans.MBeanPerfiles"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosPerfil" ref="serviciosPerfil" />
+		<property name="perfilDAO" ref="perfilDAO"></property>
+		<property name="reporte" ref="recursoReport"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<!-- Managed Bean Agrega Eli -->
+	<bean id="mBeanFeriados" class="com.sedapal.tramite.mbeans.MBeanFeriados"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosFeriado" ref="serviciosFeriado" />
+		<property name="feriadoDAO" ref="feriadoDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+	<!-- Managed Bean Agrega Eli -->
+	<bean id="mBeanAreas" class="com.sedapal.tramite.mbeans.MBeanAreas"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosArea" ref="serviciosArea" />
+		<property name="areaDAO" ref="areaDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<!-- Managed Bean Agrega Eli -->
+	<bean id="mBeanResumen" class="com.sedapal.tramite.mbeans.MBeanResumen"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosResumen" ref="serviciosResumen" />
+		<property name="resumenDAO" ref="resumenDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="mBeanPassword" class="com.sedapal.tramite.mbeans.MBeanPassword"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosPassword" ref="serviciosPassword" />
+		<property name="passwordDAO" ref="passwordDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mBeanCentro" class="com.sedapal.tramite.mbeans.MBeanCentro"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosCentro" ref="serviciosCentro" />
+		<property name="centroDAO" ref="centroDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="mBeanTrabajador" class="com.sedapal.tramite.mbeans.MBeanTrabajador"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosTrabajador" ref="serviciosTrabajador" />
+		<property name="trabajadorDAO" ref="trabajadorDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<!-- Managed Bean Agrega Eli -->
+
+	<bean id="mBeanTipos" class="com.sedapal.tramite.mbeans.MBeanTipos"
+		lazy-init="true" scope="session">
+		<property name="serviciosTipos" ref="serviciosTipos" />
+		<property name="tiposDAO" ref="tipoDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="mBeanRemitentebpm" class="com.sedapal.tramite.mbeans.MBeanRemitenteBPM"
+		lazy-init="true" scope="session">
+		<property name="serviciosremitentebpm" ref="ServiciosRemitentebpm" />
+		<property name="remitentebpmDAO" ref="remitentebpmDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+	
+	
+
+	<bean id="mBeanCorrelativos" class="com.sedapal.tramite.mbeans.MBeanCorrelativos"
+		lazy-init="true" scope="session">
+		<property name="servicioscorrelativos" ref="servicioscorrelativos" />
+		<property name="correlativosDAO" ref="correlativosDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mBeanAsuntos" class="com.sedapal.tramite.mbeans.MBeanAsuntos"
+		lazy-init="true" scope="session"
+	>
+		<property name="servicioAsunto" ref="servicioAsunto" />
+		<property name="asuntoDAO" ref="asuntoDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+	<bean id="mBeanGrupos" class="com.sedapal.tramite.mbeans.MBeanGrupos"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosGrupos" ref="serviciosGrupos" />
+		<property name="grupoDAO" ref="grupoDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<!-- Managed Bean Agrega Eli -->
+	<bean id="mBeanAccion" class="com.sedapal.tramite.mbeans.MBeanAccion"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosAccion" ref="serviciosAccion" />
+		<property name="accionDAO" ref="accionDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+	<!-- Managed Bean Agrega Eli -->
+	<bean id="mBeanRemitente" class="com.sedapal.tramite.mbeans.MBeanRemitente"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosRemitente" ref="serviciosRemitente" />
+		<property name="remitenteDAO" ref="remitenteDAO"></property>
+		<property name="mBeanRepresentantante" ref="mBeanRepresentante"></property>
+		<property name="serviciosRepresentante" ref="serviciosrepresentante"></property>
+		<aop:scoped-proxy />
+	</bean>
+	<!-- Managed Bean Agrega Eli -->
+	<bean id="mBeanUsers" class="com.sedapal.tramite.mbeans.MBeanUsers"
+		lazy-init="true" scope="session"
+	>
+		<property name="serviciosUsers" ref="serviciosUsers" />
+		<property name="usersDAO" ref="usersDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+
+	<!-- Mensajeria Alertas -->
+	<bean id="renderManager" class="com.icesoft.faces.async.render.RenderManager"
+		scope="singleton" />
+	<bean id="mMensajeria" class="com.sedapal.tramite.mbeans.MMensajeria"
+		scope="session"
+	>
+		<property name="renderManager" ref="renderManager" />
+		<property name="navigation" ref="navigation" />
+		<property name="mBeanEntrantes" ref="mBeanEntrantes" />
+		<property name="entranteDAO" ref="entranteDAO" />
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mCarga" class="com.sedapal.tramite.mbeans.MCarga" scope="session">
+		<property name="secuencialDAO" ref="secuencialDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mopenpdf" class="com.sedapal.tramite.util.pdfopen"
+		scope="request"
+	>
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="mLogin" class="com.sedapal.tramite.mbeans.MLogin" scope="session">
+		<property name="serviciosUsuarios" ref="serviciosUsuarios" />
+		<property name="logmailDAO" ref="logmailDAO" />
+		<property name="usuarioDAO" ref="usuarioDAO" />		
+		<property name="navigation" ref="navigation" />
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="treeController" class="com.sedapal.tramite.tree.TreeController"
+		lazy-init="true" scope="session"
+	>
+		<property name="treeViewDAO" ref="treeViewDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="treeControllerDerivador" class="com.sedapal.tramite.tree.TreeControllerDerivador"
+		lazy-init="true" scope="session"
+	>
+		<property name="treeViewDAO" ref="treeViewDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+
+	<bean id="treeControllerMesa" class="com.sedapal.tramite.tree.TreeControllerMesa"
+		lazy-init="true" scope="session"
+	>
+		<property name="treeViewDAO" ref="treeViewDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<!-- Servicios -->
+	<!-- Servicios Agrega Eli Diaz -->
+	<bean id="serviciosEntrante" class="com.sedapal.tramite.servicios.ServiciosEntrante">
+		<property name="entranteDAO" ref="entranteDAO" />
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="serviciosEntrantegrupo" class="com.sedapal.tramite.servicios.ServiciosEntranteGrupo">
+		<property name="entranteGrupoDAO" ref="entrantegrupoDAO" />
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="serviciosEntranteGerencias"
+		class="com.sedapal.tramite.servicios.ServiciosEntranteGerencias"
+	>
+		<property name="entranteGerenciasDAO" ref="entranteGerenciasDAO" />
+		<aop:scoped-proxy />
+	</bean>
+
+	<!-- Servicios SED-FON-161 -->
+	<bean id="serviciosAPI" class="com.sedapal.tramite.servicios.ServiciosAPI">
+		<property name="credencialesApiDao" ref="credencialesApiDao"></property>
+		<property name="entranteDAO" ref="entranteDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+
+	<!-- Servicios Agrega Eli Diaz -->
+	<bean id="serviciosTreeView" class="com.sedapal.tramite.servicios.ServiciosTreeView">
+		<property name="treeViewDAO" ref="treeViewDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="serviciosEntranteDerivado" class="com.sedapal.tramite.servicios.ServiciosEntranteDerivado">
+		<property name="entranteDerivadoDAO" ref="entranteDerivadoDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	<!-- Servicios Agrega Eli Diaz -->
+	<bean id="serviciosEntranteMesa" class="com.sedapal.tramite.servicios.ServiciosEntranteMesa">
+		<property name="entrantemesaDAO" ref="entrantemesaDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="serviciosEntranteMesaLinea" class="com.sedapal.tramite.servicios.ServiciosEntranteMesaLinea">
+		<property name="entrantemesalineaDAO" ref="entrantemesalineaDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="serviciosEntranteMesaVirtual" class="com.sedapal.tramite.servicios.ServiciosEntranteMesaVirtual">
+		<property name="entrantemesavirtualDAO" ref="entrantemesavirtualDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	
+	<!-- Servicios Agrega Eli Diaz -->
+	<bean id="serviciosseguimientoentrante"
+		class="com.sedapal.tramite.servicios.ServiciosSeguimientoEntrante"
+	>
+		<property name="seguimientoEntranteDAO" ref="seguimientoDAO" />
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+	<bean id="serviciosseguimientoentrantegerencia"
+		class="com.sedapal.tramite.servicios.ServiciosSeguimientoEntranteGerencia"
+	>
+		<property name="seguimientoEntranteGerenciasDAO" ref="seguimientodocumentogerenciasDAO" />
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+	<!-- Servicios Agrega Eli Diaz -->
+	<bean id="serviciosPerfil" class="com.sedapal.tramite.servicios.ServiciosPerfil">
+		<property name="perfilDAO" ref="perfilDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="serviciosFeriado" class="com.sedapal.tramite.servicios.ServiciosFeriado">
+		<property name="feriadoDAO" ref="feriadoDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="serviciosrepresentante" class="com.sedapal.tramite.servicios.ServiciosRepresentante">
+		<property name="representanteDAO" ref="representanteDAO" />
+		<aop:scoped-proxy />
+	</bean>
+
+
+	<bean id="serviciosArea" class="com.sedapal.tramite.servicios.ServiciosArea">
+		<property name="areaDAO" ref="areaDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="serviciosResumen" class="com.sedapal.tramite.servicios.ServiciosResumen">
+		<property name="resumenDAO" ref="resumenDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="serviciosPassword" class="com.sedapal.tramite.servicios.ServiciosPassword">
+		<property name="passwordDAO" ref="passwordDAO" />
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="serviciosCentro" class="com.sedapal.tramite.servicios.ServiciosCentro">
+		<property name="centroDAO" ref="centroDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="serviciosTrabajador" class="com.sedapal.tramite.servicios.ServiciosTrabajador">
+		<property name="trabajadorDAO" ref="trabajadorDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="serviciosTipos" class="com.sedapal.tramite.servicios.ServiciosTipos">
+		<property name="tipoDAO" ref="tipoDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="ServiciosRemitentebpm" class="com.sedapal.tramite.servicios.ServiciosRemitenteBPM">
+		<property name="remitentebpmDAO" ref="remitentebpmDAO" />
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="servicioscorrelativos" class="com.sedapal.tramite.servicios.ServiciosCorrelativos">
+		<property name="correlativosDAO" ref="correlativosDAO" />
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+
+	<bean id="servicioAsunto" class="com.sedapal.tramite.servicios.ServiciosAsunto">
+		<property name="asuntoDAO" ref="asuntoDAO" />
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+
+	<bean id="serviciosGrupos" class="com.sedapal.tramite.servicios.ServiciosGrupos">
+		<property name="gruposDAO" ref="grupoDAO" />
+		<aop:scoped-proxy />
+	</bean>
+
+
+	<bean id="serviciosAccion" class="com.sedapal.tramite.servicios.ServiciosAccion">
+		<property name="accionDAO" ref="accionDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="serviciosRemitente" class="com.sedapal.tramite.servicios.ServiciosRemitente">
+		<property name="remitenteDAO" ref="remitenteDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="serviciosUsers" class="com.sedapal.tramite.servicios.ServiciosUsers">
+		<property name="usersDAO" ref="usersDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="serviciosdocumentosaliente" class="com.sedapal.tramite.servicios.ServiciosDocumentoSalida">
+		<property name="documentoSalidaDAO" ref="documentosalidaDAO" />
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="serviciosUsuarios" class="com.sedapal.tramite.servicios.ServiciosUsuarios">
+		<property name="usuariosDAO" ref="usuarioDAO"></property>
+		<property name="logMailDAO" ref="logMailDAO"></property>
+		<property name="entranteDAO" ref="entranteDAO"></property>
+		<aop:scoped-proxy />
+	</bean>
+
+	<!-- DAO -->
+	<bean id="treeViewDAO" class="com.sedapal.tramite.dao.TreeViewDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
+	<bean id="secuencialDAO" class="com.sedapal.tramite.dao.SecuencialDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedSecuenciaAdjunto" ref="storedSecuenciaAdjunto" />
+		<property name="storedListadoSecuenciales" ref="storedListadoSecuenciales" />
+		<property name="storedListadoTipoDocumentos" ref="storedListadoTipoDocumentos" />
+		<property name="storedNuevoSecuencial" ref="storedNuevoSecuencial" />
+		<property name="storedValidacionSecuencial" ref="storedValidacionSecuencial" />
+		<property name="storedActualizarSecuencial" ref="storedActualizarSecuencial" />
+		<property name="storedEliminarSecuencial" ref="storedEliminarSecuencial" />
+	</bean>
+	<bean id="jefesEquipoDAO" class="com.sedapal.tramite.dao.JefesEquipoDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="spActualizarJefesEquipo" ref="spActualizarJefesEquipo" />
+		<property name="spObtenerJefesEquipo" ref="spObtenerJefesEquipo" />
+	</bean>
+	<bean id="entranteDAO" class="com.sedapal.tramite.dao.EntranteDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedEntrantes" ref="storedEntrantes" />
+		<property name="storedNuevoEnt" ref="storedNuevoEnt" />
+		<property name="storedFiltrosEnt" ref="storedFiltroEnt" />
+		<property name="storedActualizarEnt" ref="storedActualizarEnt" />
+		<property name="storedEliminarEnt" ref="storedEliminarEnt" />
+		<property name="storedbusquedaentrante" ref="storedBusquedaEntrantes" />
+		<property name="storedDocumentosDerivados" ref="storedDocumentosDerivados" />
+		<property name="storedCombo" ref="storedCombo" />
+		<property name="storedremitentessp" ref="storedremitentessp" />
+		<property name="storedbusquedaseguimientodocumentos" ref="storedbusquedaseguimientodocumentos" />
+		<property name="storedalertaentrante" ref="storedalertaentrante" />
+		<property name="storedlistaasuntopopub" ref="storedlistaasuntopopub" />
+		<property name="storedbusquedaasuntos" ref="storedbusquedaasuntos" />
+		<property name="storedenvioemail" ref="storedenvioemail" />
+		<property name="storedGetRemitentesBPM" ref="storedGetRemitentesBPM" /> <!-- SED-FON-161 -->
+		<property name="storedNewRemitentesBPM" ref="storedNewRemitentesBPM" /> <!-- SED-FON-161 -->
+		<property name="storedGetAreasByNombre" ref="storedGetAreasByNombre" /> <!-- SED-FON-161 -->
+	</bean>
+
+	<bean id="entranteconsultaDAO" class="com.sedapal.tramite.dao.EntranteDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedconsultadocentrantes" ref="storedconsultadocentrantes" />
+		<property name="storedconsultadocentrantesseg" ref="storedconsultadocentrantesseg" />
+		<property name="storedbusquedaseguimientodocentrantes" ref="storedbusquedaseguimientodocentrantes" />
+		<property name="storedactualizarlineadigitalizacionEnt" ref="storedactualizarlineadigitalizacionEnt" />
+	</bean>
+
+	<bean id="logmailDAO" class="com.sedapal.tramite.dao.LogMailDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storednuevoemail" ref="storednuevoemail" />
+	</bean>
+
+
+
+
+	<bean id="reportegerencialDAO" class="com.sedapal.tramite.dao.ReporteGerenciaDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedbusquedagerenciaportrabajador" ref="storedbusquedagerenciaportrabajador" />
+		<property name="storedbusquedagerenciaporequipo" ref="storedbusquedagerenciaporequipo" />
+		<property name="storedbusquedagerenciaporGDI" ref="storedbusquedagerenciaporGDI" />
+		<!-- <property name="storedconsultadocentrantesseg" ref="storedconsultadocentrantesseg" 
+			/> -->
+		<!-- <property name="storedbusquedaregdocentrantes" ref="storedbusquedaregdocentrantes" 
+			/> -->
+		<!-- <property name="storedbusquedaregentrantesseg" ref="storedbusquedaregentrantesseg" 
+			/> -->
+	</bean>
+
+
+	<bean id="consultaregistroentradaDAO" class="com.sedapal.tramite.dao.ConsultaRegistroEntradaDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedbusquedaregdocentrantes" ref="storedbusquedaregdocentrantes" />
+		<property name="storedbusquedadocumentosexternos" ref="storedbusquedadocumentosexternos" />
+	</bean>
+
+	<bean id="seguimientoentranteDAO" class="com.sedapal.tramite.dao.EntranteDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedconsultadocentrantes" ref="storedconsultadocentrantes" />
+	</bean>
+
+
+	<bean id="entrantegrupoDAO" class="com.sedapal.tramite.dao.EntranteGrupoDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedEntrantesGrupo" ref="storedEntrantesGrupo" />
+		<property name="storedNuevoEnt" ref="storedNuevoEnt" />
+		<property name="storedfiltrosentgrupo" ref="storedfiltrosentgrupo" />
+		<property name="storedActualizarEnt" ref="storedActualizarEnt" />
+		<property name="storedEliminarEnt" ref="storedEliminarEnt" />
+		<property name="storedbusquedaentranteGrupo" ref="storedBusquedaEntrantesgrupo" />
+		<property name="storedDocumentosDerivados" ref="storedDocumentosDerivados" />
+		<property name="storedCombo" ref="storedCombo" />
+		<property name="storedConsultasegdocentrantes" ref="storedConsultasegdocentrantes" />
+		<property name="storedremitentessp" ref="storedremitentessp" />
+		<property name="storedalertaentrante" ref="storedalertaentrante" />
+		<property name="storedlistaasuntopopub" ref="storedlistaasuntopopub" />
+		<property name="storedbusquedaasuntos" ref="storedbusquedaasuntos" />
+	</bean>
+
+	<bean id="entranteGerenciasDAO" class="com.sedapal.tramite.dao.EntranteGerenciasDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedEntrantesGerencias" ref="storedEntrantesGerencias" />
+		<property name="storedNuevoEnt" ref="storedNuevoEnt" />
+		<property name="storedActualizarEnt" ref="storedActualizarEnt" />
+		<property name="storedEliminarEnt" ref="storedEliminarEnt" />
+		<property name="storedbusquedaentranteGerencias" ref="storedBusquedaEntrantesgerencias" />
+		<property name="storedDocumentosDerivados" ref="storedDocumentosDerivados" />
+		<property name="storedCombo" ref="storedCombo" />
+		<property name="storedConsultasegdocentrantes" ref="storedConsultasegdocentrantes" />
+		<property name="storedremitentessp" ref="storedremitentessp" />
+	</bean>
+
+
+
+
+
+	<bean id="entranteDerivadoDAO" class="com.sedapal.tramite.dao.EntranteDerivadoDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedEntrantes" ref="storedEntrantesDerivado" />
+		<property name="storedNuevoEnt" ref="storedNuevoEntDerivado" />
+		<property name="storedFiltrosEnt" ref="storedFiltroEntDerivado" />
+		<property name="storedActualizarEnt" ref="storedActualizarEntDerivado" />
+		<property name="storedEliminarEnt" ref="storedEliminarEntDerivado" />
+		<property name="storedbusquedaentrante" ref="storedBusquedaEntrantesDerivado" />
+	</bean>
+	<bean id="entrantemesaDAO" class="com.sedapal.tramite.dao.EntranteMesaDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedEntrantesmesa" ref="storedEntrantesmesa" />
+		<property name="storednuevodocumentoentradamesa" ref="storedNuevoEntmesa" />
+		<property name="storedFiltrosEnt" ref="storedFiltroEntMesa" />
+		<property name="storedbusquedaentrantemesa" ref="storedBusquedaEntrantesmesa" />
+		<property name="storedActualizarEntMesa" ref="storedActualizarEntMesa" />
+		<property name="storedEliminarEntMesa" ref="storedEliminarEntMesa" />
+		<property name="storedCombo" ref="storedCombo" />
+		<property name="storedremitentessp" ref="storedremitentessp" />
+		<property name="storedlistaasuntopopub" ref="storedlistaasuntopopub" />
+		<property name="storedbusquedaasuntos" ref="storedbusquedaasuntos" />
+	</bean>
+	
+	
+	
+	<bean id="entrantemesalineaDAO" class="com.sedapal.tramite.dao.EntranteMesaLineaDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedentrantesmesalinea" ref="storedentrantesmesalinea" />
+		<property name="storednuevodocumentoentradamesa" ref="storedNuevoEntmesa" />
+		<property name="storedFiltrosEnt" ref="storedFiltroEntMesa" />
+		<property name="storedbusquedaentrantemesalinea" ref="storedbusquedaentrantemesalinea" />
+		<property name="storedActualizarEntMesa" ref="storedActualizarEntMesa" />
+		<property name="storedEliminarEntMesa" ref="storedEliminarEntMesa" />
+		<property name="storedCombo" ref="storedCombo" />
+		<property name="storedremitentessp" ref="storedremitentessp" />
+		<property name="storedlistaasuntopopub" ref="storedlistaasuntopopub" />
+		<property name="storedbusquedaasuntos" ref="storedbusquedaasuntos" />
+	</bean>
+	
+	<bean id="entrantemesavirtualDAO" class="com.sedapal.tramite.dao.EntranteMesaVirtualDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedEntrantesmesavirtual" ref="storedEntrantesmesavirtual" />
+		<property name="storedfiltrosentmesavirtual" ref="storedfiltrosentmesavirtual" />
+		<property name="storedbusquedaentrantemesavirtual" ref="storedbusquedaentrantemesavirtual" />
+		<property name="storedactualizarentmesavirtual" ref="storedactualizarentmesavirtual" />
+		<property name="storedeliminarentmesavirtual" ref="storedeliminarentmesavirtual" />
+		<property name="storedCombo" ref="storedCombo" />
+		<property name="storedremitentessp" ref="storedremitentessp" />	
+		<property name="storedconsultaentrantesmesavirtual" ref="StoredConsultaEntrantesMesaVirtual" />
+		<property name="storedatencionentrantesMesa" ref="StoredAtencionEntrantesMesa" />	
+	</bean>
+
+	<bean id="seguimientoDAO" class="com.sedapal.tramite.dao.SeguimientoEntranteDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedseguimientoentrante" ref="storedSeguimiento" />
+		<property name="storedActualizarSeguimiento" ref="storedActualizarSeguimiento" />
+		<property name="storedBusqueda" ref="storedbusquedaseguimiento" />
+		<property name="storedfiltrossegent" ref="storedfiltrossegent" />
+		<property name="storedBuscar" ref="storedbuscar" />
+		<property name="storednuevoseguimiento" ref="storednuevoseguimientos" />
+		<property name="storedeliminarseguimiento" ref="storedeliminarseguimiento" />
+		<!-- <property name="storedBusqueda" ref="storedBusqueda" /> -->
+	</bean>
+
+	<bean id="seguimientodocumentogerenciasDAO" class="com.sedapal.tramite.dao.SeguimientoEntranteGerenciasDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedseguimientoentrantegerencias" ref="storedseguimientoentrantegerencias" />
+		<property name="storedActualizarSeguimiento" ref="storedActualizarSeguimiento" />
+		<property name="storedBusqueda" ref="storedbusquedaseguimiento" />
+		<property name="storedfiltrossegent" ref="storedfiltrossegent" />
+		<property name="storedBuscar" ref="storedbuscar" />
+		<property name="storednuevoseguimiento" ref="storednuevoseguimientos" />
+		<property name="storedeliminarseguimiento" ref="storedeliminarseguimiento" />
+	</bean>
+
+
+
+
+
+	<bean id="perfilDAO" class="com.sedapal.tramite.dao.PerfilDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedPerfiles" ref="storedPerfiles" />
+		<property name="storedNuevo" ref="storedNuevoPerfiles" />
+		<property name="storedActualizarPerfil" ref="storedActualizarperfil" />
+		<property name="storedDeletePerfil" ref="storedEliminarPerfil" />
+	</bean>
+
+	<bean id="feriadoDAO" class="com.sedapal.tramite.dao.FeriadoDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedFeriado" ref="storedFeriado" />
+		<property name="storednuevoferiado" ref="storednuevoferiado" />
+		<property name="storedactualizarferiado" ref="storedactualizarferiado" />
+		<property name="storedBusquedaFeriados" ref="storedfiltrosferiado" />
+		<property name="storeddeleteferiado" ref="storedEliminarFeriado" />
+	</bean>
+
+	<bean id="representanteDAO" class="com.sedapal.tramite.dao.RepresentanteDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedrepresentante" ref="StoredRepresentante" />
+		<property name="storedactualizarrepresentante" ref="storedactualizarrepresentante" />
+		<property name="storednuevorepresentante" ref="storednuevorepresentante" />
+		<property name="storeddeleterepresentante" ref="storeddeleterepresentante" />
+	</bean>
+
+
+	<bean id="areaDAO" class="com.sedapal.tramite.dao.AreaDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedAreas" ref="StoredAreas" />
+	</bean>
+
+	<bean id="resumenDAO" class="com.sedapal.tramite.dao.ResumenDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedResumen" ref="storedResumen" />
+	</bean>
+
+	<bean id="passwordDAO" class="com.sedapal.tramite.dao.PasswordDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
+
+	<bean id="centroDAO" class="com.sedapal.tramite.dao.CentroDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedCentro" ref="StoredCentro" />
+	</bean>
+	<bean id="trabajadorDAO" class="com.sedapal.tramite.dao.TrabajadorDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedTrabajador" ref="StoredTrabajador" />
+		<property name="storedFiltros" ref="storedFiltrosTrabajador" />
+	</bean>
+
+	<bean id="documentosalidaDAO" class="com.sedapal.tramite.dao.DocumentoSalidaDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedDocumentoSalida" ref="StoredDocumentoSalida" />
+		<property name="storedNuevoDocumentoSalida" ref="storedNuevoDocumentoSalida" />
+		<property name="storedActualizarDocumentoSalida" ref="storedActualizarDocumentoSalida" />
+		<property name="storedFiltrosSalientes" ref="storedFiltrosSalientes" />
+		<property name="storedDeleteDocumentoSalida" ref="storedEliminarDocumentoSalida" />
+		<property name="storedBusqueda" ref="storedbusqueda" />
+		<property name="storedCriteriosSalientes" ref="storedCriteriosSalientes" />
+		<property name="storedCombo" ref="storedCombo" />
+		<property name="storedentratesalida" ref="storedentratesalida" />
+		<property name="storedbusquedaentratesalida" ref="storedbusquedaentratesalida" />
+		<property name="storedremitentessp" ref="storedremitentessp" />
+		<property name="storedlistaasuntopopub" ref="storedlistaasuntopopub" />
+		<property name="storedbusquedaasuntos" ref="storedbusquedaasuntos" />
+		<property name="storedConsultaDocumentoBPM" ref="storedConsultaDocumentoBPM" />
+		<property name="storedtipodocumentosalida" ref="storedTipoDocumentoSalida" />
+		<property name="storedVisadoDocumentoSalida" ref="storedVisadoDocumentoSalida" />
+		<property name="storedFirmadoDocumentoSalida" ref="storedFirmadoDocumentoSalida" />
+	</bean>
+
+
+	<bean id="tipoDAO" class="com.sedapal.tramite.dao.TiposDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedTipos" ref="StoredTipos" />
+		<property name="storedNuevo" ref="storedNuevotipos" />
+		<property name="storedActualizarTipos" ref="storedActualizartipos" />
+		<property name="storedDeleteTipos" ref="storedEliminar" />
+		<property name="storedFiltrosTipo" ref="storedFiltrosTipo" />
+	</bean>
+	
+	<bean id="remitentebpmDAO" class="com.sedapal.tramite.dao.RemitenteBPMDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedremitentebpm" ref="StoredRemitentebpm" />
+		<property name="storedbusquedaremitentebpm" ref="StoredBusquedaRemitentebpm" />
+	</bean>
+	
+	
+
+	<bean id="correlativosDAO" class="com.sedapal.tramite.dao.CorrelativosDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedlistacorrelativos" ref="storedlistacorrelativos" />
+		<!-- <property name="storedNuevocorrelativo" ref="storedNuevoCorrelativo" 
+			/> -->
+		<property name="storedactualizarcorrelativos" ref="storedActualizarcorrelativos" />
+		<!-- <property name="storedFiltrosTipo" ref="storedFiltrosTipo" /> -->
+	</bean>
+
+	<bean id="asuntoDAO" class="com.sedapal.tramite.dao.AsuntoDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedlistaasunto" ref="storedlistaasunto" />
+		<property name="storednuevoasunto" ref="storednuevoasunto" />
+		<property name="storedactualizarasunto" ref="storedactualizarasunto" />
+		<property name="storeddeleteasunto" ref="storeddeleteasunto" />
+		<property name="storedfiltrosasunto" ref="storedfiltrosasunto" />
+	</bean>
+
+
+
+	<bean id="grupoDAO" class="com.sedapal.tramite.dao.GruposDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedGrupos" ref="storedGrupos" />
+		<property name="storednuevoGrupos" ref="storednuevoGrupos" />
+		<property name="storedactualizarGrupos" ref="storedactualizarGrupos" />
+		<property name="storeddeleteGrupos" ref="storeddeleteGrupos" />
+		<property name="storedFiltrosGrupos" ref="storedFiltrosGrupos" />
+	</bean>
+
+
+
+	<bean id="accionDAO" class="com.sedapal.tramite.dao.AccionDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedAccion" ref="StoredAccion" />
+		<property name="storedNuevo" ref="storedNuevoaccion" />
+		<property name="storedActualizarAccion" ref="storedActualizaraccion" />
+		<property name="storedDeleteAccion" ref="storedEliminaraccion" />
+	</bean>
+	<bean id="remitenteDAO" class="com.sedapal.tramite.dao.RemitenteDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedRemitente" ref="StoredRemitente" />
+		<property name="storedNuevo" ref="storedNuevoremitente" />
+		<property name="storedActualizarRemitente" ref="storedActualizarremitente" />
+		<property name="storedDeleteRemitente" ref="storedEliminarremitente" />
+		<property name="storedFiltros" ref="storedFiltrosRemitente" />
+	</bean>
+	<bean id="usersDAO" class="com.sedapal.tramite.dao.UsersDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storedUsers" ref="StoredUsers" />
+		<property name="storedActualizarUsers" ref="storedActualizarusers" />
+		<property name="storedNuevo" ref="storedNuevousers" />
+		<property name="storedDeleteUsers" ref="storedEliminarusers" />
+		<property name="storedFiltros" ref="storedFiltros" />
+		<property name="storedbusquedauser" ref="storedbusquedauser" />
+	</bean>
+
+	<bean id="usuarioDAO" class="com.sedapal.tramite.dao.UsuarioDAO">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="storednuevologingreso" ref="storednuevologingreso" />
+	</bean>
+
+
+
+
+
+	<!-- SP -->
+	<!-- SED-REQ-00001 -->
+	<bean id="storedConsultaDocumentoBPM" class="com.sedapal.tramite.dao.StoredConsultaDocumentoBPM">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+
+	</bean>
+	
+	<!-- NUEVO SP DE ELI DIAZ 02.10.2023 -->
+	<bean id="storedTipoDocumentoSalida" class="com.sedapal.tramite.dao.StoredTipoDocumentosSalida">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+
+	</bean>
+	
+	
+	
+	<!-- SP SED-FON-161 -->	
+	<bean id="storedGetRemitentesBPM" class="com.sedapal.tramite.dao.StoredConsultaRemitenteBPM">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+
+	</bean>
+	<bean id="storedCredencialesBpmAPI" class="com.sedapal.tramite.dao.StoredCredencialesBpmAPI">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+
+	</bean>
+	<bean id="storedRutasBpmAPI" class="com.sedapal.tramite.dao.StoredRutasBpmAPI">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+
+	</bean>
+	<bean id="storedGetAreasByNombre" class="com.sedapal.tramite.dao.StoredConsultaAreasByNombre">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+
+	</bean>
+	<bean id="storedNewRemitentesBPM" class="com.sedapal.tramite.dao.StoredRegistraRemitenteBPM">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+
+	</bean>
+	<!-- SP Agrega Eli -->
+	<bean id="storedEntrantes" class="com.sedapal.tramite.dao.StoredEntrantes">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+
+	</bean>
+
+	<bean id="storedEntrantesGrupo" class="com.sedapal.tramite.dao.StoredEntrantesGrupo">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedEntrantesGerencias" class="com.sedapal.tramite.dao.StoredEntrantesGerencias">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+
+	<bean id="storedEntrantesDerivado" class="com.sedapal.tramite.dao.StoredEntrantesDerivado">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+
+	</bean>
+
+	<bean id="storedEntrantesmesa" class="com.sedapal.tramite.dao.StoredEntrantesMesa">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	
+	
+	
+	<bean id="storedentrantesmesalinea" class="com.sedapal.tramite.dao.StoredEntrantesMesaLinea">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="storedbusquedaentrantemesalinea" class="com.sedapal.tramite.dao.StoredBusquedaEntrantesMesaLinea">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="storedEntrantesmesavirtual" class="com.sedapal.tramite.dao.StoredEntrantesMesaVirtual">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="storedfiltrosentmesavirtual" class="com.sedapal.tramite.dao.StoredFiltrosEntMesaVirtual">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="StoredConsultaEntrantesMesaVirtual" class="com.sedapal.tramite.dao.StoredConsultaEntrantesMesaVirtual">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="StoredAtencionEntrantesMesa" class="com.sedapal.tramite.dao.StoredAtencionEntrantesMesa">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	
+	
+	
+	
+	<bean id="storedbusquedaentrantemesavirtual" class="com.sedapal.tramite.dao.StoredBusquedaEntrantesMesaVirtual">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedactualizarentmesavirtual" class="com.sedapal.tramite.dao.StoredActualizarEntMesaVirtual">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedeliminarentmesavirtual" class="com.sedapal.tramite.dao.StoredEliminarEntMesaVirtual">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedSeguimiento" class="com.sedapal.tramite.dao.StoredSeguimientoEntrate">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedseguimientoentrantegerencias"
+		class="com.sedapal.tramite.dao.StoredSeguimientoEntrateGerencias"
+	>
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+
+
+
+	<bean id="storedPerfiles" class="com.sedapal.tramite.dao.storedPerfiles">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedFeriado" class="com.sedapal.tramite.dao.StoredFeriado">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="StoredAreas" class="com.sedapal.tramite.dao.StoredAreas">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedBusquedaArea" class="com.sedapal.tramite.dao.StoredBusquedaArea">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedResumen" class="com.sedapal.tramite.dao.StoredResumen">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+
+	</bean>
+
+	<bean id="StoredCentro" class="com.sedapal.tramite.dao.StoredCentros">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="StoredTrabajador" class="com.sedapal.tramite.dao.StoredTrabajador">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="StoredDocumentoSalida" class="com.sedapal.tramite.dao.StoredDocumentoSaliente">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedentratesalida" class="com.sedapal.tramite.dao.StoredEntrateSalida">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedbusquedaentratesalida" class="com.sedapal.tramite.dao.StoredBusquedaEntrateSalida">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedremitentessp" class="com.sedapal.tramite.dao.StoredRemitentesSP">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedlistaasuntopopub" class="com.sedapal.tramite.dao.StoredListaAsuntoPopup">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedbusquedaasuntos" class="com.sedapal.tramite.dao.StoredBusquedaAsuntos">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedenvioemail" class="com.sedapal.tramite.dao.StoredEnvioEmail">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+	<bean id="storedlistaasunto" class="com.sedapal.tramite.dao.StoredListaAsunto">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+
+	<bean id="storedGrupos" class="com.sedapal.tramite.dao.StoredListaGrupos">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="StoredTipos" class="com.sedapal.tramite.dao.StoredTipos">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="StoredRemitentebpm" class="com.sedapal.tramite.dao.StoredRemitenteBPM">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="StoredBusquedaRemitentebpm " class="com.sedapal.tramite.dao.StoredBusquedaRemitenteBPM">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="storedlistacorrelativos" class="com.sedapal.tramite.dao.StoredListaCorrelativos">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="StoredAccion" class="com.sedapal.tramite.dao.StoredAccion">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="StoredRemitente" class="com.sedapal.tramite.dao.StoredRemitente">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="StoredRepresentante" class="com.sedapal.tramite.dao.StoredRepresentante">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="StoredUsers" class="com.sedapal.tramite.dao.StoredUsers">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedFiltroEnt" class="com.sedapal.tramite.dao.StoredFiltrosEnt">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedfiltrosentgrupo" class="com.sedapal.tramite.dao.StoredFiltrosEntGrupo">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+
+
+	<bean id="storedFiltroEntDerivado" class="com.sedapal.tramite.dao.StoredFiltrosEntDerivado">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedFiltroEntMesa" class="com.sedapal.tramite.dao.StoredFiltrosEntMesa">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedfiltrossegent" class="com.sedapal.tramite.dao.StoredFiltrosSegEnt">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedBusquedaEntrantes" class="com.sedapal.tramite.dao.StoredBusquedaEntrantes">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedbusquedaseguimientodocumentos"
+		class="com.sedapal.tramite.dao.StoredBusquedaSeguimientoDocumentos"
+	>
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedalertaentrante" class="com.sedapal.tramite.dao.StoredAlertaEntrante">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedconsultadocentrantes" class="com.sedapal.tramite.dao.StoredConsultaDocEntrantes">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedbusquedagerenciaportrabajador"
+		class="com.sedapal.tramite.dao.StoredBusquedaGerenciaPorTrabajador"
+	>
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedbusquedagerenciaporequipo" class="com.sedapal.tramite.dao.StoredBusquedaGerenciaPorEquipo">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedbusquedagerenciaporGDI" class="com.sedapal.tramite.dao.StoredBusquedaGerenciaPorGDI">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+
+	<bean id="storedconsultadocentrantesseg" class="com.sedapal.tramite.dao.StoredConsultaDocEntrantesSeg">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="storedactualizarlineadigitalizacionEnt" class="com.sedapal.tramite.dao.StoredActualizarLineadigitalizacionEnt">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	
+	
+	
+
+	<bean id="storedbusquedaseguimientodocentrantes"
+		class="com.sedapal.tramite.dao.StoredBusquedaSeguimientoDocEntrantes"
+	>
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storednuevoemail" class="com.sedapal.tramite.dao.StoredNuevoEmail">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+
+
+	<bean id="storedbusquedaregdocentrantes" class="com.sedapal.tramite.dao.StoredBusquedaRegDocEntrantes">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedbusquedadocumentosexternos"
+		class="com.sedapal.tramite.dao.StoredBusquedaDocumentosExternos"
+	>
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+
+
+	<bean id="storedConsultasegdocentrantes" class="com.sedapal.tramite.dao.StoredConsultaSegDocEntrantes">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="storedBusquedaEntrantesgrupo" class="com.sedapal.tramite.dao.StoredBusquedaEntrantesGrupo">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedBusquedaEntrantesgerencias"
+		class="com.sedapal.tramite.dao.StoredBusquedaEntrantesGerencias"
+	>
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+
+
+	<bean id="storedDocumentosDerivados" class="com.sedapal.tramite.dao.StoredDocumentosDerivados">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedSecuenciaAdjunto" class="com.sedapal.tramite.dao.StoredSecuenciaAdjunto">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="spActualizarJefesEquipo" class="com.sedapal.tramite.dao.StoredActualizarJefesEquipo">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="spObtenerJefesEquipo" class="com.sedapal.tramite.dao.StoredObtenerJefesEquipo">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedListadoSecuenciales" class="com.sedapal.tramite.dao.StoredListadoSecuenciales">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedListadoTipoDocumentos" class="com.sedapal.tramite.dao.StoredListadoTipoDocumentos">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedNuevoSecuencial" class="com.sedapal.tramite.dao.StoredNuevoSecuencial">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedValidacionSecuencial" class="com.sedapal.tramite.dao.StoredValidacionSecuencial">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedActualizarSecuencial" class="com.sedapal.tramite.dao.StoredActualizarSecuencial">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedEliminarSecuencial" class="com.sedapal.tramite.dao.StoredEliminarSecuencial">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedBusquedaEntrantesDerivado" class="com.sedapal.tramite.dao.StoredBusquedaEntrantesDerivado">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedBusquedaEntrantesmesa" class="com.sedapal.tramite.dao.StoredBusquedaEntrantesMesa">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedbusquedauser" class="com.sedapal.tramite.dao.StoredBusquedaUser">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="storedActualizarSeguimiento" class="com.sedapal.tramite.dao.StoredActualizarSeguimiento">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedFiltrosSalientes" class="com.sedapal.tramite.dao.StoredFiltrosSalientes">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedCriteriosSalientes" class="com.sedapal.tramite.dao.StoredCriteriosSalientes">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedbusqueda" class="com.sedapal.tramite.dao.StoredBusquedaDocSalientes">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="storedbusquedaseguimiento" class="com.sedapal.tramite.dao.StoredBusquedaSegDocEntrantes">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedbuscar" class="com.sedapal.tramite.dao.StoredBuscarSeguimientoEntraten">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<!-- <bean id="storedBusqueda" class="com.sedapal.tramite.dao.StoredBusquedaSegDocEntrantes"> 
+		<constructor-arg> <ref bean="myDataSource" /> </constructor-arg> </bean> -->
+
+	<bean id="storedFiltrosRemitente" class="com.sedapal.tramite.dao.StoredFiltrosRemitente">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedFiltrosTipo" class="com.sedapal.tramite.dao.StoredFiltrosTipos">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedfiltrosasunto" class="com.sedapal.tramite.dao.StoredFiltrosAsunto">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+	<bean id="storedFiltrosGrupos" class="com.sedapal.tramite.dao.StoredFiltrosGrupos">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+	<bean id="storedfiltrosferiado" class="com.sedapal.tramite.dao.StoredBusquedaFeriados">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="storedFiltrosTrabajador" class="com.sedapal.tramite.dao.StoredFiltrosTrabajador">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedFiltros" class="com.sedapal.tramite.dao.StoredFiltros">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedNuevoEnt" class="com.sedapal.tramite.dao.StoredNuevoDocumentoEntrada">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedNuevoEntDerivado"
+		class="com.sedapal.tramite.dao.StoredNuevoDocumentoEntradaDerivado"
+	>
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedNuevoEntmesa" class="com.sedapal.tramite.dao.StoredNuevoDocumentoEntradaMesa">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storednuevoseguimientos" class="com.sedapal.tramite.dao.StoredNuevoSeguimiento">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedActualizarEnt" class="com.sedapal.tramite.dao.StoredActualizarEnt">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedActualizarEntDerivado" class="com.sedapal.tramite.dao.StoredActualizarEntDerivado">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedActualizarEntMesa" class="com.sedapal.tramite.dao.StoredActualizarEntMesa">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedEliminarEnt" class="com.sedapal.tramite.dao.StoredEliminarEnt">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedEliminarEntDerivado" class="com.sedapal.tramite.dao.StoredEliminarEntDerivado">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedEliminarEntMesa" class="com.sedapal.tramite.dao.StoredEliminarEntMesa">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedeliminarseguimiento" class="com.sedapal.tramite.dao.StoredEliminarSeguimiento">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="storednuevoGrupos" class="com.sedapal.tramite.dao.StoredNuevoGrupo">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedNuevotipos" class="com.sedapal.tramite.dao.StoredNuevoTipos">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storednuevoasunto" class="com.sedapal.tramite.dao.StoredNuevoAsunto">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+	<bean id="storedNuevoPerfiles" class="com.sedapal.tramite.dao.StoredNuevoPerfil">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storednuevoferiado" class="com.sedapal.tramite.dao.StoredNuevoFeriado">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedNuevoaccion" class="com.sedapal.tramite.dao.StoredNuevoTiposaAccion">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedNuevoremitente" class="com.sedapal.tramite.dao.StoredNuevoRemitente">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedNuevousers" class="com.sedapal.tramite.dao.StoredNuevoUsers">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedNuevoDocumentoSalida" class="com.sedapal.tramite.dao.StoredNuevoDocumentoSaliente">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedActualizarusers" class="com.sedapal.tramite.dao.StoredActualizarUsers">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+	<bean id="storedActualizartipos" class="com.sedapal.tramite.dao.StoredActualizarTipo">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedActualizarcorrelativos" class="com.sedapal.tramite.dao.StoredActualizarCorrelativo">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+
+
+	<bean id="storedactualizarasunto" class="com.sedapal.tramite.dao.StoredActualizarAsunto">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="storedactualizarGrupos" class="com.sedapal.tramite.dao.StoredActualizarGrupos">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedCombo" class="com.sedapal.tramite.dao.StoredCombo">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="storedActualizarDocumentoSalida" class="com.sedapal.tramite.dao.StoredActualizarDocumentoSalida">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedactualizarrepresentante" class="com.sedapal.tramite.dao.StoredActualizarRepresentante">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedactualizarferiado" class="com.sedapal.tramite.dao.StoredActualizarFeriado">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storednuevorepresentante" class="com.sedapal.tramite.dao.StoredNuevoRepresentante">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+	<bean id="storedActualizarperfil" class="com.sedapal.tramite.dao.StoredActualizarPerfil">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedEliminarDocumentoSalida" class="com.sedapal.tramite.dao.StoredDeleteDocumentoSalida">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedVisadoDocumentoSalida" class="com.sedapal.tramite.dao.StoredVisadoDocumentoSalida">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedFirmadoDocumentoSalida" class="com.sedapal.tramite.dao.StoredFirmadoDocumentoSalida">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storedActualizaraccion" class="com.sedapal.tramite.dao.StoredActualizarAccion">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedActualizarremitente" class="com.sedapal.tramite.dao.StoredActualizarRemitente">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedEliminar" class="com.sedapal.tramite.dao.StoredDeleteTipos">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="storeddeleteasunto" class="com.sedapal.tramite.dao.StoredDeleteAsunto">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+	<bean id="storeddeleteGrupos" class="com.sedapal.tramite.dao.StoredDeleteGrupos">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+	<bean id="storedEliminarPerfil" class="com.sedapal.tramite.dao.StoredDeletePerfil">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedEliminarFeriado" class="com.sedapal.tramite.dao.StoredDeleteFeriado">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="storedEliminaraccion" class="com.sedapal.tramite.dao.StoredDeleteAccion">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storedEliminarremitente" class="com.sedapal.tramite.dao.StoredDeleteRemitente">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+	<bean id="storeddeleterepresentante" class="com.sedapal.tramite.dao.StoredDeleteRepresentante">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="storedEliminarusers" class="com.sedapal.tramite.dao.StoredDeleteUsers">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="storednuevologingreso" class="com.sedapal.tramite.dao.StoredNuevoLogIngreso">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="storedResumenMateriaExpedientes" class="com.sedapal.tramite.dao.StoredResumenMateriaExpedientes">
+		<constructor-arg>
+			<ref bean="myDataSource" />
+		</constructor-arg>
+	</bean>
+
+
+
+
+	<!-- JdbcTemplate -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="myDataSource" />
+	</bean>
+
+	<!-- DataSource -->
+	<bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+		<property name="initialSize" value="5" />
+		<property name="maxActive" value="50" />
+	</bean>
+
+
+
+	<!-- DataSource <bean id="myDataSource2" class="org.apache.commons.dbcp.BasicDataSource"> 
+		<property name="driverClassName" value="${driver2}" /> <property name="url" 
+		value="${url2}" /> <property name="username" value="${username2}" /> <property 
+		name="password" value="${password2}" /> <property name="initialSize" value="5" 
+		/> <property name="maxActive" value="5"/> </bean> -->
+	<!-- PAra JAsper Report -->
+
+	<bean id="recursoReport" class="com.sedapal.tramite.nova.util.RecursoReport"
+		scope="session"
+	>
+		<property name="reporte" ref="reporte"></property>
+	</bean>
+	<bean id="recursoReporte" class="com.sedapal.tramite.nova.util.RecursoReporte"
+		scope="session"
+	>
+		<property name="reportes" ref="reportes"></property>
+	</bean>
+
+
+	<bean id="recursoReporteNuevo" class="com.sedapal.tramite.nova.util.RecursoReporteNuevo"
+		scope="session"
+	>
+		<property name="reportenuevo" ref="reportenuevo"></property>
+	</bean>
+
+
+	<bean id="reporte" class="com.sedapal.tramite.nova.util.GenerarReporte"
+		scope="session"
+	>
+		<property name="dataSource" ref="myDataSource" />
+	</bean>
+	<bean id="reportes" class="com.sedapal.tramite.nova.util.GenerarReportes"
+		scope="session"
+	>
+		<property name="dataSource" ref="myDataSource" />
+	</bean>
+
+
+	<bean id="reportenuevo" class="com.sedapal.tramite.nova.util.GenerarReportesNuevo"
+		scope="session"
+	>
+		<property name="dataSource" ref="myDataSource" />
+	</bean>
+
+
+	<!-- bean id="customerService" class="com.sedapal.tramite.mail.CustomerServiceImpl"> 
+		<property name="mailSender" ref="mailSender"></property> <property name="templateMessage" 
+		ref="templateMessage"></property> </bean> <bean id="templateMessage" class="org.springframework.mail.SimpleMailMessage"> 
+		<property name="to"> <value>ediazh@sedapal.com.pe</value> </property> </bean> 
+		<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 
+		<property name="host"> <value>1.1.6.28</value> </property> </bean -->
+
+	<bean id="dateSelect" class="com.sedapal.tramite.mbeans.MDateSelect"
+		scope="request"
+	>
+		<aop:scoped-proxy />
+	</bean>
+
+
+
+	<!-- logging <bean name="logAspect" class="com.nh.util.AspectLog" /> <aop:config> 
+		<aop:aspect ref="logAspect"> <aop:pointcut id="businessParser" expression="execution(* 
+		com.nh.dao.*(..))" /> <aop:after-throwing pointcut-ref="businessParser" throwing="dataAccessEx" 
+		method="log" /> </aop:aspect> </aop:config> -->
+</beans>

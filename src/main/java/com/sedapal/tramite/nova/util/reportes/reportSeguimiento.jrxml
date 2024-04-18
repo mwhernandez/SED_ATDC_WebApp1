@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportSeguimiento" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="P_ANIO_LLAVE" class="java.lang.String"/>
+	<parameter name="P_ORIGEN_LLAVE" class="java.lang.String"/>
+	<parameter name="P_TIPO_DOC_LLAVE" class="java.lang.String"/>
+	<parameter name="P_NUMDOC_LLAVE" class="java.lang.String"/>
+	<parameter name="P_REMITENTE" class="java.lang.String"/>
+	<parameter name="P_AREA" class="java.lang.String"/>
+	<parameter name="P_AREA_ORIGEN_A" class="java.lang.String"/>
+	<parameter name="P_FECHA_DOC" class="java.lang.String"/>
+	<parameter name="P_FECHA_RECEP" class="java.lang.String"/>
+	<parameter name="P_FECHA_PLAZO" class="java.lang.String"/>
+	<parameter name="P_PRIORIDAD" class="java.lang.String"/>
+	<parameter name="P_ESTADO" class="java.lang.String"/>
+	<parameter name="P_REMITIDO" class="java.lang.String"/>
+	<parameter name="P_DIRIGIDO_A" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="abrevderivado" class="java.lang.String">
+		<fieldDescription><![CDATA[abrevderivado]]></fieldDescription>
+	</field>
+	<field name="abreviatura_doc" class="java.lang.String">
+		<fieldDescription><![CDATA[abreviatura_doc]]></fieldDescription>
+	</field>
+	<field name="abreviaturare_doc" class="java.lang.String">
+		<fieldDescription><![CDATA[abreviaturare_doc]]></fieldDescription>
+	</field>
+	<field name="abrevremite" class="java.lang.String">
+		<fieldDescription><![CDATA[abrevremite]]></fieldDescription>
+	</field>
+	<field name="accion" class="java.lang.String">
+		<fieldDescription><![CDATA[accion]]></fieldDescription>
+	</field>
+	<field name="accion_doc" class="java.lang.String">
+		<fieldDescription><![CDATA[accion_doc]]></fieldDescription>
+	</field>
+	<field name="ano" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ano]]></fieldDescription>
+	</field>
+	<field name="areaderivado" class="java.lang.Integer">
+		<fieldDescription><![CDATA[areaderivado]]></fieldDescription>
+	</field>
+	<field name="arearemitente" class="java.lang.Integer">
+		<fieldDescription><![CDATA[arearemitente]]></fieldDescription>
+	</field>
+	<field name="areas" class="java.lang.String">
+		<fieldDescription><![CDATA[areas]]></fieldDescription>
+	</field>
+	<field name="asunto" class="java.lang.String">
+		<fieldDescription><![CDATA[asunto]]></fieldDescription>
+	</field>
+	<field name="atachment" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[atachment]]></fieldDescription>
+	</field>
+	<field name="class" class="java.lang.Class">
+		<fieldDescription><![CDATA[class]]></fieldDescription>
+	</field>
+	<field name="comentario" class="java.lang.String">
+		<fieldDescription><![CDATA[comentario]]></fieldDescription>
+	</field>
+	<field name="comentario_doc" class="java.lang.String">
+		<fieldDescription><![CDATA[comentario_doc]]></fieldDescription>
+	</field>
+	<field name="correlativo" class="java.lang.Long">
+		<fieldDescription><![CDATA[correlativo]]></fieldDescription>
+	</field>
+	<field name="derivado" class="java.lang.Long">
+		<fieldDescription><![CDATA[derivado]]></fieldDescription>
+	</field>
+	<field name="destipodoc" class="java.lang.String">
+		<fieldDescription><![CDATA[destipodoc]]></fieldDescription>
+	</field>
+	<field name="estado" class="java.lang.String">
+		<fieldDescription><![CDATA[estado]]></fieldDescription>
+	</field>
+	<field name="estado_doc" class="java.lang.String">
+		<fieldDescription><![CDATA[estado_doc]]></fieldDescription>
+	</field>
+	<field name="fecact" class="java.util.Date">
+		<fieldDescription><![CDATA[fecact]]></fieldDescription>
+	</field>
+	<field name="feccha_doc" class="java.util.Date">
+		<fieldDescription><![CDATA[feccha_doc]]></fieldDescription>
+	</field>
+	<field name="feccre" class="java.util.Date">
+		<fieldDescription><![CDATA[feccre]]></fieldDescription>
+	</field>
+	<field name="fecderivado" class="java.util.Date">
+		<fieldDescription><![CDATA[fecderivado]]></fieldDescription>
+	</field>
+	<field name="fecplazo" class="java.util.Date">
+		<fieldDescription><![CDATA[fecplazo]]></fieldDescription>
+	</field>
+	<field name="fecrecepcion" class="java.util.Date">
+		<fieldDescription><![CDATA[fecrecepcion]]></fieldDescription>
+	</field>
+	<field name="ficha_dirigido" class="java.lang.Long">
+		<fieldDescription><![CDATA[ficha_dirigido]]></fieldDescription>
+	</field>
+	<field name="ficharemitente" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ficharemitente]]></fieldDescription>
+	</field>
+	<field name="fichas" class="java.lang.String">
+		<fieldDescription><![CDATA[fichas]]></fieldDescription>
+	</field>
+	<field name="indicaarchivo" class="java.lang.Integer">
+		<fieldDescription><![CDATA[indicaarchivo]]></fieldDescription>
+	</field>
+	<field name="indicador" class="java.lang.Integer">
+		<fieldDescription><![CDATA[indicador]]></fieldDescription>
+	</field>
+	<field name="ndiasplazo" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ndiasplazo]]></fieldDescription>
+	</field>
+	<field name="nombre_deriva_doc" class="java.lang.String">
+		<fieldDescription><![CDATA[nombre_deriva_doc]]></fieldDescription>
+	</field>
+	<field name="nombre_derivado" class="java.lang.String">
+		<fieldDescription><![CDATA[nombre_derivado]]></fieldDescription>
+	</field>
+	<field name="nombre_remite_doc" class="java.lang.String">
+		<fieldDescription><![CDATA[nombre_remite_doc]]></fieldDescription>
+	</field>
+	<field name="nombre_remitente" class="java.lang.String">
+		<fieldDescription><![CDATA[nombre_remitente]]></fieldDescription>
+	</field>
+	<field name="norigen" class="java.lang.Integer">
+		<fieldDescription><![CDATA[norigen]]></fieldDescription>
+	</field>
+	<field name="numdoc" class="java.lang.String">
+		<fieldDescription><![CDATA[numdoc]]></fieldDescription>
+	</field>
+	<field name="numero_doc" class="java.lang.String">
+		<fieldDescription><![CDATA[numero_doc]]></fieldDescription>
+	</field>
+	<field name="observacion" class="java.lang.String">
+		<fieldDescription><![CDATA[observacion]]></fieldDescription>
+	</field>
+	<field name="origen" class="java.lang.String">
+		<fieldDescription><![CDATA[origen]]></fieldDescription>
+	</field>
+	<field name="resact" class="java.lang.String">
+		<fieldDescription><![CDATA[resact]]></fieldDescription>
+	</field>
+	<field name="rescre" class="java.lang.String">
+		<fieldDescription><![CDATA[rescre]]></fieldDescription>
+	</field>
+	<field name="seguimiento" class="java.lang.Integer">
+		<fieldDescription><![CDATA[seguimiento]]></fieldDescription>
+	</field>
+	<field name="seguimiento_doc" class="java.lang.Long">
+		<fieldDescription><![CDATA[seguimiento_doc]]></fieldDescription>
+	</field>
+	<field name="selected" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[selected]]></fieldDescription>
+	</field>
+	<field name="tipodoc" class="java.lang.String">
+		<fieldDescription><![CDATA[tipodoc]]></fieldDescription>
+	</field>
+	<field name="ubicaarchivo" class="java.lang.String">
+		<fieldDescription><![CDATA[ubicaarchivo]]></fieldDescription>
+	</field>
+	<field name="vaccion" class="java.lang.String">
+		<fieldDescription><![CDATA[vaccion]]></fieldDescription>
+	</field>
+	<field name="vestado" class="java.lang.String">
+		<fieldDescription><![CDATA[vestado]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="55" splitType="Stretch">
+			<staticText>
+				<reportElement x="308" y="20" width="184" height="20"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reporte de Seguimiento]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="2" width="114" height="38"/>
+				<imageExpression class="java.lang.String"><![CDATA["sedapal.jpg"]]></imageExpression>
+			</image>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="686" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="118" splitType="Stretch">
+			<textField>
+				<reportElement x="73" y="16" width="65" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{correlativo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="253" y="16" width="169" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_AREA_ORIGEN_A}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="187" y="16" width="66" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Area Origen]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="16" width="69" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro. Correlativo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="76" width="69" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Remitente]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="73" y="36" width="100" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_FECHA_DOC}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="36" width="56" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Doc.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="253" y="36" width="117" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_FECHA_RECEP}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="187" y="36" width="100" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Recep.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="491" y="36" width="64" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_FECHA_PLAZO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="423" y="36" width="69" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Plazo]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="73" y="56" width="100" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_PRIORIDAD}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="56" width="56" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prioridad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="187" y="56" width="66" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="253" y="57" width="100" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_ESTADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="73" y="96" width="482" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_REMITIDO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="97" width="69" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Remitido por:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="73" y="76" width="482" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_REMITENTE}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="115" width="801" height="1"/>
+			</line>
+			<textField>
+				<reportElement x="492" y="16" width="63" height="20"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_ANIO_LLAVE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="425" y="16" width="26" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AÑO]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="32" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Seg.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="32" y="0" width="82" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="20" width="802" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="114" y="0" width="49" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Abrev.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="163" y="0" width="182" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="345" y="0" width="393" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Comentario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="738" y="0" width="64" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="28" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="0" width="27" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{seguimiento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="32" y="0" width="82" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{fecderivado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="345" y="0" width="382" height="28"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{comentario}.equals(null)?"":$F{comentario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="163" y="0" width="182" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nombre_derivado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="114" y="0" width="49" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{abrevderivado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="738" y="0" width="64" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{estado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="345" y="5" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

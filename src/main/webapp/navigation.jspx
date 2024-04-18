@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ice:form 
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ice="http://www.icesoft.com/icefaces/component"        
+        id="navigationMenuForm">
+        
+    <img src="images/GOTAOFICIAL.png" height="100" width="100" alt="Gotita de Sedapal" align="middle" />
+       
+    <div class="iceTree">
+    	<ice:outputText value="" /><br/>
+        <ice:outputLabel value="#{dateSelect.fecha}" style="font-size: 10px; color: green;"></ice:outputLabel><br/>
+        <ice:outputLabel value="#{mLogin.usuario}" style="font-size: 10px; color: green;"></ice:outputLabel><br/>
+        <ice:outputLabel value="#{mLogin.nomequipo}" style="font-size: 10px; color: green;"></ice:outputLabel><br/>
+        <ice:outputLabel value="#{mLogin.perfil}" style="font-size: 10px; color: green;"></ice:outputLabel><br/>
+       	<ice:outputLabel value="#{mLogin.nombre}" style="font-size: 10px; color: green;"></ice:outputLabel><br/><br/>
+        <ice:tree
+                value="#{treeNavigation.model}"
+                var="item"
+                style="font-size: 11px; color: #006EAA;"
+                hideRootNode="false"
+                imageDir="./xmlhttp/css/rime/css-images/"
+                binding="#{treeNavigation.treeComponent}">
+            <ice:treeNode>
+                <f:facet name="content">
+                    <ice:panelGroup style="display: inline">
+                        <ice:commandLink
+                                actionListener="#{item.userObject.contentVisibleAction}" style="color: #006EAA;">
+                            <ice:outputText
+                                    value="#{item.userObject.menuDisplayText}" style="color: #006EAA;"/>
+                        </ice:commandLink>
+                    </ice:panelGroup>
+                </f:facet>
+
+            </ice:treeNode>
+        </ice:tree>
+    </div>
+    
+    
+    <ice:outputText value="" />
+    <ice:outputText value="" />
+     <!-- Alerta de mensaje -->
+				<ice:panelPopup draggable="false" modal="false"
+					style="width: auto; height: auto; background-color: #0085BC;"
+					visible="#{mMensajeria.verPopup}" autoCentre="true"					
+					styleClass="icePnlPop">
+					<f:facet name="header">
+						<ice:panelGroup styleClass="popupHeaderWrapper">
+							<ice:outputText value="Mensaje" style="font-size: 12px; color: blue;" styleClass="popupHeaderText" />
+						</ice:panelGroup>
+					</f:facet>
+					<f:facet name="body">
+						<ice:panelGrid columns="1" style="text-align: center; font-size: 11px; font: bold" >
+							<ice:outputText value="#{mMensajeria.mensaje}" style="font-size: 12px; color: white;"/>
+							<br />		
+							<ice:dataTable rendered="#{mMensajeria.verDocumentos}" var="doc" value="#{mMensajeria.documentos}"
+								columnClasses="tableCol" style="font-size: 9px;" rows="10"
+								bgcolor="#81BEF7"
+								scrollable="false">
+								<ice:column>
+									<f:facet name="header">
+										<ice:outputText value="Reg"/>
+									</f:facet>
+									<ice:outputText id="idCB" value="#{doc.ncorrelativo}" />
+								</ice:column>
+								<ice:column>
+									<f:facet name="header">
+										<ice:outputText value="Num.Doc"/>
+									</f:facet>
+									<ice:outputText value="#{doc.vnumdoc}" />
+								</ice:column>
+								<ice:column>
+									<f:facet name="header">
+										<ice:outputText value="Num.Exp" />
+									</f:facet>
+									<ice:outputText value="#{doc.vnumexp}" />
+								</ice:column>
+								<ice:column>
+									<f:facet name="header">
+										<ice:outputText value="Remitente" />
+									</f:facet>
+									<ice:outputText value="#{doc.vdirigido}" />
+								</ice:column>
+								<ice:column>
+									<f:facet name="header">
+										<ice:outputText value="Asunto" />
+									</f:facet>
+									<ice:outputText value="#{doc.vasunto}" />
+								</ice:column>
+								<ice:column>
+									<f:facet name="header">
+										<ice:outputText value="Acuse" />
+									</f:facet>
+									<ice:commandButton rendered="#{!doc.acuse}" value="Recibido" actionListener="#{mMensajeria.eventAcuse(doc)}" 
+									style="cursor: pointer"/>
+								</ice:column>
+							</ice:dataTable>
+							
+							<ice:panelGrid columns="2">
+								<ice:commandButton rendered="#{mMensajeria.verDocumentos}" type="submit" value="Ver todos los documentos" actionListener="#{mMensajeria.eventVerEntrantes}"
+									style="size: width: 40px; height: 40px"/>			
+								<ice:commandButton rendered="#{!mMensajeria.verDocumentos}" type="submit" value="Ver Documentos" actionListener="#{mMensajeria.eventVerEntrantesV2}"
+									style="size: width: 40px; height: 40px"/>							
+								<ice:commandButton value="Salir" actionListener="#{mMensajeria.eventCancelar}" 
+									style="size: width: 40px; height: 40px"/>
+							</ice:panelGrid>
+							
+						</ice:panelGrid>
+						
+					</f:facet>
+				</ice:panelPopup>
+	<ice:outputText value="" />
+   <ice:outputText value="" />
+    <center>   
+    <!-- <a href="logout.jsp"><img border="0" alt="Salir" width="30" height="30" src="images/salir.png" /></a> 
+    -->
+   	<ice:commandButton value="Salir"
+   		actionListener="#{mBeanDireccionip.Direccionip}"   		   		   		
+   		image="images/salir.png"   
+   		style="size: width: 25px; height: 25px">   		
+   	</ice:commandButton>
+   	
+   		
+    
+    </center>	
+	
+</ice:form>

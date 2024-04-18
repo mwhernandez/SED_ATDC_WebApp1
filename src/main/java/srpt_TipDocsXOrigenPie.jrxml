@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="srpt_TipDocsXOrigenPie" language="groovy" pageWidth="270" pageHeight="150" whenNoDataType="AllSectionsNoDetail" columnWidth="270" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="P_AREA" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_FECHAINICIO" class="java.lang.String"/>
+	<parameter name="P_FECHAFIN" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT de.norigen codOrigen,
+       DECODE(de.norigen, 1, 'INTERNO',
+                          2, 'EXTERNO') descOrigen,
+       de.vtipodoc codTipDoc,
+       (SELECT t.vdescripcion
+          FROM tipo t
+         WHERE t.vcodtipo = de.vtipodoc) descTipDoc,
+       count(de.vtipodoc) cantTipDoc
+  FROM atd_doc_entr de
+ WHERE de.vestado != 'ESTA004'
+   AND trunc(de.dfeccre) BETWEEN to_date($P{P_FECHAINICIO}, 'dd-MM-yyyy') AND to_date($P{P_FECHAFIN}, 'dd-MM-yyyy')
+   AND EXISTS (SELECT di.ncodarea FROM atd_doc_entr_dirigido di WHERE di.nano = de.nano AND di.norigen=de.norigen AND di.ncorrelativo = de.ncorrelativo AND di.ncodarea= $P{P_AREA})
+GROUP BY de.norigen, de.vtipodoc
+ORDER BY 1, 3]]>
+	</queryString>
+	<field name="CODORIGEN" class="java.math.BigDecimal"/>
+	<field name="DESCORIGEN" class="java.lang.String"/>
+	<field name="CODTIPDOC" class="java.lang.String"/>
+	<field name="DESCTIPDOC" class="java.lang.String"/>
+	<field name="CANTTIPDOC" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="150">
+			<barChart>
+				<chart isShowLegend="true" evaluationTime="Report" renderType="draw" theme="default">
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="270" height="150"/>
+					<box>
+						<pen lineWidth="0.0" lineColor="#003366"/>
+						<topPen lineWidth="0.0" lineColor="#003366"/>
+						<leftPen lineWidth="0.0" lineColor="#003366"/>
+						<bottomPen lineWidth="0.0" lineColor="#003366"/>
+						<rightPen lineWidth="0.0" lineColor="#003366"/>
+					</box>
+					<chartTitle position="Top"/>
+					<chartSubtitle/>
+					<chartLegend position="Bottom">
+						<font size="8"/>
+					</chartLegend>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{DESCORIGEN}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{DESCTIPDOC}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{CANTTIPDOC}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot isShowLabels="true" isShowTickLabels="true" isShowTickMarks="true">
+					<plot orientation="Horizontal" labelRotation="0.1"/>
+					<itemLabel color="#000000" backgroundColor="#FFFFFF">
+						<font size="8"/>
+					</itemLabel>
+					<categoryAxisFormat labelRotation="0.1">
+						<axisFormat verticalTickLabels="true">
+							<labelFont>
+								<font size="8"/>
+							</labelFont>
+							<tickLabelFont>
+								<font size="8"/>
+							</tickLabelFont>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont>
+								<font size="7"/>
+							</labelFont>
+							<tickLabelFont>
+								<font size="8"/>
+							</tickLabelFont>
+						</axisFormat>
+					</valueAxisFormat>
+				</barPlot>
+			</barChart>
+		</band>
+	</title>
+</jasperReport>

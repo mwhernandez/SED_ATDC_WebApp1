@@ -1,0 +1,128 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+<body>
+	<ice:form partialSubmit="true">
+		<ice:panelTabSet id="icePnlTbSet1">
+
+			<!-- Panel Tab 1 defined with some basic content -->
+			<ice:panelTab label="Resumen Doc. Entrada Por Estados"
+				title="Catalogo">
+				<ice:panelGroup rendered="#{mBeanResumen.verCatalogo}">
+					<ice:panelGrid columns="7">
+						<ice:dataExporter for="idProductos" ignorePagination="true"
+							label="Excel" type="excel" image="/images/excel2010.jpg"
+							style="border:0;"
+							popupBlockerLabel="Popup Blocker detected - click here to resume download..."
+							clickToCreateFileText="Excel" />
+						<ice:outputText value="" />
+						<ice:outputText value="" />
+						<ice:outputText value="" />
+						<ice:outputText value="" />
+					</ice:panelGrid>
+				</ice:panelGroup>
+				<ice:panelGrid columns="7">
+					<ice:outputLabel value="F.INICIAL:" style="font-size: 11px"></ice:outputLabel>
+					<ice:selectInputDate renderMonthAsDropdown="true"
+						renderYearAsDropdown="true" value="#{mBeanResumen.date1}"
+						title="F Inicio" popupDateFormat="dd/MM/yyyy" renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}" />
+					</ice:selectInputDate>
+
+					<ice:outputLabel value="F.FINAL:" style="font-size: 11px"></ice:outputLabel>
+					<ice:selectInputDate renderMonthAsDropdown="true"
+						renderYearAsDropdown="true" value="#{mBeanResumen.date2}"
+						title="F Fin" renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}" />
+					</ice:selectInputDate>
+					<ice:commandButton value="Buscar"
+						actionListener="#{mBeanResumen.eventFiltros}"
+						image="/images/buscar.png" style="size: width: 25px; height: 25px">
+					</ice:commandButton>
+
+				</ice:panelGrid>
+
+				<ice:panelGroup rendered="#{mBeanResumen.verCatalogo}">
+					<ice:dataTable var="pro" value="#{mBeanResumen.resumen}"
+						columnClasses="tableCol" style="font-size: 12px;" rows="10"
+						id="idProductos" scrollable="false">
+						<ice:column>
+							<ice:rowSelector id="selected" value="#{pro.selected}"
+								multiple="#{mBeanResumen.multiple}"
+								enhancedMultiple="#{mBeanResumen.enhancedMultiple}"
+								selectionListener="#{mBeanResumen.rowSelectionListener}"
+								preStyleOnSelection="true" />
+
+							<f:facet name="header">
+								<ice:outputText value="Area" />
+							</f:facet>
+							<ice:outputText id="idCB" value="#{pro.area}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Estado" />
+							</f:facet>
+							<ice:outputText value="#{pro.estado}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Cantidad" />
+							</f:facet>
+							<ice:outputText value="#{pro.resumen}" styleClass="center" />
+						</ice:column>
+
+					</ice:dataTable>
+
+
+
+				</ice:panelGroup>
+
+
+
+				<!-- Alerta de mensaje -->
+				<ice:panelPopup id="modalPnlPopError" draggable="false"
+					modal="false" style="width: 200px; height: 120px;"
+					visible="#{mBeanCentro.ver}" autoCentre="true"
+					styleClass="icePnlPop">
+					<f:facet name="header">
+						<ice:panelGroup styleClass="popupHeaderWrapper">
+							<ice:outputText value="Error" styleClass="popupHeaderText" />
+						</ice:panelGroup>
+					</f:facet>
+					<f:facet name="body">
+						<ice:panelGroup styleClass="popupBody">
+							<center> <ice:outputText value="#{mBeanCentro.error}" />
+							<br></br>
+							<ice:commandButton id="modalPnlCBError" type="submit"
+								value="Aceptar" actionListener="#{mBeanCentro.cerrar}" /> </center>
+						</ice:panelGroup>
+					</f:facet>
+				</ice:panelPopup>
+
+			</ice:panelTab>
+		</ice:panelTabSet>
+
+
+
+		<ice:menuPopup id="menuPopupEffects">
+			<ice:menuItem id="mnuModificar" value="Modificar"
+				title="Modificar perfil">
+			</ice:menuItem>
+
+			<ice:menuItem id="mnuAuditoria" value="Auditoria"
+				title="Consultar auditoria">
+			</ice:menuItem>
+
+
+		</ice:menuPopup>
+
+
+	</ice:form>
+</body>
+</html>

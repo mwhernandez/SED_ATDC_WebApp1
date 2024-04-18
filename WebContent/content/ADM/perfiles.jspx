@@ -1,0 +1,216 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+<body>
+<!-- Ventana de administracion de perfiles
+	 Realizado Por : Eli Diaz Horna
+	 Fecha Creacion : 24/01/2011
+	 Descripcion  : creacion de perfiles al sistema tramite documentario
+	-->
+<ice:form partialSubmit="true">
+	<ice:panelTabSet id="icePnlTbSet1">
+
+		<!-- Panel Tab 1 defined with some basic content -->
+		<ice:panelTab label="Lista de Perfiles" title="Catalogo">
+			<ice:panelGroup rendered="#{mBeanPerfiles.verCatalogo}">
+				<ice:panelGrid columns="3">
+					<ice:commandButton value="Nuevo"
+						actionListener="#{mBeanPerfiles.eventNuevo}"  title="Nuevo" image="/images/nuevo2.png" style="size: width: 40px; height: 40px"/>
+					
+					<ice:commandButton value="Actualizar"
+						actionListener="#{mBeanPerfiles.eventActualizar}" title="Modificar" image="/images/modificar2.png"  style="size: width: 40px; height: 40px"/>
+					
+					<ice:commandButton value="Eliminar"
+						actionListener="#{mBeanPerfiles.eventEliminar}" title="Eliminar" image="/images/eliminar2.png" style="size: width: 40px; height: 40px"/>
+					
+					<ice:outputText value="Nuevo" style="font-size: 10px; color: blue;"/>
+					
+					<ice:outputText value="Actualizar" style="font-size: 10px; color: blue;"/>					
+										
+					<ice:outputText value="Eliminar" style="font-size: 10px; color: blue;"/>			
+				</ice:panelGrid>
+				
+			</ice:panelGroup>
+			
+			<ice:panelGroup rendered="#{mBeanPerfiles.verCatalogo}">
+				<ice:dataTable var="pro" value="#{mBeanPerfiles.perfiles}"
+					columnClasses="tableCol" style="font-size: 9px;" rows="10" id="idProductos" 
+					scrollable="false">
+					<ice:column>
+						<ice:rowSelector id="selected" value="#{pro.selected}"
+							multiple="#{mBeanPerfiles.multiple}"
+							enhancedMultiple="#{mBeanPerfiles.enhancedMultiple}"
+							selectionListener="#{mBeanPerfiles.rowSelectionListener}"
+							preStyleOnSelection="true" />
+
+						<f:facet name="header">
+							<ice:outputText value="Codigo" />
+						</f:facet>
+						<center> <ice:outputText id="idCB" value="#{pro.codigo}" />
+						</center>
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Nombre" />
+						</f:facet>
+						<ice:outputText value="#{pro.nombre}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Estado" />
+						</f:facet>
+						<ice:outputText value="#{pro.estado}" />
+					</ice:column>
+				</ice:dataTable>
+
+
+				<ice:panelGrid columns="2">
+					<ice:outputText value=" " />
+					<!-- Paginator with page controls -->
+					<ice:dataPaginator id="dataScroll_3"
+						for="idProductos" paginator="true" fastStep="3"
+						paginatorMaxPages="5">
+						<f:facet name="first">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+								style="border:none;" title="First Page" />
+						</f:facet>
+						<f:facet name="last">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+								style="border:none;" title="Last Page" />
+						</f:facet>
+						<f:facet name="previous">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+								style="border:none;" title="Previous Page" />
+						</f:facet>
+						<f:facet name="next">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+								style="border:none;" title="Next Page" />
+						</f:facet>
+						<f:facet name="fastforward">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-ff.gif"
+								style="border:none;" title="Fast Forward" />
+						</f:facet>
+						<f:facet name="fastrewind">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-fr.gif"
+								style="border:none;" title="Fast Backwards" />
+						</f:facet>
+					</ice:dataPaginator>
+
+					<ice:outputText value="" />
+
+					<!-- Display counts about the table and the currently displayed page -->
+					<ice:dataPaginator id="dataScroll_2" for="idProductos"
+						rowsCountVar="rowsCount"
+						displayedRowsCountVar="displayedRowsCount"
+						firstRowIndexVar="firstRowIndex" lastRowIndexVar="lastRowIndex"
+						pageCountVar="pageCount" pageIndexVar="pageIndex">
+						<ice:outputFormat
+							value="{0} productos encontrados, mostrando {1}, de {2} hasta {3}. Pagina {4} / {5}."
+							styleClass="standard">
+							<f:param value="#{rowsCount}" />
+							<f:param value="#{displayedRowsCount}" />
+							<f:param value="#{firstRowIndex}" />
+							<f:param value="#{lastRowIndex}" />
+							<f:param value="#{pageIndex}" />
+							<f:param value="#{pageCount}" />
+						</ice:outputFormat>
+					</ice:dataPaginator>
+
+				</ice:panelGrid>
+			</ice:panelGroup>
+
+
+			<ice:panelGroup rendered="#{mBeanPerfiles.verNuevo}">
+			    <ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="CODIGO :" style="font-size: 9px;"/>
+					<ice:inputText value="#{mBeanPerfiles.codigoN}" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="DESCRIPCION :" style="font-size: 9px;"/>
+					<ice:inputText value="#{mBeanPerfiles.nombreN}" onchange="this.value = this.value.toUpperCase();" style="font-size: 9px;" size ="60" />
+					<ice:outputText value="ESTADO :" style="font-size: 9px;"/>
+					<h:selectOneMenu value="#{mBeanPerfiles.estadoN}" style="font-size: 9px;">
+						<f:selectItem itemValue="ACTIVO"  itemLabel="ACTIVO"/>
+						<f:selectItem itemValue="INACTIVO"  itemLabel="INACTIVO"/>
+					</h:selectOneMenu>
+					<ice:commandButton value="Aceptar"
+						actionListener="#{mBeanPerfiles.eventRegistrarPerfiles}" title="Grabar" image="/images/save.png" style="size: width: 20px; height: 20px"/>
+					<ice:commandButton value="Regresar" 
+						actionListener="#{mBeanPerfiles.eventCancelar}" title="Regresar" image="/images/retorno.png" style="size: width: 20px; height: 20px"/>
+					<ice:outputText value="Grabar" />
+					<ice:outputText value="Regresar"/>	
+				</ice:panelGrid>
+			</ice:panelGroup>
+			
+			<ice:panelGroup rendered="#{mBeanPerfiles.verActualizar}">
+				<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="CODIGO :" style="font-size: 9px;"/>
+					<ice:inputText value="#{mBeanPerfiles.codigoA}" readonly = "True" style = "background: #c2dfef" />
+					<ice:outputText value="DESCRIPCION :" style="font-size: 9px;"/>
+					<ice:inputText value="#{mBeanPerfiles.nombreA}" onchange="this.value = this.value.toUpperCase();" style="font-size: 9px;" size ="60"/>
+					<ice:outputText value="ESTADO :" style="font-size: 9px;"/>
+					<h:selectOneMenu value="#{mBeanPerfiles.estadoA}" style="font-size: 9px;">
+						<f:selectItem itemValue="ACTIVO"  itemLabel="ACTIVO"/>
+						<f:selectItem itemValue="INACTIVO" itemLabel="INACTIVO"/>
+					</h:selectOneMenu>
+					<ice:commandButton value="Aceptar"
+						actionListener="#{mBeanPerfiles.eventActualizarPerfil}" title="Grabar" image="/images/save.png" style="size: width: 20px; height: 20px"/>
+					<ice:commandButton value="Regresar"
+						actionListener="#{mBeanPerfiles.eventCancelar}" title="Regresar" image="/images/retorno.png" style="size: width: 20px; height: 20px"/>
+					<ice:outputText value="Grabar" />
+					<ice:outputText value="Regresar"/>	
+				</ice:panelGrid>
+			</ice:panelGroup>
+			
+			<!-- Alerta de mensaje -->
+			<ice:panelPopup id="modalPnlPopError" draggable="false" modal="false"
+				style="width: 200px; height: 120px;" visible="#{mBeanPerfiles.ver}"
+				autoCentre="true" styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Aviso" styleClass="popupHeaderText" />
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+					<ice:panelGroup styleClass="popupBody">
+						<ice:outputText value="#{mBeanPerfiles.error}" />
+						<br></br>
+						<ice:commandButton id="modalPnlCBError" type="submit"
+							value="Aceptar" actionListener="#{mBeanPerfiles.cerrar}" />
+					</ice:panelGroup>
+				</f:facet>
+			</ice:panelPopup>
+
+		</ice:panelTab>
+	</ice:panelTabSet>
+
+
+
+	<ice:menuPopup id="menuPopupEffects">
+		<ice:menuItem id="mnuNuevo"
+			actionListener="#{mBeanPerfiles.eventoNuevo}" value="Nuevo"
+			title="Ingresar perfil">
+		</ice:menuItem>
+		<ice:menuItem id="mnuModificar" value="Modificar"
+			title="Modificar perfil">
+		</ice:menuItem>
+
+		<ice:menuItem id="mnuAuditoria" value="Auditoria"
+			title="Consultar auditoria">
+		</ice:menuItem>
+
+
+	</ice:menuPopup>
+
+
+</ice:form>
+</body>
+</html>

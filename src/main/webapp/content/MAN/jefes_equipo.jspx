@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+    <body>
+    <!-- Ventana de mantenimiento de Jefe de Equipo
+	 Realizado Por : Eli Diaz Horna
+	 Fecha Creacion : 24/01/2011
+	 Descripcion  : Ingreso y Modificacion de jefe de equipo por area
+	-->
+        <ice:form partialSubmit="true">
+            <ice:panelTabSet id="icePnlTbSet1">
+                <ice:panelTab label="Jefes de Equipo" title="Mantenimiento">
+                    <!-- Actualizar Registro - Manteminiento -->
+                    <ice:panelGroup rendered="true">
+                    	<ice:panelGrid columns="1" border="1">
+                        <ice:panelGrid columns="3" style="font-size: 9px;">                            
+                            <ice:outputText value="AREA :" />
+                            <ice:inputText value="#{mBeanJefesEquipo.codArea}" readonly="true" style="font-size: 9px; background: #c2dfef" size="20" />
+                            <ice:inputText value="#{mBeanJefesEquipo.descArea}" readonly="true" style="font-size: 9px; background: #c2dfef" size="100" />
+                            <ice:outputText value="FICHA :" />
+                            <ice:inputText value="#{mBeanJefesEquipo.codFicha}" style="font-size: 9px;" size="20" />
+                            <ice:outputText value="" />
+                            <ice:outputText value="AP. PATERNO :" />
+                            <ice:inputText value="#{mBeanJefesEquipo.apePaterno}" style="font-size: 9px;" size="50" />
+                            <ice:outputText value="" />
+                            <ice:outputText value="AP. MATERNO :" />
+                            <ice:inputText value="#{mBeanJefesEquipo.apeMaterno}" style="font-size: 9px;" size="50" />
+                            <ice:outputText value="" />
+                            <ice:outputText value="NOMBRES :" />
+                            <ice:inputText value="#{mBeanJefesEquipo.nombres}" style="font-size: 9px;" size="50" />
+                            <ice:outputText value="" />
+                        </ice:panelGrid>
+                        </ice:panelGrid>
+                        <ice:panelGrid columns="1" style="font-size: 9px;">
+                            <ice:commandButton value="Actualizar" actionListener="#{mBeanJefesEquipo.processActualizar}" title="Actualizar" 
+                            image="/images/grabar.png" style="size: width: 30px; height: 30px"/>
+                        <ice:outputText value="Grabar" />					
+						</ice:panelGrid>
+                        
+                    </ice:panelGroup>                   
+                    <!-- Mensaje de Alerta -->
+                    <ice:panelPopup id="popupAlerta" draggable="false" modal="false"
+                                    style="width: 220px; height: 120px; background-color: #0085BC;" 
+                                    visible="#{mBeanJefesEquipo.verAlerta}"
+                                    autoCentre="true" styleClass="icePnlPop">
+                        <f:facet name="header">
+                            <ice:panelGroup styleClass="popupHeaderWrapper">
+                                <ice:outputText value="Mensaje" style="font-size: 12px; color: blue;"
+                                styleClass="popupHeaderText" />
+                            </ice:panelGroup>
+                        </f:facet>
+                        <f:facet name="body">
+                            <ice:panelGroup styleClass="popupBody">
+                                <ice:outputText value="#{mBeanJefesEquipo.msgAlerta}" 
+                                style="font-size: 12px; color: white;"/>
+                                <br></br>
+					  <br></br>
+                                <ice:commandButton type="submit" value="Aceptar" actionListener="#{mBeanJefesEquipo.processCerrarAlerta}" />
+                            </ice:panelGroup>
+                        </f:facet>
+                    </ice:panelPopup>
+                    
+                    <!-- Mensaje de Alerta con confirmacion -->
+                    <ice:panelPopup id="popupConfirm" draggable="false" modal="false"
+                                    style="width: 220px; height: 120px; background-color: #0085BC;"
+                                    visible="#{mBeanJefesEquipo.verAlertaConfirm}"
+                                    autoCentre="true" styleClass="icePnlPop">
+                        <f:facet name="header">
+                            <ice:panelGroup styleClass="popupHeaderWrapper">
+                                <ice:outputText value="Mensaje" style="font-size: 12px; color: blue;"
+                                styleClass="popupHeaderText" />
+                            </ice:panelGroup>
+                        </f:facet>
+                        <f:facet name="body">
+                            <ice:panelGroup styleClass="popupBody">
+                                <ice:outputText value="#{mBeanJefesEquipo.msgAlertaConfirm}" 
+                                style="font-size: 12px; color: white;"/>
+                                <br></br>
+                                <br></br>
+                                <ice:commandButton type="submit" value="    SI    " actionListener="#{mBeanJefesEquipo.processConfirmOK}" />
+                                <ice:outputText value=" " />
+                                <ice:commandButton type="submit" value="    NO    " actionListener="#{mBeanJefesEquipo.processConfirmNO}" />
+                            </ice:panelGroup>
+                        </f:facet>
+                    </ice:panelPopup>
+                </ice:panelTab>
+            </ice:panelTabSet>
+        </ice:form>
+    </body>
+</html>

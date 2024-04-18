@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+<body>
+<!-- Ventana de informacion del sistema
+	 Realizado Por : Eli Diaz Horna
+	 Fecha Creacion : 24/01/2011
+	 Descripcion  : informacion y manual de usuario del sistema
+	-->
+<ice:form partialSubmit="true">
+	
+
+
+	<ice:menuPopup id="menuPopupEffects">
+		<ice:menuItem id="mnuModificar" value="Modificar"
+			title="Modificar perfil">
+		</ice:menuItem>
+
+		<ice:menuItem id="mnuAuditoria" value="Auditoria"
+			title="Consultar auditoria">
+		</ice:menuItem>
+
+		
+
+	</ice:menuPopup>
+	
+	<ice:panelTabSet id="icePnlTbSet1">
+
+		<!-- Panel Tab 1 defined with some basic content -->
+		<ice:panelTab label="Información del Sistema" title="Catalogo">				
+				<br><ice:outputText value="Trámite Documentario Corporativo" style="color: #006EAA; font-size: 18px; font-style:inherit; "/></br>	
+				<br><ice:outputText value="Versión 9.5 01/11/2023" style="color: #006EAA; font-size: 14px; font-style:inherit;"/></br>	
+				<br><ice:outputText value="Equipo Tecnologías de la Información y Comunicaciones - Sedapal" style="color: #006EAA; font-size: 14px; font-style:inherit;"/></br>	
+				<br><ice:outputText value="Lider Proyecto:" style="color: green; font-size: 14px; font-style:inherit;"/></br>
+				<br><ice:outputText value="Ing. Elí Díaz Horna" style="color: #006EAA; font-size: 14px; font-style:inherit;"/></br>
+							
+				<br><ice:outputText value="Sistema Desarrollado Por:" style="color: green; font-size: 14px; font-style:inherit;"/></br>
+				<br><ice:outputText value="Ing. Elí Díaz Horna" style="color: #006EAA; font-size: 14px; font-style:inherit;"/></br>
+				
+				<br><ice:outputText value="Clic para ver Manual de Usuario" style="color: #006EAA; font-size: 14px; font-style:inherit;"/></br>											
+				<ice:outputLink value="http://10.100.176.140/manual/Manual.pdf" target="_blank">									
+						<ice:graphicImage id="gi1" alt="Manual de Usuario"
+							value="images/1.jpg" 
+							style="border:0; size: width: 30px; height: 30px">
+						</ice:graphicImage>						
+				</ice:outputLink>
+				<br><ice:outputText value="Clic para ver Tips del Sistema" style="color: #006EAA; font-size: 14px; font-style:inherit;"/></br>											
+				<ice:outputLink value="http://10.100.176.140/manual/Tips.pdf" target="_blank">									
+						<ice:graphicImage id="gi3" alt="Tips del Sistema"
+							value="images/1.jpg" 
+							style="border:0; size: width: 30px; height: 30px">
+						</ice:graphicImage>						
+				</ice:outputLink>
+				<br><ice:outputText value="Clic para ver Video de la Sede Electrónica" style="color: #006EAA; font-size: 14px; font-style:inherit;"/></br>	
+				<ice:outputLink value="http://10.100.176.140/manual/video_sede.mp4" target="_blank">								
+						<ice:graphicImage id="gi2" alt="Video de la Sede Electrónica"
+							value="images/video.gif" 
+							style="border:0; size: width: 30px; height: 30px">
+						</ice:graphicImage>						
+				</ice:outputLink>	
+				
+				<br><ice:outputText value="Clic para ver Video del Tramite Documentario" style="color: #006EAA; font-size: 14px; font-style:inherit;"/></br>	
+				<ice:outputLink value="http://10.100.176.140/manual/tramite_documentario.mp4" target="_blank">								
+						<ice:graphicImage id="gi4" alt="Video de la Sede Electrónica"
+							value="images/video.gif" 
+							style="border:0; size: width: 30px; height: 30px">
+						</ice:graphicImage>						
+				</ice:outputLink>			
+				
+				
+				
+		</ice:panelTab>
+	</ice:panelTabSet>
+
+
+
+</ice:form>
+</body>
+</html>

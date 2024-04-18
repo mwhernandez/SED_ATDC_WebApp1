@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component"
+      xmlns:c="http://java.sun.com/jstl/core" >
+    <body>
+    <!-- Estadisticos general de documentos de entrada
+	 Realizado Por : Eli Diaz Horna
+	 Fecha Creacion : 24/01/2011
+	 Descripcion  : Estadisticos general de documentos de entrada por area
+	-->
+        <ice:form partialSubmit="true">            
+            <ice:panelGroup>
+            	<ice:panelGrid columns="1" style="border: 1px solid #333;">
+            	<ice:outputLabel value="MODULO DE ESTADISTICAS POR EQUIPOS" style="font-size: 9px; color: green;"></ice:outputLabel>
+            	<ice:panelGrid columns="4">
+            	<ice:outputLabel value="SELECCIONAR LA GERENCIA" style="font-size: 9px; color: green;"></ice:outputLabel>
+            	<ice:selectOneMenu value="#{mBeanEstadisticaEstadoExp.varea}"																	
+									style="font-size: 9px;" title="Gerencia">
+									<f:selectItems value="#{mBeanEstadisticaEstadoExp.itemsareas}" />
+				</ice:selectOneMenu>
+				</ice:panelGrid>
+				<ice:panelGrid columns="6">
+                    <ice:outputLabel value="F.INICIAL:" style="font-size: 9px; color: green;"></ice:outputLabel>
+                    <ice:selectInputDate style="font-size: 9px" renderMonthAsDropdown="true"
+                                         renderYearAsDropdown="true" value="#{mBeanEstadisticaEstadoExp.fechaIni}"
+                                         title="Fec1" renderAsPopup="true">
+                        <f:convertDateTime pattern="dd/MM/yyyy"
+                                           timeZone="#{dateSelect.timeZone}" />
+                    </ice:selectInputDate>
+                    <ice:outputLabel value="F.FINAL:" style="font-size: 9px; color: green;"></ice:outputLabel>
+                    <ice:selectInputDate style="font-size: 9px"
+                                         renderMonthAsDropdown="true" renderYearAsDropdown="true"
+                                         value="#{mBeanEstadisticaEstadoExp.fechaFin}"  title="Fec2" renderAsPopup="true">
+                        <f:convertDateTime pattern="dd/MM/yyyy"
+                                           timeZone="#{dateSelect.timeZone}" />
+                    </ice:selectInputDate>
+                    <ice:commandButton value="Ejecutar"
+                                   actionListener="#{mBeanEstadisticaEstadoExp.processEjecutarEstadistica}" image="/images/buscar2.png" style="width: 25px; height: 25px;">
+                    </ice:commandButton>
+                    <!-- 
+                    <ice:commandButton value="Imprimir" actionListener="#{mBeanEstadisticaGerenciasles.recursoReport}"
+								title="Impresion" image="/images/impresion.png"
+								style="size: width: 30px; height: 30px" />
+					 -->
+                </ice:panelGrid>			
+              
+                </ice:panelGrid>
+            </ice:panelGroup>
+          
+            <ice:panelGroup rendered="#{mBeanEstadisticaEstadoExp.verEstadistica1}">
+                <ice:panelGrid columns="1">
+                    <ice:dataTable var="item" value="#{mBeanEstadisticaEstadoExp.listadoEstadisticaEstExp}" scrollable="true" scrollHeight="140px" columnWidths="100px,300px,100px;">
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Meses" />
+                            </f:facet>
+                            <ice:outputText value="#{item.mes}" style="font-size: 9px;"/>
+                        </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Estado" />
+                            </f:facet>
+                            <ice:outputText value="#{item.estado}" style="font-size: 9px;"/>
+                        </ice:column>
+                        <ice:column>
+                            <f:facet name="header">
+                                <ice:outputText value="Cantidad" />
+                            </f:facet>
+                            <ice:outputText value="#{item.cantidad}" style="font-size: 9px;"/>
+                        </ice:column>
+                    </ice:dataTable>
+                </ice:panelGrid>
+                
+                <ice:panelGrid columns="1">
+                    <ice:graphicImage value="#{mBeanEstadisticaEstadoExp.imagenEstadistica}" />
+                </ice:panelGrid>
+                
+                
+            </ice:panelGroup>
+          
+                       
+            <!-- Alerta de mensaje -->
+			<ice:panelPopup id="modalPnlPopError" draggable="false" modal="false"
+				style="width: 200px; height: 120px;" visible="#{mBeanEstadisticaEstadoExp.ver}"
+				autoCentre="true" styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Aviso" styleClass="popupHeaderText" />
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+					<ice:panelGroup styleClass="popupBody">
+						<ice:outputText value="#{mBeanEstadisticaEstadoExp.error}" />
+						<br></br>
+						<ice:commandButton id="modalPnlCBError" type="submit"
+							value="Aceptar" actionListener="#{mBeanEstadisticaEstadoExp.cerrar}" />
+					</ice:panelGroup>
+				</f:facet>
+			</ice:panelPopup>
+            
+        </ice:form>
+    </body>
+</html>

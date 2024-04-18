@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="srpt_DocOrigen" language="groovy" pageWidth="270" pageHeight="100" whenNoDataType="AllSectionsNoDetail" columnWidth="270" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="P_AREA" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_FECHAINICIO" class="java.lang.String"/>
+	<parameter name="P_FECHAFIN" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT DECODE(de.norigen, 1, 'INTERNO',
+                          2, 'EXTERNO') descOrigen,
+       count(de.norigen) cantOrigen
+  FROM atd_doc_entr de
+ WHERE de.vestado != 'ESTA004'
+   AND trunc(de.dfeccre) BETWEEN to_date($P{P_FECHAINICIO}, 'dd-MM-yyyy') AND to_date($P{P_FECHAFIN}, 'dd-MM-yyyy')
+   AND EXISTS (SELECT di.ncodarea FROM atd_doc_entr_dirigido di WHERE di.nano = de.nano AND di.norigen=de.norigen AND di.ncorrelativo = de.ncorrelativo AND di.ncodarea= $P{P_AREA})
+GROUP BY de.norigen]]>
+	</queryString>
+	<field name="DESCORIGEN" class="java.lang.String"/>
+	<field name="CANTORIGEN" class="java.math.BigDecimal"/>
+	<variable name="totalOrigen" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTORIGEN}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="100">
+			<pieChart>
+				<chart evaluationTime="Report">
+					<reportElement x="0" y="0" width="270" height="100"/>
+					<box>
+						<pen lineWidth="0.5" lineColor="#003366"/>
+						<topPen lineWidth="0.5" lineColor="#003366"/>
+						<leftPen lineWidth="0.5" lineColor="#003366"/>
+						<bottomPen lineWidth="0.5" lineColor="#003366"/>
+						<rightPen lineWidth="0.5" lineColor="#003366"/>
+					</box>
+					<chartTitle position="Top"/>
+					<chartSubtitle/>
+					<chartLegend position="Right"/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{DESCORIGEN}]]></keyExpression>
+					<valueExpression><![CDATA[$F{CANTORIGEN}]]></valueExpression>
+					<labelExpression><![CDATA[$F{CANTORIGEN}]]></labelExpression>
+				</pieDataset>
+				<piePlot isCircular="true" labelFormat="{0} ({2})">
+					<plot labelRotation="1.0"/>
+					<itemLabel color="#000000" backgroundColor="#FFFFFF"/>
+				</piePlot>
+			</pieChart>
+		</band>
+	</title>
+</jasperReport>

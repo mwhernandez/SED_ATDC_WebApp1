@@ -1,0 +1,1250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+<!-- Ventana de Documento Saliente
+	 Realizado Por : Eli Diaz Horna
+	 Fecha Creacion : 24/01/2011
+	 Descripcion  : Ingreso y Modificacion de Documentos Salientes
+	-->
+
+<body>
+<ice:form partialSubmit="true">
+	<ice:loadBundle basename="com.sedapal.tramite.files.parametros"
+		var="msg" />
+	<ice:panelTabSet id="icePnlTbSet1">
+
+		<!-- Panel Tab 1 defined with some basic content 
+		scrollable="true" scrollHeight="500px"
+		columnClasses="tableCol" scrollable="true" scrollHeight="250px"
+		-->
+		<ice:panelTab label="Documentos Salientes" title="Catalogo">
+			<ice:panelGroup rendered="#{mBeandocumentosalida.verCatalogo}">
+				<ice:panelGrid columns="5" cellpadding="5">
+				
+					<ice:commandButton value="Nuevo"
+						actionListener="#{mBeandocumentosalida.eventNuevo}" title="Nuevo"
+						image="/images/nuevo2.png" style="size: width: 40px; height: 40px" />
+						
+					<ice:commandButton value="Eliminar"					    
+					    disabled="#{mBeandocumentosalida.verEliminar}"
+						actionListener="#{mBeandocumentosalida.eventEliminar}"
+						title="Eliminar" image="/images/eliminar2.png"
+						style="size: width: 40px; height: 40px" />
+						
+					<ice:commandButton value="Actualizar"
+						actionListener="#{mBeandocumentosalida.eventActualizar}"
+						title="Modificar" image="/images/modificar2.png"
+						style="size: width: 40px; height: 40px" />
+					
+					<ice:dataExporter for="idProductos" ignorePagination="true"
+						label="Excel" type="excel" image="/images/excel2010.jpg"
+						style="border:0;"
+						popupBlockerLabel="Popup Blocker detected - click here to resume download..."
+						clickToCreateFileText="Excel" />
+						
+					<ice:commandButton value="Refrescar"
+						actionListener="#{mBeandocumentosalida.eventRefrescar}"
+						title="Refrescar" image="/images/resert.png"
+						style="size: width: 25px; height: 25px"/>
+					
+					<ice:outputText value="Nuevo" style="font-size: 10px; color: blue;"/>
+									
+					<ice:outputText value="Eliminar" style="font-size: 10px; color: blue;"/>					
+				
+					<ice:outputText value="Actualizar" style="font-size: 10px; color: blue;"/>					
+									
+					<ice:outputText value="Excel" style="font-size: 10px; color: blue;"/>					
+				
+					<ice:outputText value="Refrescar"  style="font-size: 10px; color: blue;"/>
+				</ice:panelGrid>
+				
+				<ice:panelGrid columns="3" border="1">
+				<ice:panelGrid columns="11">
+					<ice:outputLabel value="F.INICIAL:" style="font-size: 9px; color: green;"></ice:outputLabel>
+					<ice:selectInputDate style="font-size: 9px"
+						renderMonthAsDropdown="true" renderYearAsDropdown="true"
+						value="#{mBeandocumentosalida.date1}" title="Fec1"
+						renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}" />
+					</ice:selectInputDate>
+					<ice:outputLabel value="F.FINAL:" style="font-size: 9px; color: green;"></ice:outputLabel>
+					<ice:selectInputDate style="font-size: 9px"
+						renderMonthAsDropdown="true" renderYearAsDropdown="true"
+						value="#{mBeandocumentosalida.date2}" title="Fec2"
+						renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}" />
+					</ice:selectInputDate>
+					 <ice:selectOneMenu value="#{mBeandocumentosalida.tipoopcion}"
+                                        valueChangeListener="#{mBeandocumentosalida.eventtipoconsulta}"
+                                        style="font-size: 9px;"
+                                        title="Tipo de Consulta">
+                    <f:selectItems value="#{mBeandocumentosalida.itemscombo}" />
+                    </ice:selectOneMenu>
+                    <ice:outputLabel value="TIPO DOC:" style="font-size: 9px; color: green;"></ice:outputLabel>
+					<ice:selectOneMenu binding="#{mBeandocumentosalida.combo}"
+						disabled="#{mBeandocumentosalida.disverestado}"
+						style="font-size: 9px"
+						value="#{mBeandocumentosalida.itemSeleccionado}" 
+						title="Tipo Doc">
+						<f:selectItems id="slctCreacionUsuario"
+							value="#{mBeandocumentosalida.items2}" />
+					</ice:selectOneMenu> 
+					<ice:outputLabel value="REMITENTE:" 
+					style="font-size: 9px; color: green;"></ice:outputLabel>
+					<ice:selectOneMenu binding="#{mBeandocumentosalida.comboarea}"
+						disabled="#{mBeandocumentosalida.disverremite}"
+						style="font-size: 9px" 
+						value="#{mBeandocumentosalida.itemareaSeleccionado}"
+						title="Remitente">
+						<f:selectItems id="slctCreacionUsuario"
+							value="#{mBeandocumentosalida.items11}" />
+					</ice:selectOneMenu>
+					</ice:panelGrid>
+					
+					
+					<ice:commandButton value="Ejecutar"
+						actionListener="#{mBeandocumentosalida.eventFiltros}"
+						image="/images/buscar2.png"
+						style="size: width: 20px; height: 20px">
+					</ice:commandButton>					
+					<ice:outputResource id="pdf-image" shared="false" 
+					    label="Impresión"
+					    rendered="#{mBeandocumentosalida.verReport1}"
+						attachment="false" fileName="reportedespacho.pdf"
+						image="/images/impresion.png"
+						style="border=0 size: width: 18px; height: 18px"
+						mimeType="application/pdf"
+						resource="#{mBeandocumentosalida.recursoReport}">
+					</ice:outputResource>
+					
+					<ice:outputResource id="pdf-image22" shared="false"
+						label="Impresión"
+						rendered="#{mBeandocumentosalida.verReport2}"
+					    attachment="false" fileName="reportedespachoremite.pdf"
+						image="/images/impresion.png"
+						style="border=0 size: width: 18px; height: 18px"
+						mimeType="application/pdf"
+						resource="#{mBeandocumentosalida.recursoReporteNuevo}" />
+											 				
+				</ice:panelGrid>
+				<ice:panelGrid columns="7" cellpadding="1" border="1">
+					<h:selectOneRadio value="#{mBeandocumentosalida.opcion}"
+						style="font-size: 9px; color: green;">
+						<f:selectItem itemValue="CODIGO" itemLabel="REGISTRO" />
+						<f:selectItem itemValue="NUMDOC" itemLabel="NUM.DOC" />
+						<f:selectItem itemValue="DIRIGIDO" itemLabel="DIRIGIDO" />
+						<f:selectItem itemValue="ASUNTO" itemLabel="ASUNTO" />
+						<f:selectItem itemValue="TIPO" itemLabel="TIPO DOC." />
+						<f:selectItem itemValue="REFERENCIA" itemLabel="REFERENCIA" />
+						<f:selectItem itemValue="ENTRADA" itemLabel="REG.ENTRADA" />
+						<f:selectItem itemValue="USUARIO" itemLabel="USUARIO" />
+					</h:selectOneRadio>
+					<ice:inputText value="#{mBeandocumentosalida.detalle}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 9px;" size="70" />
+					<ice:commandButton value="Ejecutar"
+						actionListener="#{mBeandocumentosalida.eventBusquedas}"
+						title="Buscar" image="/images/buscar2.png"
+						style="size: width: 20px; height: 20px">
+					</ice:commandButton>
+				</ice:panelGrid>
+
+
+				<!---->
+			</ice:panelGroup>
+			
+			<ice:panelGroup rendered="#{mBeandocumentosalida.verCatalogo}">
+				<ice:dataTable var="pro" value="#{mBeandocumentosalida.documento}"
+					columnClasses="tableCol" style="font-size: 9px;" rows="10"
+					sortColumn="#{mBeandocumentosalida.sortColumnName}"
+					sortAscending="#{mBeandocumentosalida.ascending}" id="idProductos"
+					scrollable="false">
+					<ice:column>
+						<ice:rowSelector id="selected" value="#{pro.selected}"
+							multiple="#{mBeandocumentosalida.multiple}"
+							enhancedMultiple="#{mBeandocumentosalida.enhancedMultiple}"
+							selectionListener="#{mBeandocumentosalida.rowSelectionListener}"
+							preStyleOnSelection="true" />
+						<f:facet name="header">
+							<ice:outputText value="Reg"/>
+							<ice:commandSortHeader columnName="codigo" arrow="true">
+								<ice:outputLabel value="Reg" style="color: blue;"/>
+							</ice:commandSortHeader>
+						</f:facet>
+						<ice:outputText id="idCB" value="#{pro.codigo}" />
+					</ice:column>
+					<!-- 
+					<ice:column>
+					<f:facet name="header">					
+							<ice:outputText value="Reg" />														
+						</f:facet>
+						<ice:outputText id="idCB" value="#{pro.codigo}" />
+					</ice:column>
+					 -->
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Num.Doc" style="color: blue;"/>
+							<!-- 	
+							<ice:commandSortHeader columnName="numerodoc" arrow="true">
+									<ice:outputLabel value="Num.Doc" />
+							</ice:commandSortHeader>
+							 -->
+						</f:facet>
+						<ice:outputText value="#{pro.numerodoc}" />
+					</ice:column>
+					<!-- 					
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Remitente" />
+						</f:facet>
+						<ice:outputText value="#{pro.nom_area}" />
+					</ice:column>
+					 -->
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Dirigido" />
+							<ice:commandSortHeader columnName="dirigido" arrow="true">
+								<ice:outputLabel value="Dirigido" style="color: blue;"/>
+							</ice:commandSortHeader>
+						</f:facet>
+						<ice:outputText value="#{pro.dirigido}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Asunto" style="color: blue;"/>
+							<!--
+							<ice:commandSortHeader columnName="asunto" arrow="true">
+									<ice:outputLabel value="Asunto" />
+							</ice:commandSortHeader>
+							 -->
+						</f:facet>
+						<ice:outputText value="#{pro.asunto}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Tipo Doc" />
+							<ice:commandSortHeader columnName="tipodoc" arrow="true">
+								<ice:outputLabel value="Tipo Doc" style="color: blue;"/>
+							</ice:commandSortHeader>
+						</f:facet>
+						<ice:outputText value="#{pro.tipodoc}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Prio." style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro.prioridad}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Fecha Doc." />
+							<ice:commandSortHeader columnName="fecha" arrow="true">
+								<ice:outputLabel value="Fecha Doc." style="color: blue;"/>
+							</ice:commandSortHeader>
+						</f:facet>
+						<ice:outputText value="#{pro.fecha}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</ice:outputText>
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Dias" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro.dias}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Fecha Plazo" />
+							<ice:commandSortHeader columnName="dfecplazo" arrow="true">
+								<ice:outputLabel value="Fecha Plazo" style="color: blue;"/>
+							</ice:commandSortHeader>
+						</f:facet>
+						<ice:outputText value="#{pro.dfecplazo}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</ice:outputText>
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Reg.Entrada" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro.valor_entrada}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Usuario" style="color: blue;"/>
+							<!--
+							<ice:commandSortHeader columnName="vrescre" arrow="false">
+									<ice:outputLabel value="Usuario" />
+							</ice:commandSortHeader>
+							-->
+						</f:facet>
+						<ice:outputText value="#{pro.vrescre}" />
+					</ice:column>
+					<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Estado" style="color: blue;"/>
+							</f:facet>
+							<ice:outputText value="#{pro.estado}" />
+						</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Est" />
+							<ice:commandSortHeader columnName="estado" arrow="true">
+								<ice:outputLabel value="Est" style="color: blue;"/>
+							</ice:commandSortHeader>
+						</f:facet>
+						<h:graphicImage id="gi" alt="#{pro.estado}"
+							value="images/#{pro.estado}.png"
+							style="size: width: 15px; height: 15px">
+						</h:graphicImage>
+					</ice:column>
+					<!-- 
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Adj." style="color: blue;"/>
+						</f:facet>
+						<ice:outputLink value="#{pro.ubiarchivo}" target="_blank"
+							rendered="#{pro.atachment}">
+							<ice:graphicImage id="gi1" value="images/#{pro.indicador}.jpg"
+								style="border:0; size: width: 25px; height: 25px">
+							</ice:graphicImage>
+						</ice:outputLink>
+					</ice:column>
+					 -->
+				</ice:dataTable>
+
+
+				<ice:panelGrid columns="2">
+					<ice:outputText value=" " />
+					<!-- Paginator with page controls -->
+					<ice:dataPaginator id="dataScroll_3" for="idProductos"
+						paginator="true" fastStep="3" paginatorMaxPages="5">
+						<f:facet name="first">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+								style="border:none;" title="First Page" />
+						</f:facet>
+						<f:facet name="last">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+								style="border:none;" title="Last Page" />
+						</f:facet>
+						<f:facet name="previous">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+								style="border:none;" title="Previous Page" />
+						</f:facet>
+						<f:facet name="next">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+								style="border:none;" title="Next Page" />
+						</f:facet>
+						<f:facet name="fastforward">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-ff.gif"
+								style="border:none;" title="Fast Forward" />
+						</f:facet>
+						<f:facet name="fastrewind">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-fr.gif"
+								style="border:none;" title="Fast Backwards" />
+						</f:facet>
+					</ice:dataPaginator>
+
+					<ice:outputText value="" />
+
+					<!-- Display counts about the table and the currently displayed page -->
+					<ice:dataPaginator id="dataScroll_2" for="idProductos"
+						rowsCountVar="rowsCount"
+						displayedRowsCountVar="displayedRowsCount"
+						firstRowIndexVar="firstRowIndex" lastRowIndexVar="lastRowIndex"
+						pageCountVar="pageCount" pageIndexVar="pageIndex">
+						<ice:outputFormat
+							value="{0} documentos encontrados, mostrando {1}, de {2} hasta {3}. Pagina {4} / {5}."
+							styleClass="standard">
+							<f:param value="#{rowsCount}" />
+							<f:param value="#{displayedRowsCount}" />
+							<f:param value="#{firstRowIndex}" />
+							<f:param value="#{lastRowIndex}" />
+							<f:param value="#{pageIndex}" />
+							<f:param value="#{pageCount}" />
+						</ice:outputFormat>
+					</ice:dataPaginator>
+				</ice:panelGrid>
+				<!-- 
+				<ice:panelGrid columns="1">
+								<ice:dataExporter for="idProductos" ignorePagination="true"
+									rendered="#{mBeandocumentosalida.disPrint }"
+									label="Click para bajar el reporte en excel" type="excel"
+									popupBlockerLabel="Popup Blocker detected - click here to resume download..."
+									style="border:none; size: width: 18px; height: 18px;"									
+									clickToCreateFileText="Click para crear archivo en excel.." />
+					</ice:panelGrid>
+				 -->
+			</ice:panelGroup>
+
+			<ice:panelGroup rendered="#{mBeandocumentosalida.verNuevo}">
+				<ice:panelGrid border="1">
+				<ice:panelGrid columns="6" style="font-size: 9px;">
+					<ice:outputText value="REGISTRO :" />
+					<ice:inputText value="#{mBeandocumentosalida.codigoN}"
+						readonly="True" disabled="true" />
+					<ice:outputText value="AÑO :" />
+					<ice:inputText value="#{mBeandocumentosalida.anoN}" readonly="True"
+						disabled="true" />
+					<!-- 					
+					<h:selectOneMenu value="#{mBeandocumentosalida.origenesN}" 
+						style="font-size: 9px;"
+						valueChangeListener="#{mBeandocumentosalida.captura_origen}">
+						<f:selectItem itemValue="SELECCIONAR" itemLabel="SELECCIONAR" />
+						<f:selectItem itemValue="INTERNO" itemLabel="INTERNO" />
+						<f:selectItem itemValue="EXTERNO" itemLabel="EXTERNO" />
+					</h:selectOneMenu>
+					 -->
+					<ice:outputText value="PRIORIDAD :" />
+					<h:selectOneMenu value="#{mBeandocumentosalida.prioridadN}"
+						style="font-size: 9px;">
+						<f:selectItem itemValue="URGENTE" itemLabel="URGENTE" />
+						<f:selectItem itemValue="ALTA" itemLabel="ALTA" />
+						<f:selectItem itemValue="MEDIA" itemLabel="MEDIA" />
+						<f:selectItem itemValue="BAJA" itemLabel="BAJA" />
+					</h:selectOneMenu>
+					<ice:outputText value="NRO DOC. :" />
+					<ice:inputText value="#{mBeandocumentosalida.numerodocN}" size="35"
+						readonly="True" disabled="true" />
+					<ice:outputText value="FECHA" />
+					<ice:inputText value="#{mBeandocumentosalida.fechaN}"
+						readonly="True" disabled="true">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</ice:inputText>
+					<ice:outputText value="AREA REMITE :" />
+					<ice:inputText value="#{mBeandocumentosalida.nom_areaN}"
+						readonly="True" disabled="true" size="60" />
+					<ice:outputText value="FECHA DOC:" />
+					<ice:selectInputDate renderMonthAsDropdown="true"
+						renderYearAsDropdown="true" value="#{mBeandocumentosalida.fechaN}"
+						style="font-size: 9px;" title="Fec1" renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}" />
+					</ice:selectInputDate>
+					<ice:outputText value="FECHA PLAZO :" />
+					<ice:selectInputDate renderMonthAsDropdown="true"
+						renderYearAsDropdown="true"
+						value="#{mBeandocumentosalida.dfecplazoN}" style="font-size: 9px;"
+						title="Fec1" renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}" />
+					</ice:selectInputDate>
+					<ice:outputText value="DIAS :" />
+					<ice:inputText value="#{mBeandocumentosalida.diasN}" size="10" />
+					<ice:outputText value="ESTADO :" />
+					<ice:selectOneMenu value="#{mBeandocumentosalida.nestadoN}"
+						valueChangeListener="#{mBeandocumentosalida.capturaPerfil}"
+						style="font-size: 9px;" title="Derivado">
+						<f:selectItems value="#{mBeandocumentosalida.items9}" />
+					</ice:selectOneMenu>					
+					<ice:outputText value="ORIGEN :" />
+					<ice:selectOneMenu value="#{mBeandocumentosalida.origenesN}"
+						style="font-size: 9px;" title="Origen"
+						valueChangeListener="#{mBeandocumentosalida.captura_origen}">
+						<f:selectItems value="#{mBeandocumentosalida.items7}" />
+					</ice:selectOneMenu>
+					<ice:outputText value="TIPO :" />
+					<ice:selectOneMenu value="#{mBeandocumentosalida.tipodocN}"
+						style="font-size: 9px;" title="Tipos">
+						<f:selectItems value="#{mBeandocumentosalida.items2}" />
+					</ice:selectOneMenu>
+				</ice:panelGrid>
+				</ice:panelGrid>
+				<ice:panelGrid border="1">
+				<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="REMITENTE JEFE EQUIPO :" />
+					<ice:selectOneMenu value="#{mBeandocumentosalida.remitenteN}"
+						style="font-size: 9px;" title="Remite" disabled="true">
+						<f:selectItems value="#{mBeandocumentosalida.items6}" />
+					</ice:selectOneMenu>
+				</ice:panelGrid>				
+				</ice:panelGrid>
+				<ice:panelGrid border="1">
+				<ice:panelGrid columns="6" style="font-size: 9px;">
+					<ice:panelGrid columns="1">
+						<ice:outputText value="SELECCIONAR EQUIPO/EMPRESA :" />
+						<ice:selectInputText id="AutocomletaRemitente" rows="40"
+							value="#{mBeandocumentosalida.personaSeleccionada}"
+							valueChangeListener="#{mBeandocumentosalida.autocompletarPersona}"
+							listVar="_persona" width="350px;font-size:9px;color:blue;"
+							listValue="#{mBeandocumentosalida.posiblespersonas}">
+							<f:facet name="selectInputText">
+								<ice:panelGrid columns="2">
+									<ice:outputText id="nombre" style="font-size: 9px;"
+										value="#{_persona.descripcion}" />
+								</ice:panelGrid>
+							</f:facet>
+						</ice:selectInputText>
+						<!--			
+					<ice:selectOneMenu value="#{mBeandocumentosalida.dirigidoN}" 
+					                   valueChangeListener="#{mBeandocumentosalida.capturaPersonalRepresentantes}"
+						style="font-size: 9px;" title="Derivado">						
+						<f:selectItems value="#{mBeandocumentosalida.items1}" />
+					</ice:selectOneMenu>
+					-->
+						<ice:outputText value="TRABAJADOR/REPRESENTANTE:" />
+						<ice:selectOneMenu value="#{mBeandocumentosalida.derivadoN}"
+							style="font-size: 9px; color: blue" title="Derivado">
+							<f:selectItems
+								value="#{mBeandocumentosalida.itemsPersonalRepresentantes}" />
+						</ice:selectOneMenu>
+					</ice:panelGrid>
+					<ice:panelGrid columns="1" style="font-size: 9px;">
+						<ice:outputText value="DESTINATARIO" />
+						<ice:selectOneRadio
+							value="#{mBeandocumentosalida.estadoSeleccionado}"
+							layout="pageDirection">
+							<f:selectItem itemValue="AA" itemLabel="TO" />
+							<f:selectItem itemValue="CC" itemLabel="CC" />
+						</ice:selectOneRadio>
+					</ice:panelGrid>
+					<ice:panelGrid columns="1" style="font-size: 9px;">
+						<ice:commandButton value="Añadir" title="Añadir"
+							image="/images/mas.png" style="size: width: 20px; height: 20px"
+							actionListener="#{mBeandocumentosalida.pasarItems}" />
+						<ice:commandButton value="Quitar" title="Quitar"
+							image="/images/menos.png" style="size: width: 20px; height: 20px"
+							actionListener="#{mBeandocumentosalida.quitarItems}" />
+					</ice:panelGrid>
+					<ice:dataTable var="item"
+						value="#{mBeandocumentosalida.seleccionados}"
+						columnClasses="tableCol" style="font-size: 9px;" id="idSelecc"
+						scrollable="false">
+						<ice:column>
+							<ice:rowSelector value="#{item.selected}"
+								preStyleOnSelection="true" />
+							<f:facet name="header">
+								<ice:outputText value="Tipo" />
+							</f:facet>
+							<ice:outputText value="#{item.estado}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Nombre Area/Entidad Ext." />
+							</f:facet>
+							<ice:outputText value="#{item.nombreTrabajador}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Nombre Trabajador/Repres." />
+							</f:facet>
+							<ice:outputText value="#{item.codArea}" />
+						</ice:column>
+					</ice:dataTable>
+				</ice:panelGrid>
+				</ice:panelGrid>
+				<ice:panelGrid border="1">
+				<ice:panelGrid columns="4" style="font-size: 9px;">
+					<ice:outputText value="NUEVO DIRIGIDO EXT.:" />
+					<ice:inputText value="#{mBeandocumentosalida.empresa}"
+						onchange="this.value = this.value.toUpperCase();"
+						disabled="#{mBeandocumentosalida.editarEmpresa}" size="80"
+						maxlength="80" />
+					<ice:commandButton
+						actionListener="#{mBeandocumentosalida.verRemitente}"
+						title="Agregar Empresa" image="/images/mas.png"
+						style="size: width: 20px; height: 20px" />
+					<ice:commandButton
+						actionListener="#{mBeandocumentosalida.eventGrabarCombo}"
+						disabled="#{mBeandocumentosalida.disBotonGrabar}" title="Grabar"
+						image="/images/save.png" style="size: width: 20px; height: 20px" />
+				</ice:panelGrid>
+				</ice:panelGrid>
+				<ice:panelGrid border="1">
+				<ice:panelGrid columns="3" style="font-size: 9px;">
+				<ice:outputText value="ASUNTO DOCUMENTO :" />
+					<ice:inputTextarea value="#{mBeandocumentosalida.asuntoN}"
+						onchange="this.value = this.value.toUpperCase();" rows="3"
+						cols="90" style="font-size: 12px;" maxlength="800">
+					</ice:inputTextarea>
+					<ice:commandButton value="Ver" image="/images/buscar1.png"
+							style="border=0 size: width: 19px; height: 19px"
+							actionListener="#{mBeandocumentosalida.eventVerDocs}">
+					</ice:commandButton>
+				</ice:panelGrid>
+				<ice:panelGrid columns="2" style="font-size: 9px;">	
+					<ice:outputText value="REFERENCIA :" />
+					<ice:inputTextarea value="#{mBeandocumentosalida.referenciaN}"
+						onchange="this.value = this.value.toUpperCase();" rows="3"
+						cols="90" style="font-size: 12px;" maxlength="900">
+					</ice:inputTextarea>
+					<ice:outputText value="OBSERVACION :" />
+					<ice:inputTextarea value="#{mBeandocumentosalida.observacionN}"
+						onchange="this.value = this.value.toUpperCase();" rows="3"
+						cols="90" style="font-size: 12px;" maxlength="800">
+					</ice:inputTextarea>
+					<ice:outputText value="NRO REGISTRO ENTRADA :" />
+					<ice:panelGrid columns="3">
+						<ice:inputText value="#{mBeandocumentosalida.doc_entradaN}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 11px;">
+						</ice:inputText>
+						<ice:selectOneMenu value="#{mBeandocumentosalida.anodocumentoentrN}"					 	
+						style="font-size: 11px;">						
+						<f:selectItems value="#{mBeandocumentosalida.items10}" />
+						</ice:selectOneMenu>
+						<!-- 
+						<h:selectOneMenu value="#{mBeandocumentosalida.anodocumentoentrN}"
+							style="font-size: 11px;">
+							<f:selectItem itemValue="0" itemLabel="SELECCIONAR" />
+							<f:selectItem itemValue="2011" itemLabel="2011" />
+							<f:selectItem itemValue="2012" itemLabel="2012" />
+							<f:selectItem itemValue="2013" itemLabel="2013" />
+							<f:selectItem itemValue="2014" itemLabel="2014" />
+							<f:selectItem itemValue="2015" itemLabel="2015" />
+							<f:selectItem itemValue="2016" itemLabel="2016" />
+							<f:selectItem itemValue="2017" itemLabel="2017" />
+							<f:selectItem itemValue="2018" itemLabel="2018" />
+							<f:selectItem itemValue="2019" itemLabel="2019" />
+						</h:selectOneMenu>
+						 -->
+						<!-- 						
+						 <ice:commandButton value="Ver" image="/images/buscar1.png"
+							style="border=0 size: width: 18px; height: 18px"
+							actionListener="#{mBeandocumentosalida.eventVerDocs}">
+						</ice:commandButton>
+						 -->
+					</ice:panelGrid>
+				</ice:panelGrid>								
+				<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="#{mBeandocumentosalida.textoA}" />
+					<ice:graphicImage id="gi2"
+						value="images/#{mBeandocumentosalida.indicaadjuntoA}.png"
+						style="border:0; size: width: 20px; height: 20px">
+					</ice:graphicImage>
+				</ice:panelGrid>
+				</ice:panelGrid>
+				<ice:panelGrid columns="3" cellpadding="10">
+					<ice:commandButton value="Aceptar"
+						actionListener="#{mBeandocumentosalida.eventRegistrarDocumentos}"
+						title="Grabar" image="/images/grabar.png"
+						style="size: width: 35px; height: 35px" />
+					<ice:commandButton value="Adjuntar"
+						actionListener="#{mBeandocumentosalida.eventDetalles}"
+						title="Adjuntar" image="/images/clip.png"
+						style="size: width: 25px; height: 25px" />
+					<ice:commandButton value="Regresar"
+						actionListener="#{mBeandocumentosalida.eventCancelar}"
+						title="Regresar" image="/images/retorno.png"
+						style="size: width: 25px; height: 25px" />
+				
+					<ice:outputText value="Grabar" style="font-size: 10px; color: blue;"/>
+				
+					<ice:outputText value="Adjuntar" style="font-size: 10px; color: blue;"/>
+						
+					<ice:outputText value="Regresar" style="font-size: 10px; color: blue;"/>
+				</ice:panelGrid>
+			</ice:panelGroup>
+			<!-- Alerta de mensaje dirigidoA -->
+			<ice:panelGroup rendered="#{mBeandocumentosalida.verActualizar}">
+				<ice:panelGrid border="1">
+				<ice:panelGrid columns="6" style="font-size: 9px">
+					<ice:outputText value="REGISTRO :" style="font-size: 9px" />
+					<ice:inputText value="#{mBeandocumentosalida.codigoA}"
+						readonly="True" disabled="true" />
+					<ice:outputText value="AÑO :" style="font-size: 9px" />
+					<ice:inputText value="#{mBeandocumentosalida.anoA}" readonly="True"
+						disabled="true" />
+					<ice:outputText value="PRIORIDAD :" />
+					<h:selectOneMenu value="#{mBeandocumentosalida.prioridadA}"
+						style="font-size: 9px;">
+						<f:selectItem itemValue="URGENTE" itemLabel="URGENTE" />
+						<f:selectItem itemValue="ALTA" itemLabel="ALTA" />
+						<f:selectItem itemValue="MEDIA" itemLabel="MEDIA" />
+						<f:selectItem itemValue="BAJA" itemLabel="BAJA" />
+					</h:selectOneMenu>
+					<!--  
+					<ice:inputText value="#{mBeandocumentosalida.origenesA}"
+						readonly="True" disabled="true" />
+						-->
+					<ice:outputText value="NRO DOC.:" style="font-size: 9px;" />
+					<ice:inputText value="#{mBeandocumentosalida.numerodocA}"
+						readonly="True" disabled="true" />
+					<ice:outputText value="FECHA :" style="font-size: 9px" />
+					<ice:inputText value="#{mBeandocumentosalida.fechaA}"
+						readonly="True" disabled="true">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</ice:inputText>
+					<ice:outputText value="AREA REMITE :" style="font-size: 9px" />
+					<ice:inputText value="#{mBeandocumentosalida.nom_areaA}"
+						disabled="true" size="60" />
+					<ice:outputText value="FECHA DOC.:" />
+					<ice:selectInputDate renderMonthAsDropdown="true"
+						renderYearAsDropdown="true" value="#{mBeandocumentosalida.fechaA}"
+						style="font-size: 9px;" title="Fec1" renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}" />
+					</ice:selectInputDate>
+					<ice:outputText value="FECHA PLAZO :" />
+					<ice:selectInputDate renderMonthAsDropdown="true"
+						renderYearAsDropdown="true" disabled="true"
+						value="#{mBeandocumentosalida.dfecplazoA}" style="font-size: 9px;"
+						title="Fec1" renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}" />
+					</ice:selectInputDate>
+					<ice:outputText value="DIAS :" />
+					<ice:inputText value="#{mBeandocumentosalida.diasA}" size="10" />
+					<ice:outputText value="ESTADO :" />
+					<ice:selectOneMenu value="#{mBeandocumentosalida.nestadoA}"
+						valueChangeListener="#{mBeandocumentosalida.capturaPerfil}"
+						style="font-size: 9px;" title="Derivado"
+						disabled="#{mBeandocumentosalida.disEstado}">
+						<f:selectItems value="#{mBeandocumentosalida.items9}" />
+					</ice:selectOneMenu>
+					<!--
+					<h:selectOneMenu value="#{mBeandocumentosalida.nestadoA}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 9px;">
+						<f:selectItem itemValue="ESTA001" itemLabel="BORRADOR" />	
+						<f:selectItem itemValue="ESTA002" itemLabel="PENDIENTE" />						
+						<f:selectItem itemValue="ESTA003" itemLabel="ATENDIDO" />	
+					</h:selectOneMenu>	
+					-->
+					<ice:outputText value="ORIGEN :" style="font-size: 9px" />
+					<ice:selectOneMenu value="#{mBeandocumentosalida.origenA}"
+						style="font-size: 9px;" title="Origen"
+						valueChangeListener="#{mBeandocumentosalida.visualiza_origen}">
+						<f:selectItems value="#{mBeandocumentosalida.items7}" />
+					</ice:selectOneMenu>
+					<ice:outputText value="TIPO DOC.:" />
+					<ice:inputText value="#{mBeandocumentosalida.tipodocA}"
+						size="60" readonly="True" disabled="true" />
+				</ice:panelGrid>
+				</ice:panelGrid>
+				<ice:panelGrid border="1">
+				<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="REMITENTE JEFE EQUIPO :" />
+					<ice:selectOneMenu value="#{mBeandocumentosalida.ficha_remiteA}"
+						style="font-size: 9px;" title="Remite" disabled="true">
+						<f:selectItems value="#{mBeandocumentosalida.items6}" />
+					</ice:selectOneMenu>
+				</ice:panelGrid>
+				</ice:panelGrid>
+				<ice:panelGrid border="1">
+				<ice:panelGrid columns="6" style="font-size: 9px;">
+					<ice:panelGrid columns="1">
+						<ice:outputText value="SELECCIONAR EQUIPO/EMPRESA :" />
+
+						<ice:selectInputText id="AutocomletaRemitenteA" rows="40"
+							value="#{mBeandocumentosalida.personaSeleccionadaA}"
+							valueChangeListener="#{mBeandocumentosalida.autocompletarPersonaA}"
+							listVar="_personaA" width="350px;font-size:9px;color:blue;"
+							listValue="#{mBeandocumentosalida.posiblespersonasA}">
+							<f:facet name="selectInputText">
+								<ice:panelGrid columns="2">
+									<ice:outputText id="nombre2" style="font-size: 9px;"
+										value="#{_personaA.descripcion}" />
+								</ice:panelGrid>
+							</f:facet>
+						</ice:selectInputText>
+
+						<!--
+						<ice:selectOneMenu value="#{mBeandocumentosalida.dirigidoA}"
+							valueChangeListener="#{mBeandocumentosalida.capturaPersonalRepresentantes}"
+							style="font-size: 9px;" title="Derivado">							
+							<f:selectItems value="#{mBeandocumentosalida.items1}" />
+						</ice:selectOneMenu>
+						-->
+						<ice:outputText value="TRABAJADOR/REPRESENTANTE:" />
+
+						<ice:selectOneMenu value="#{mBeandocumentosalida.derivadoA}"
+							style="font-size: 9px; color: blue" title="Derivado">
+							<f:selectItems
+								value="#{mBeandocumentosalida.itemsPersonalRepresentantesA}" />
+						</ice:selectOneMenu>
+
+						<!-- 
+						<ice:selectOneMenu value="#{mBeandocumentosalida.derivadoA}"
+							style="font-size: 9px;" title="Derivado">
+							<f:selectItems
+								value="#{mBeandocumentosalida.itemsPersonalRepresentantes}" />
+						</ice:selectOneMenu>
+						-->
+					</ice:panelGrid>
+					<ice:panelGrid columns="1" style="font-size: 9px;">
+						<ice:outputText value="DESTINATARIO" />
+						<ice:selectOneRadio
+							value="#{mBeandocumentosalida.estadoSeleccionado}"
+							layout="pageDirection">
+							<f:selectItem itemValue="AA" itemLabel="TO" />
+							<f:selectItem itemValue="CC" itemLabel="CC" />
+						</ice:selectOneRadio>
+					</ice:panelGrid>
+
+					<ice:panelGrid>
+
+
+					</ice:panelGrid>
+
+					<ice:panelGrid columns="1" style="font-size: 9px;">
+						<ice:commandButton value="Añadir" title="Añadir"
+							image="/images/mas.png" style="size: width: 20px; height: 20px"
+							actionListener="#{mBeandocumentosalida.pasarItemsA}" />
+						<ice:commandButton value="Quitar" title="Quitar"
+							image="/images/menos.png" style="size: width: 20px; height: 20px"
+							actionListener="#{mBeandocumentosalida.quitarItemsA}" />
+					</ice:panelGrid>
+					<ice:dataTable var="item"
+						value="#{mBeandocumentosalida.areasseleccionados}"
+						columnClasses="tableCol" style="font-size: 9px;" id="idSelecc"
+						scrollable="false">
+						<ice:column>
+							<ice:rowSelector value="#{item.selected}"
+								preStyleOnSelection="true" />
+							<f:facet name="header">
+								<ice:outputText value="Tipo" />
+							</f:facet>
+							<ice:outputText value="#{item.tipo}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Nombre Area" />
+							</f:facet>
+							<ice:outputText value="#{item.nombre}" />
+						</ice:column>
+						<ice:column>
+							<f:facet name="header">
+								<ice:outputText value="Nombre" />
+							</f:facet>
+							<ice:outputText value="#{item.abreviatura}" />
+						</ice:column>
+					</ice:dataTable>					
+				</ice:panelGrid>
+				</ice:panelGrid>
+				<ice:panelGrid border="1">
+				<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="ASUNTO DOCUMENTO :" />
+					<ice:inputTextarea value="#{mBeandocumentosalida.asuntoA}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 11px;" rows="3" cols="90" maxlength="800">
+					</ice:inputTextarea>
+					<ice:outputText value="REFERENCIA :" />
+					<ice:inputTextarea value="#{mBeandocumentosalida.referenciaA}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 11px;" rows="3" cols="90" maxlength="900">
+					</ice:inputTextarea>
+					<ice:outputText value="OBSERVACION :" />
+					<ice:inputTextarea value="#{mBeandocumentosalida.observacionA}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 11px;" rows="3" cols="90" maxlength="800">
+					</ice:inputTextarea>
+				</ice:panelGrid>
+				<ice:panelGrid columns="6" style="font-size: 9px;">
+					<ice:outputText value="NRO REGISTRO ENTRADA :" />					
+					<ice:inputText value="#{mBeandocumentosalida.doc_entradaA}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 11px;" size="30" />
+					<ice:selectOneMenu value="#{mBeandocumentosalida.anodocumentoentrA}"					 	
+						style="font-size: 11px;">						
+						<f:selectItems value="#{mBeandocumentosalida.items10}" />
+						</ice:selectOneMenu>
+						<!-- 
+					<h:selectOneMenu value="#{mBeandocumentosalida.anodocumentoentrA}"
+						style="font-size: 11px;">
+						<f:selectItem itemValue="0" itemLabel="SELECCIONAR" />
+						<f:selectItem itemValue="2011" itemLabel="2011" />
+						<f:selectItem itemValue="2012" itemLabel="2012" />
+						<f:selectItem itemValue="2013" itemLabel="2013" />
+						<f:selectItem itemValue="2014" itemLabel="2014" />
+						<f:selectItem itemValue="2015" itemLabel="2015" />
+						<f:selectItem itemValue="2016" itemLabel="2016" />
+						<f:selectItem itemValue="2017" itemLabel="2017" />
+						<f:selectItem itemValue="2018" itemLabel="2018" />
+					</h:selectOneMenu>
+					 -->
+					<ice:selectOneRadio
+						value="#{mBeandocumentosalida.opcion_seguimiento}">
+						<f:selectItem itemValue="1" itemLabel="ENTRADA" />
+						<f:selectItem itemValue="2" itemLabel="SEGUIMIENTO"/>
+						<f:selectItem itemValue="3" itemLabel="ACTUALIZAR"/>
+					</ice:selectOneRadio>
+				</ice:panelGrid>				
+				<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="#{mBeandocumentosalida.textoA}" />
+					<ice:graphicImage id="gi2"
+						value="images/#{mBeandocumentosalida.indicaadjuntoA}.png"
+						style="border:0; size: width: 20px; height: 20px">
+					</ice:graphicImage>
+				</ice:panelGrid>
+				</ice:panelGrid>
+				<ice:panelGrid columns="3" cellpadding="10">
+					<ice:commandButton value="Aceptar"
+						actionListener="#{mBeandocumentosalida.eventActualizarDocumentos}"
+						title="Grabar" image="/images/grabar.png"
+						style="size: width: 35px; height: 35px" />
+					<ice:commandButton value="Adjuntar"
+						actionListener="#{mBeandocumentosalida.eventDetallesA}"
+						title="Adjuntar" image="/images/clip.png"
+						style="size: width: 25px; height: 25px" />
+					<ice:commandButton value="Regresar"
+						actionListener="#{mBeandocumentosalida.eventCancelar}"
+						title="Regresar" image="/images/retorno.png"
+						style="size: width: 25px; height: 25px" />
+				</ice:panelGrid>
+				<ice:panelGrid columns="5" style="font-size: 9px;">	
+					<ice:outputText value="Grabar" style="font-size: 10px; color: blue;"/>
+					<ice:outputText value="" />
+					<ice:outputText value="Adjuntar" style="font-size: 10px; color: blue;"/>
+					<ice:outputText value="" />		
+					<ice:outputText value="Regresar" style="font-size: 10px; color: blue;"/>
+				</ice:panelGrid>
+			</ice:panelGroup>
+
+			<!-- Alerta de mensaje-->
+			<ice:panelPopup id="modalPnlPopError" draggable="false" modal="true"
+				style="width: 350px; height: 200px; background-color: #0085BC;"
+				visible="#{mBeandocumentosalida.ver}" autoCentre="true"
+				styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper" style="font-size: 12px; color: blue;">
+						<ice:outputText value="Aviso" styleClass="popupHeaderText" 
+						style="font-size: 12px; color: blue;"/>
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+
+					<ice:panelGrid columns="1" style="text-align: center;">
+						<ice:outputText value="#{mBeandocumentosalida.error}" 
+						style="font-size: 12px; color: white;"/>
+						<br />
+						<ice:commandButton type="submit" value="Aceptar"
+						image="/images/cerrar.png"
+						style="size: width: 35px; height: 35px"
+						actionListener="#{mBeandocumentosalida.cerrar}" />
+					</ice:panelGrid>
+				</f:facet>
+			</ice:panelPopup>
+
+			<!-- Alerta de mensaje con confirmacion!!!  -->
+
+			<ice:panelPopup draggable="false" modal="true"
+				style="width: 220px; height: 130px; background-color: #0085BC;"
+				visible="#{mBeandocumentosalida.verAlertaConfirmacionBorrar}"
+				autoCentre="true" styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Mensaje" styleClass="popupHeaderText" 
+						style="font-size: 12px; color: blue;"/>
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+					<ice:panelGroup styleClass="popupBody">
+						<center> <ice:outputText style="font: lighter;"
+							value="#{mBeandocumentosalida.msg}" /> <br></br>
+						<ice:commandButton type="submit" value="    SI    "
+							actionListener="#{mBeandocumentosalida.confirmaBorrado}" /> 
+							<ice:commandButton 	value="    NO   "
+							actionListener="#{mBeandocumentosalida.cancelaBorrado}" /> </center>
+					</ice:panelGroup>
+				</f:facet>
+			</ice:panelPopup>
+			
+			
+			<!-- Alerta de mensaje con confirmacion grabar con check entrada!!!  -->
+
+			<ice:panelPopup draggable="false" modal="true"
+				style="width: 280px; height: 130px;"
+				visible="#{mBeandocumentosalida.verAlertaConfirmacionGrabar}"
+				autoCentre="true" styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Mensaje" styleClass="popupHeaderText" />
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">				
+					<ice:panelGroup styleClass="popupBody"> 
+					<center>																	
+						<ice:outputText style="font: lighter;"							
+							value="#{mBeandocumentosalida.msgnuevo}" /> <br></br>
+						<ice:commandButton type="submit" 					 
+							value="    SI    "  
+							actionListener="#{mBeandocumentosalida.eventActualizarDocumentosSinNroEntrada}" /> 
+						<ice:commandButton type="submit" 
+							value="    NO   "
+							actionListener="#{mBeandocumentosalida.cancelaGrabar}" />
+					</center>						
+					</ice:panelGroup>				
+				</f:facet>
+			</ice:panelPopup>
+			
+			<!-- Popup Asuntos Estadares -->
+			<ice:panelPopup id="modalPndoc" draggable="false" modal="true"
+				style="width: 600px; height: 400px; color: white; background-color: #0085BC;"
+				visible="#{mBeandocumentosalida.verdocs}" autoCentre="true"
+				styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Asuntos Estándares" style="font-size: 12px; color: blue;"
+							styleClass="popupHeaderText" />
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+					<ice:panelGroup styleClass="popupBody">
+						<ice:panelGrid columns="1">
+						
+							<ice:panelGrid columns="7" cellpadding="1" border="1">
+								<h:selectOneRadio value="#{mBeandocumentosalida.opcion_asunto}"
+									style="font-size: 9px;">									
+									<f:selectItem itemValue="ASUNTO" itemLabel="ASUNTO" />
+								</h:selectOneRadio>
+								<ice:inputText value="#{mBeandocumentosalida.detalle_asunto}"
+									style="font-size: 10px;" size="50"
+									onchange="this.value = this.value.toUpperCase();" />
+								<ice:commandButton value="Ejecutar"
+									actionListener="#{mBeandocumentosalida.buscarAsunto}"
+									title="Buscar" image="/images/buscar2.png"
+									style="size: width: 25px; height: 25px">
+								</ice:commandButton>
+								<ice:commandButton value="Refrescar"
+									actionListener="#{mBeandocumentosalida.RefrescarAsunto}"
+									title="Refrescar" image="/images/resert.png"
+									style="size: width: 25px; height: 25px">
+								</ice:commandButton>
+							</ice:panelGrid>
+							
+							<ice:dataTable var="myDocs"
+								value="#{mBeandocumentosalida.itemsAsuntos}" scrollable="true"
+								scrollHeight="240px" columnWidths="30px,500px;">
+								<ice:column>
+									<ice:rowSelector value="#{myDocs.selected}" />
+									<f:facet name="header">
+										<ice:outputText value="Item" />
+									</f:facet>
+									<ice:outputText value="#{myDocs.codigo}" style="font-size: 9px;" />
+								</ice:column>
+																
+								<ice:column>
+									<f:facet name="header">
+										<ice:outputText value="Asunto" />
+									</f:facet>
+									<ice:outputText value="#{myDocs.descripcion}"
+										style="font-size: 9px;" />
+								</ice:column>
+
+							</ice:dataTable>
+						</ice:panelGrid>
+						<ice:panelGrid columns="2">
+							<ice:commandButton type="submit" value="Aceptar"
+							    	image="/images/boton_aceptar.png"
+								style="size: width: 35px; height: 35px"
+								actionListener="#{mBeandocumentosalida.cerrarDocs}" />
+							<ice:commandButton type="submit" value="Cancelar"
+								image="/images/boton_cancelar.jpg"
+								style="size: width: 35px; height: 35px"
+								actionListener="#{mBeandocumentosalida.cancelarDocs}" />
+						</ice:panelGrid>
+					</ice:panelGroup>
+				</f:facet>
+			</ice:panelPopup>
+			<!-- Fin Popup Asuntos Estadares -->
+			
+		    <!-- Ya no se utiliza este popup -->
+			<!-- Popup Busqueda de Documentos Entrante -->
+			<!--  
+			<ice:panelPopup id="modalPndoc" draggable="false" modal="true"
+				style="width: 500px; height: 350px; color: white;"
+				visible="#{mBeandocumentosalida.verdocs}" autoCentre="true"
+				styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Documentos Entradas Atendidos"
+							styleClass="popupHeaderText" />
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+					<ice:panelGroup styleClass="popupBody">
+						<ice:panelGrid columns="1">
+							<ice:panelGrid columns="7" cellpadding="1" border="1">
+								<h:selectOneRadio value="#{mBeandocumentosalida.opcion_entrada}"
+									style="font-size: 9px;">
+									<f:selectItem itemValue="CODIGO" itemLabel="CORRELATIVO" />
+									<f:selectItem itemValue="NUMDOC" itemLabel="NUM.DOC" />
+								</h:selectOneRadio>
+								<ice:inputText value="#{mBeandocumentosalida.detalle_entrada}"
+									style="font-size: 9px;" size="50"
+									onchange="this.value = this.value.toUpperCase();" />
+								<ice:commandButton value="Ejecutar"
+									actionListener="#{mBeandocumentosalida.buscarDocs}"
+									title="Buscar" image="/images/buscar2.png"
+									style="size: width: 25px; height: 25px">
+								</ice:commandButton>
+								<ice:commandButton value="Refrescar"
+									actionListener="#{mBeandocumentosalida.RefrescarDocs}"
+									title="Refrescar" image="/images/resert.png"
+									style="size: width: 20px; height: 20px">
+								</ice:commandButton>
+							</ice:panelGrid>
+
+							<ice:dataTable var="myDocs"
+								value="#{mBeandocumentosalida.items4}" scrollable="true"
+								scrollHeight="140px" columnWidths="30px,70px,100px,250px;">
+								<ice:column>
+									<ice:rowSelector value="#{myDocs.selected}" />
+									<f:facet name="header">
+										<ice:outputText value="Año" />
+									</f:facet>
+									<ice:outputText value="#{myDocs.nano}" style="font-size: 9px;" />
+								</ice:column>
+								<ice:column>
+									<f:facet name="header">
+										<ice:outputText value="Correlativo" />
+									</f:facet>
+									<ice:outputText value="#{myDocs.ncorrelativo}"
+										style="font-size: 9px;" />
+								</ice:column>
+								<ice:column>
+									<f:facet name="header">
+										<ice:outputText value="Num. Doc" />
+									</f:facet>
+									<ice:outputText value="#{myDocs.vnumdoc}"
+										style="font-size: 9px;" />
+								</ice:column>
+								<ice:column>
+									<f:facet name="header">
+										<ice:outputText value="Asunto" />
+									</f:facet>
+									<ice:outputText value="#{myDocs.vasunto}"
+										style="font-size: 9px;" />
+								</ice:column>
+
+							</ice:dataTable>
+						</ice:panelGrid>
+						<ice:panelGrid columns="2">
+							<ice:commandButton type="submit" value="Aceptar"
+								actionListener="#{mBeandocumentosalida.cerrarDocs}" />
+							<ice:commandButton type="submit" value="Cancelar"
+								actionListener="#{mBeandocumentosalida.cancelarDocs}" />
+						</ice:panelGrid>
+					</ice:panelGroup>
+				</f:facet>
+			</ice:panelPopup>
+			-->
+
+			<!-- Popup para cargar un archivo adjunto" />-->
+			<ice:panelPopup draggable="false" modal="true"
+				style="width: 600px; height: 400px; color: white; background-color: #0085BC;"
+				visible="#{mBeandocumentosalida.verDetalles}" autoCentre="true"
+				styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Archivo Adjunto"
+							styleClass="popupHeaderText" style="font-size: 12px; color: blue;"/>
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+					<ice:panelGroup styleClass="popupBody">
+						<ice:panelGrid columns="2">
+							<ice:panelTab label="Carga de Datos" title="Carga de Datos">
+								<ice:panelGroup>
+									<!-- file upload usage with progress callback. -->
+									<ice:panelGrid>
+										<ice:outputText value="Seleccione un archivo a cargar:"
+											style="font-size: 12px; color: white;" />
+										<ice:inputFile id="inputFileName2" uniqueFolder="false"
+											uploadDirectoryAbsolute="true" autoUpload="true"
+											uploadDirectory="#{msg['path.salida']}"
+											progressListener="#{mCarga.fileUploadProgress}"
+											actionListener="#{mCarga.uploadFile}" />
+										<!-- progress bar, percent value is upated via progressListener-->
+
+										<ice:outputProgress value="#{mCarga.fileProgress}"
+											styleClass="uploadProgressBar" />
+										<ice:message for="inputFileName" />
+										<br />
+										<ice:outputText value="#{mCarga.componentStatus}"
+											style="font-size: 12px; color: white;" />
+									</ice:panelGrid>
+								</ice:panelGroup>
+							</ice:panelTab>
+
+						</ice:panelGrid>
+						<ice:commandButton id="modalPnlCBError" type="submit"
+							value="Salir" image="/images/cerrar.png"
+							style="size: width: 35px; height: 35px"
+							actionListener="#{mBeandocumentosalida.cerrarDetalles}" />
+					</ice:panelGroup>
+				</f:facet>
+			</ice:panelPopup>
+
+			<!-- Popup para la carga -->
+			<ice:panelPopup id="modalPnlPopCarga" draggable="false" modal="true"
+				style="width: 200px; height: 120px; background-color: #0085BC;"
+				visible="#{mCarga.verConfirmacion}" autoCentre="true"
+				styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Alerta" styleClass="popupHeaderText" />
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+					<ice:panelGroup styleClass="popupBody">
+						<ice:outputText value="#{mCarga.msg}" />
+						<br></br>
+						<ice:commandButton type="submit" value="Aceptar" title="Aceptar"
+							image="/images/actualizar.png"
+							style="size: width: 25px; height: 20px"
+							actionListener="#{mCarga.okConfirm}" />
+						<ice:outputText value="   " />
+						<ice:commandButton value="Cancelar" title="Cancelar"
+							image="/images/eliminar.png"
+							style="size: width: 25px; height: 20px"
+							actionListener="#{mCarga.cancelar}" />
+					</ice:panelGroup>
+				</f:facet>
+			</ice:panelPopup>
+
+			<!-- Popup para mensaje -->
+			<ice:panelPopup draggable="false" modal="true"
+				style="width: 200px; height: 120px;" visible="#{mCarga.verAlerta}"
+				autoCentre="true" styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Alerta" styleClass="popupHeaderText" />
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+					<ice:panelGroup styleClass="popupBody">
+						<ice:outputText value="#{mCarga.msgAlerta}" />
+						<br></br>
+						<ice:commandButton type="submit" value="Aceptar"
+							image="/images/actualizar.png"
+							style="size: width: 20px; height: 20px"
+							actionListener="#{mCarga.okAlerta}" />
+
+					</ice:panelGroup>
+				</f:facet>
+			</ice:panelPopup>
+
+		</ice:panelTab>
+	</ice:panelTabSet>
+
+
+
+	<ice:menuPopup id="menuPopupEffects">
+		<ice:menuItem id="mnuModificar" value="Modificar"
+			title="Modificar perfil">
+		</ice:menuItem>
+
+		<ice:menuItem id="mnuAuditoria" value="Auditoria"
+			title="Consultar auditoria">
+		</ice:menuItem>
+
+
+	</ice:menuPopup>
+
+
+</ice:form>
+</body>
+</html>

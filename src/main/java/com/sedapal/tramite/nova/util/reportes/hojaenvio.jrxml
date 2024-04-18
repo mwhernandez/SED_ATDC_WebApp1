@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="entradas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="P_AREA" class="java.lang.String"/>
+	<parameter name="P_ANO" class="java.lang.String"/>
+	<parameter name="P_CORRELATIVO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_AREA_ORIGEN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_FECHA" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_REMITE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_REFERENCIA" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_VNUMDOC" class="java.lang.String"/>
+	<parameter name="P_ASUNTO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT  S.NCODSEG,S.NDERIVADO,VAPEPATERNO ||' '|| VAPEMATERNO||','||VNOMBRES AS NOMBRE,S.DFECDERIVACION,
+case when length(vaccion) = 2 then
+decode(vaccion,'13','03')
+when length(vaccion) = 4 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 6 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 8 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 10 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 12 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 13 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 14 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 15 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 16 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 18 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 19 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 20 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 21 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 22 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 23 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+when length(vaccion) = 24 then
+decode(substr(vaccion,1,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,3,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,5,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')||','||
+decode(substr(vaccion,7,2),'11','01','12','02','13','03','14','04','15','05','16','06','17','07','18','08','19','09','20','10','21','11','22','12','23','13','24','14','25','15')
+else
+''
+end vaccion
+FROM ATD_DOC_ENTR_SEG S,
+TRABAJADOR T
+WHERE S.NANO=$P{P_ANO} AND S.NCORRELATIVO= $P{P_CORRELATIVO} AND
+S.NAREADERIVADO = $P{P_AREA} AND S.NDERIVADO=T.NFICHA AND S.NAREADERIVADO=T.NCODAREA AND
+T.VCODESTADO IN ('EIRC01','EIRC03')]]>
+	</queryString>
+	<field name="NCODSEG" class="java.math.BigDecimal"/>
+	<field name="NDERIVADO" class="java.math.BigDecimal"/>
+	<field name="NOMBRE" class="java.lang.String"/>
+	<field name="DFECDERIVACION" class="java.sql.Timestamp"/>
+	<field name="VACCION" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<image>
+				<reportElement x="2" y="3" width="147" height="56"/>
+				<imageExpression class="java.lang.String"><![CDATA["sedapal.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="175" y="16" width="201" height="20" forecolor="#003366"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HOJA DE ENVIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="437" y="3" width="100" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[NRO. REGISTRO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="437" y="40" width="100" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="437" y="59" width="100" height="17"/>
+			</rectangle>
+			<textField>
+				<reportElement mode="Transparent" x="9" y="60" width="288" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_AREA_ORIGEN}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="437" y="23" width="100" height="17"/>
+			</rectangle>
+			<textField>
+				<reportElement x="437" y="23" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_CORRELATIVO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="437" y="59" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_FECHA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="93" splitType="Stretch">
+			<textField>
+				<reportElement mode="Transparent" x="116" y="8" width="349" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_REMITE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="25" y="8" width="81" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[REMITE :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="25" y="70" width="81" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[REFERENCIA :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="116" y="70" width="349" height="20" forecolor="#003366"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_VNUMDOC}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="25" y="31" width="81" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[ASUNTO :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="116" y="31" width="433" height="37" forecolor="#003366"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{P_ASUNTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="23" width="555" height="2" forecolor="#003366"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="555" height="2" forecolor="#003366"/>
+			</line>
+			<staticText>
+				<reportElement x="424" y="5" width="129" height="20" forecolor="#003366"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="322" y="5" width="100" height="20" forecolor="#003366"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="4" width="39" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REG]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="186" y="5" width="135" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[CODIGO ACCION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="4" width="136" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REMITIDO A]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="321" y="2" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{DFECDERIVACION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="2" width="38" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{NCODSEG}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="49" y="2" width="136" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NOMBRE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="185" y="2" width="136" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VACCION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="180" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Transparent" x="10" y="11" width="117" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[01.- Por Disposición de]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="127" y="11" width="131" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[02.- Coordinar Con]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="268" y="11" width="131" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[03.- Acción Necesaria]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="405" y="11" width="144" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[04.- Adjuntar Antecedentes Necesaria]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="10" y="31" width="106" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[05.- Revisar/Informar]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="405" y="31" width="144" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[08.- Su Aprovación V° B°]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="127" y="31" width="131" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[06.- Preparar Respuesta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="268" y="31" width="131" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[07.- Conocimiento y Fines]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="10" y="51" width="106" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[09.- Tener Pendiente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="405" y="51" width="144" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[12.- Para Directorio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="127" y="51" width="131" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[10.- Resolver]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="268" y="51" width="131" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[11.- Archivar]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="127" y="71" width="131" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[14.- Contestar Directamente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="10" y="71" width="117" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[13.- Preparar Resolución]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="268" y="71" width="131" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[15.- Otros]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="10" y="91" width="542" height="20"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="10" y="111" width="542" height="20"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="10" y="131" width="542" height="20"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="10" y="151" width="542" height="20"/>
+			</rectangle>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="8" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="555" height="2" forecolor="#003366"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

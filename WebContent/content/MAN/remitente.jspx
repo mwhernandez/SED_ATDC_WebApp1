@@ -1,0 +1,564 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+<body>
+<!-- Ventana de Remitentes
+	 Realizado Por : Eli Diaz Horna
+	 Fecha Creacion : 24/01/2011
+	 Descripcion  : Ingreso y Modificacion de empresas y sus representantes
+	-->
+<ice:form partialSubmit="true">
+	<ice:panelTabSet id="icePnlTbSet1">
+
+		<!-- Panel Tab 1 defined with some basic content -->
+		<ice:panelTab label="Lista Empresas" title="Catalogo">		
+			<ice:panelGroup rendered="#{mBeanRemitente.verCatalogo}">
+				<ice:panelGrid columns="4">
+					<ice:commandButton value="Nuevo"
+						actionListener="#{mBeanRemitente.eventNuevo}" title="Nuevo" image="/images/nuevo2.png" style="size: width: 40px; height: 40px"/>					
+					<ice:commandButton value="Actualizar"
+						actionListener="#{mBeanRemitente.eventActualizar}" title="Modificar" image="/images/modificar2.png" style="size: width: 40px; height: 40px"/>
+					<ice:commandButton value="Eliminar"
+						actionListener="#{mBeanRemitente.eventEliminar}" title="Eliminar" image="/images/eliminar2.png" style="size: width: 40px; height: 40px"/>					
+					<ice:commandButton value="Refrescar"
+						actionListener="#{mBeanRemitente.eventRefrescar}"
+						title="Refrescar" image="/images/resert.png"
+						style="size: width: 25px; height: 25px"/>						
+														
+					<ice:outputText value="Nuevo" style="font-size: 10px; color: blue;"/>
+				
+					<ice:outputText value="Actualizar" style="font-size: 10px; color: blue;"/>					
+									
+					<ice:outputText value="Eliminar" style="font-size: 10px; color: blue;"/>					
+														
+					<ice:outputText value="Refrescar"  style="font-size: 10px; color: blue;"/>
+				</ice:panelGrid>
+				<ice:panelGrid columns="7" cellpadding="1" border="1">
+					<h:selectOneRadio value="#{mBeanRemitente.opcion}" style="font-size: 9px; color: green;">
+						<f:selectItem itemValue="CODIGO" itemLabel="CODIGO"/>
+						<f:selectItem itemValue="DESCRIPCION" itemLabel="DESCRIPCION"/>
+					</h:selectOneRadio>					
+					<ice:inputText value="#{mBeanRemitente.detalle}" style="font-size: 9px;" size="50"
+					onchange="this.value = this.value.toUpperCase();"/>
+					<ice:commandButton value="Ejecutar"
+						actionListener="#{mBeanRemitente.eventFiltros}" 
+						title="Buscar" 
+						image="/images/buscar2.png" style="size: width: 20px; height: 20px">
+					</ice:commandButton>					
+				</ice:panelGrid>
+		
+			</ice:panelGroup>
+			
+			<ice:panelGroup rendered="#{mBeanRemitente.verCatalogo}">
+				<ice:dataTable var="pro" value="#{mBeanRemitente.remitente}"
+					columnClasses="tableCol" style="font-size: 9px;" rows="10" id="idProductos" 
+					scrollable="false">
+					<ice:column>
+						<ice:rowSelector id="selected" value="#{pro.selected}"
+							multiple="#{mBeanRemitente.multiple}"
+							enhancedMultiple="#{mBeanRemitente.enhancedMultiple}"
+							selectionListener="#{mBeanRemitente.rowSelectionListener}"
+							preStyleOnSelection="true" />
+
+						<f:facet name="header">
+							<ice:outputText value="Codigo" style="color: blue;"/>
+						</f:facet>
+						<center> <ice:outputText id="idCB" value="#{pro.codigo}" />
+						</center>
+					</ice:column>					
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Descripcion" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro.descripcion}" />
+					</ice:column>												
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Fecha" style="color: blue;"/>
+						</f:facet>
+						<center> <ice:outputText value="#{pro.fecha}" >						
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+						</ice:outputText></center>
+					</ice:column>					
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Responsable" style="color: blue;"/>
+						</f:facet>
+						<center> <ice:outputText value="#{pro.responsable}" /> </center>
+					</ice:column>
+					
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Estado" style="color: blue;"/>
+						</f:facet>
+						<center> <ice:outputText value="#{pro.estado}" /> </center>
+					</ice:column>
+					
+				</ice:dataTable>
+				
+
+				<ice:panelGrid columns="2">
+					<ice:outputText value=" " />
+					<!-- Paginator with page controls -->
+					<center> <ice:dataPaginator id="dataScroll_3"
+						for="idProductos" paginator="true" fastStep="3"
+						paginatorMaxPages="5">
+						<f:facet name="first">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+								style="border:none;" title="First Page" />
+						</f:facet>
+						<f:facet name="last">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+								style="border:none;" title="Last Page" />
+						</f:facet>
+						<f:facet name="previous">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+								style="border:none;" title="Previous Page" />
+						</f:facet>
+						<f:facet name="next">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+								style="border:none;" title="Next Page" />
+						</f:facet>
+						<f:facet name="fastforward">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-ff.gif"
+								style="border:none;" title="Fast Forward" />
+						</f:facet>
+						<f:facet name="fastrewind">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-fr.gif"
+								style="border:none;" title="Fast Backwards" />
+						</f:facet>
+					</ice:dataPaginator> </center>
+
+					<ice:outputText value="" />
+
+					<!-- Display counts about the table and the currently displayed page -->
+					<ice:dataPaginator id="dataScroll_2" for="idProductos"
+						rowsCountVar="rowsCount"
+						displayedRowsCountVar="displayedRowsCount"
+						firstRowIndexVar="firstRowIndex" lastRowIndexVar="lastRowIndex"
+						pageCountVar="pageCount" pageIndexVar="pageIndex">
+						<ice:outputFormat
+							value="{0} empresas encontrados, mostrando {1}, de {2} hasta {3}. Pagina {4} / {5}."
+							styleClass="standard">
+							<f:param value="#{rowsCount}" />
+							<f:param value="#{displayedRowsCount}" />
+							<f:param value="#{firstRowIndex}" />
+							<f:param value="#{lastRowIndex}" />
+							<f:param value="#{pageIndex}" />
+							<f:param value="#{pageCount}" />
+						</ice:outputFormat>
+					</ice:dataPaginator>
+
+				</ice:panelGrid>
+			</ice:panelGroup>
+
+			
+			<ice:panelGroup rendered="#{mBeanRemitente.verNuevo}">
+					<ice:panelGrid columns="1" border="1" >
+					<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="CODIGO :" />
+					<ice:inputText value="#{mBeanRemitente.codigoN}" 
+					onchange="this.value = this.value.toUpperCase();" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="DESCRIPCION :" />
+					<ice:inputText value="#{mBeanRemitente.descripcionN}" 
+					onchange="this.value = this.value.toUpperCase();" style="font-size: 9px;" size="90" maxlength="90"/>
+					<ice:outputText value="FECHA :" />
+					<ice:selectInputDate renderMonthAsDropdown="true"
+						renderYearAsDropdown="true" value="#{mBeanRemitente.fechaN}"
+						title="Fec1" renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}"/>
+					</ice:selectInputDate>							
+					<ice:outputText value="ESTADO :" style="font-size: 9px;"/>
+					<h:selectOneMenu value="#{mBeanRemitente.estadoN}" style="font-size: 9px;">
+						<f:selectItem itemValue="ACTIVO" itemLabel="ACTIVO"/>
+						<f:selectItem itemValue="INACTIVO" itemLabel="INACTIVO"/>
+					</h:selectOneMenu>	
+					</ice:panelGrid>
+					</ice:panelGrid>
+					<ice:panelGrid columns="2" style="font-size: 9px;">											
+					<ice:commandButton value="Aceptar" title="Grabar" 
+						image="/images/grabar.png" style="size: width: 30px; height: 30px"
+						actionListener="#{mBeanRemitente.eventRegistrarRemitente}" />						
+					<ice:commandButton value="Regresar" title="Regresar" 
+						image="/images/retorno.png" style="size: width: 25px; height: 25px"
+						actionListener="#{mBeanRemitente.eventCancelar}" />
+					<ice:outputText value="Grabar" style="font-size: 10px; color: blue;" />							
+					<ice:outputText value="Regresar" style="font-size: 10px; color: blue;" />
+					</ice:panelGrid>
+				
+			</ice:panelGroup>
+		
+			<ice:panelGroup rendered="#{mBeanRemitente.verActualizar}">
+					<ice:panelGrid columns="1" border="1" >
+					<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="CODIGO :" />
+					<ice:inputText value="#{mBeanRemitente.codigoA}" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="DESCRIPCION :" />
+					<ice:inputText value="#{mBeanRemitente.descripcionA}" 
+					onchange="this.value = this.value.toUpperCase();" 
+					style="font-size: 9px;" size="90" maxlength="90" />								
+					<ice:outputText value="FECHA :" />
+					<ice:selectInputDate renderMonthAsDropdown="true"
+						renderYearAsDropdown="true" value="#{mBeanRemitente.fechaA}" style="font-size: 9px;"
+						title="Fec1" renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}"/>
+					</ice:selectInputDate>							
+					<ice:outputText value="ESTADO :" />
+					<h:selectOneMenu value="#{mBeanRemitente.estadoA}" style="font-size: 9px;">
+						<f:selectItem itemValue="ACTIVO" itemLabel="ACTIVO"/>
+						<f:selectItem itemValue="INACTIVO" itemLabel="INACTIVO"/>
+					</h:selectOneMenu>
+					</ice:panelGrid>
+					</ice:panelGrid>
+					<ice:panelGrid columns="2" style="font-size: 9px;">	
+					<ice:commandButton value="Aceptar" title="Grabar" 
+						image="/images/grabar.png" style="size: width: 30px; height: 30px"					
+						actionListener="#{mBeanRemitente.eventActualizarRemitente}" />						
+					<ice:commandButton value="Regresar" title="Regresar" 
+						image="/images/retorno.png" style="size: width: 25px; height: 25px"
+						actionListener="#{mBeanRemitente.eventCancelar}" />					
+					<ice:outputText value="Grabar" style="font-size: 10px; color: blue;"/>							
+					<ice:outputText value="Regresar" style="font-size: 10px; color: blue;"/>
+					</ice:panelGrid>			
+												
+			</ice:panelGroup>
+			
+			<!-- Alerta de mensaje -->
+			<ice:panelPopup id="modalPnlPopError" draggable="false" modal="false"
+				style="width: 200px; height: 120px; background-color: #0085BC;"
+				visible="#{mBeanRemitente.ver}"
+				autoCentre="true" styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Aviso" styleClass="popupHeaderText" 
+						style="font-size: 12px; color: blue;"/>
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+					<ice:panelGroup styleClass="popupBody">
+						<ice:outputText value="#{mBeanRemitente.mensaje}" 
+						style="font-size: 12px; color: white;"/>
+						<br></br>
+						<br></br>
+						<ice:commandButton id="modalPnlCBError" type="submit"
+							value="Aceptar" actionListener="#{mBeanRemitente.cerrar}" />
+					</ice:panelGroup>
+				</f:facet>
+			</ice:panelPopup>
+
+		</ice:panelTab>
+	
+	<ice:panelTab label="Lista Representantes" title="Catalogo">
+			<ice:panelGroup rendered="#{mBeanRepresentante.verCatalogo}">
+				<ice:panelGrid columns="3">
+					<ice:commandButton value="Nuevo"
+						actionListener="#{mBeanRepresentante.eventNuevo}" title="Nuevo" 
+						image="/images/nuevo2.png" style="size: width: 40px; height: 40px"/>						
+					<ice:commandButton value="Actualizar"
+						actionListener="#{mBeanRepresentante.eventActualizar}" title="Modificar" 
+						image="/images/modificar2.png" style="size: width: 40px; height: 40px"/>						
+					<ice:commandButton value="Eliminar"
+						actionListener="#{mBeanRepresentante.eventEliminar}" title="Eliminar" 
+						image="/images/eliminar2.png" style="size: width: 40px; height: 40px"/>				
+					<ice:outputText value="Nuevo" style="font-size: 10px; color: blue;"/>				
+					<ice:outputText value="Actualizar" style="font-size: 10px; color: blue;"/>													
+					<ice:outputText value="Eliminar" style="font-size: 10px; color: blue;"/>
+				</ice:panelGrid>
+			</ice:panelGroup>
+			<ice:panelGroup rendered="#{mBeanRepresentante.verCatalogo}">
+				<ice:dataTable var="pro1" value="#{mBeanRepresentante.representante}"
+					columnClasses="tableCol" style="font-size: 9px;" rows="10" id="idProductos1" 
+					scrollable="false">
+					<ice:column>
+						<ice:rowSelector id="selected" value="#{pro1.selected}"
+							multiple="#{mBeanRepresentante.multiple}"
+							enhancedMultiple="#{mBeanRepresentante.enhancedMultiple}"
+							selectionListener="#{mBeanRepresentante.rowSelectionListener}"
+							preStyleOnSelection="true" />
+
+						<f:facet name="header">
+							<ice:outputText value="Codigo" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText id="idCB" value="#{pro1.codremitente}" />						
+					</ice:column>					
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Codigo" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro1.codrepresentante}" />
+					</ice:column>		
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Nombre" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro1.vnombre}" />
+					</ice:column>					
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Correo" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro1.vcorreo}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Telefono" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro1.vtelefono}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Estado" style="color: blue;"/>
+						</f:facet>
+						<ice:outputText value="#{pro1.vestado}" />
+					</ice:column>					
+				</ice:dataTable>
+							
+
+				<ice:panelGrid columns="2">
+					<ice:outputText value=" " />
+					<!-- Paginator with page controls -->
+					<ice:dataPaginator id="dataScroll_3"
+						for="idProductos1" paginator="true" fastStep="3"
+						paginatorMaxPages="5">
+						<f:facet name="first">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+								style="border:none;" title="First Page" />
+						</f:facet>
+						<f:facet name="last">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+								style="border:none;" title="Last Page" />
+						</f:facet>
+						<f:facet name="previous">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+								style="border:none;" title="Previous Page" />
+						</f:facet>
+						<f:facet name="next">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+								style="border:none;" title="Next Page" />
+						</f:facet>
+						<f:facet name="fastforward">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-ff.gif"
+								style="border:none;" title="Fast Forward" />
+						</f:facet>
+						<f:facet name="fastrewind">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-fr.gif"
+								style="border:none;" title="Fast Backwards" />
+						</f:facet>
+					</ice:dataPaginator> 
+
+					<ice:outputText value="" />
+
+					<!-- Display counts about the table and the currently displayed page -->
+					<ice:dataPaginator id="dataScroll_2" for="idProductos1"
+						rowsCountVar="rowsCount"
+						displayedRowsCountVar="displayedRowsCount"
+						firstRowIndexVar="firstRowIndex" lastRowIndexVar="lastRowIndex"
+						pageCountVar="pageCount" pageIndexVar="pageIndex">
+						<ice:outputFormat
+							value="{0} Empresas encontrados, mostrando {1}, de {2} hasta {3}. Pagina {4} / {5}."
+							styleClass="standard">
+							<f:param value="#{rowsCount}" />
+							<f:param value="#{displayedRowsCount}" />
+							<f:param value="#{firstRowIndex}" />
+							<f:param value="#{lastRowIndex}" />
+							<f:param value="#{pageIndex}" />
+							<f:param value="#{pageCount}" />
+						</ice:outputFormat>
+					</ice:dataPaginator>
+
+				</ice:panelGrid>
+			</ice:panelGroup>
+			
+			<ice:panelGroup rendered="#{mBeanRepresentante.verActualizar}">
+					<ice:panelGrid columns="1" border="1" >
+					<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="COD. REPRESENTANTE :" />
+					<ice:inputText value="#{mBeanRepresentante.codrepresentanteA}"					
+					readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="TIPO REPRESENTANTE :" />					
+					<ice:selectOneMenu value="#{mBeanRepresentante.vtiporepresentanteA}"					
+						style="font-size: 9px;" title="Tipo Persona">
+						<f:selectItems value="#{mBeanRepresentante.items}" />
+					</ice:selectOneMenu>
+					<ice:outputText value="TIPO DOCUMENTO :" />
+					<ice:selectOneMenu value="#{mBeanRepresentante.vtipodocumentoA}"
+						style="font-size: 9px;" title="Tipo Documentos">
+						<f:selectItems value="#{mBeanRepresentante.items1}" />
+					</ice:selectOneMenu>			
+					<ice:outputText value="NUM. DOC :" />
+					<ice:inputText value="#{mBeanRepresentante.vnumerodocumentoA}"
+					onchange="this.value = this.value.toUpperCase();" 
+					style="font-size: 9px;" size="50" />		
+					<ice:outputText value="NOMBRE :" />
+					<ice:inputText value="#{mBeanRepresentante.vnombreA}"
+					onchange="this.value = this.value.toUpperCase();" 
+					style="font-size: 9px;" size="90" maxlength="90" />	
+					<ice:outputText value="DIRECCION :" />
+					<ice:inputText value="#{mBeanRepresentante.vdireccionA}"
+					onchange="this.value = this.value.toUpperCase();" 
+					style="font-size: 9px;" size="50" />	
+					<ice:outputText value="CORRREO :" />
+					<ice:inputText value="#{mBeanRepresentante.vcorreoA}"
+					onchange="this.value = this.value.toUpperCase();" 
+					style="font-size: 9px;" size="50" />	
+					<ice:outputText value="TELEFONO :" />
+					<ice:inputText value="#{mBeanRepresentante.vtelefonoA}"
+					onchange="this.value = this.value.toUpperCase();" 
+					style="font-size: 9px;" size="50" />
+					<ice:outputText value="FAX :" />
+					<ice:inputText value="#{mBeanRepresentante.vfaxA}"
+					onchange="this.value = this.value.toUpperCase();" 
+					style="font-size: 9px;" size="50" />						
+					<ice:outputText value="CELULAR :" />
+					<ice:inputText value="#{mBeanRepresentante.vcelularA}"
+					onchange="this.value = this.value.toUpperCase();" 
+					style="font-size: 9px;" size="50" />												
+					<ice:outputText value="ESTADO :" />
+					<h:selectOneMenu value="#{mBeanRepresentante.vestadoA}" style="font-size: 9px;">
+						<f:selectItem itemValue="A" itemLabel="ACTIVO"/>
+						<f:selectItem itemValue="I" itemLabel="INACTIVO"/>
+					</h:selectOneMenu>
+					</ice:panelGrid>
+					</ice:panelGrid>
+					<ice:panelGrid columns="2" style="font-size: 9px;">	
+					<ice:commandButton value="Aceptar" title="Grabar" 
+						image="/images/grabar.png" style="size: width: 30px; height: 30px"
+						actionListener="#{mBeanRepresentante.eventActualizarRepresentante}" />						
+					<ice:commandButton value="Regresar" title="Regresar" 
+						image="/images/retorno.png" style="size: width: 25px; height: 25px"
+						actionListener="#{mBeanRepresentante.eventCancelar}" />			
+						
+					<ice:outputText value="Grabar" style="font-size: 10px; color: blue;"/>
+							
+					<ice:outputText value="Regresar" style="font-size: 10px; color: blue;"/>
+					</ice:panelGrid>
+												
+			</ice:panelGroup>
+			<ice:panelGroup rendered="#{mBeanRepresentante.verNuevo}">
+					<ice:panelGrid columns="1" border="1" >
+					<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="COD. REPRESENTANTE :" />
+					<ice:inputText value="#{mBeanRepresentante.codrepresentanteN}" readonly = "True" style = "background: #c2dfef"/>
+					<ice:outputText value="TIPO REPRESENTANTE :" />					
+					<ice:selectOneMenu value="#{mBeanRepresentante.vtiporepresentanteN}"
+						style="font-size: 9px;" title="Tipo Persona">
+						<f:selectItems value="#{mBeanRepresentante.items}" />
+					</ice:selectOneMenu>
+					<ice:outputText value="TIPO DOCUMENTO :" />
+					<ice:selectOneMenu value="#{mBeanRepresentante.vtipodocumentoN}"
+						style="font-size: 9px;" title="Tipo Documentos">
+						<f:selectItems value="#{mBeanRepresentante.items1}" />
+					</ice:selectOneMenu>			
+					<ice:outputText value="NUM. DOC :" />
+					<ice:inputText value="#{mBeanRepresentante.vnumerodocumentoN}" 
+					onchange="this.value = this.value.toUpperCase();"
+					style="font-size: 9px;" size="50" />		
+					<ice:outputText value="NOMBRE :" />
+					<ice:inputText value="#{mBeanRepresentante.vnombreN}" 
+					onchange="this.value = this.value.toUpperCase();"
+					style="font-size: 9px;" size="90" maxlength="90" />	
+					<ice:outputText value="DIRECCION :" />
+					<ice:inputText value="#{mBeanRepresentante.vdireccionN}" 
+					onchange="this.value = this.value.toUpperCase();"
+					style="font-size: 9px;" size="50" />	
+					<ice:outputText value="CORRREO :" />
+					<ice:inputText value="#{mBeanRepresentante.vcorreoN}" 
+					onchange="this.value = this.value.toUpperCase();"
+					style="font-size: 9px;" size="50" />	
+					<ice:outputText value="TELEFONO :" />
+					<ice:inputText value="#{mBeanRepresentante.vtelefonoN}" 
+					onchange="this.value = this.value.toUpperCase();"
+					style="font-size: 9px;" size="50" />
+					<ice:outputText value="FAX :" />
+					<ice:inputText value="#{mBeanRepresentante.vfaxN}" 
+					onchange="this.value = this.value.toUpperCase();"
+					style="font-size: 9px;" size="50" />						
+					<ice:outputText value="CELULAR :" />
+					<ice:inputText value="#{mBeanRepresentante.vcelularN}"					
+					onchange="this.value = this.value.toUpperCase();"
+					style="font-size: 9px;" size="50" />												
+					<ice:outputText value="ESTADO :" />
+					<h:selectOneMenu value="#{mBeanRepresentante.vestadoN}" style="font-size: 9px;">
+						<f:selectItem itemValue="A" itemLabel="ACTIVO"/>
+						<f:selectItem itemValue="I" itemLabel="INACTIVO"/>
+					</h:selectOneMenu>	
+					</ice:panelGrid>
+					</ice:panelGrid>
+					<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:commandButton value="Aceptar" title="Grabar" 
+						image="/images/grabar.png" style="size: width: 30px; height: 30px"
+						actionListener="#{mBeanRepresentante.eventRegistrarRepresentante}" />						
+					<ice:commandButton value="Regresar" title="Regresar" 
+						image="/images/retorno.png" style="size: width: 25px; height: 25px"
+						actionListener="#{mBeanRepresentante.eventCancelar}" />					
+					<ice:outputText value="Grabar" style="font-size: 10px; color: blue;"/>							
+					<ice:outputText value="Regresar" style="font-size: 10px; color: blue;"/>
+					</ice:panelGrid>			
+					
+			</ice:panelGroup> 
+			
+			<!-- Alerta de mensaje -->
+			<ice:panelPopup id="modalPnlPopError" draggable="false" modal="false"
+				style="width: 200px; height: 120px; background-color: #0085BC;" 
+				visible="#{mBeanRepresentante.ver}"
+				autoCentre="true" styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Aviso" styleClass="popupHeaderText" 
+						style="font-size: 12px; color: blue;"/>
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+					<ice:panelGroup styleClass="popupBody">
+						<ice:outputText value="#{mBeanRepresentante.mensaje}" 
+						style="font-size: 12px; color: white;"/>
+						<br></br>
+						<ice:commandButton id="modalPnlCBError" type="submit"
+							value="Aceptar" actionListener="#{mBeanRepresentante.cerrar}" />
+					</ice:panelGroup>
+				</f:facet>
+			</ice:panelPopup>
+			
+			
+	</ice:panelTab>
+	</ice:panelTabSet>
+	
+
+	<ice:menuPopup id="menuPopupEffects">
+		<ice:menuItem id="mnuNuevo"
+			actionListener="#{mBeanRemitente.eventoNuevo}" value="Nuevo"
+			title="Ingresar perfil">
+		</ice:menuItem>
+		<ice:menuItem id="mnuModificar" value="Modificar"
+			title="Modificar Accion">
+		</ice:menuItem>
+
+		<ice:menuItem id="mnuAuditoria" value="Auditoria"
+			title="Consultar auditoria">
+		</ice:menuItem>
+
+
+	</ice:menuPopup>
+
+
+</ice:form>
+</body>
+</html>

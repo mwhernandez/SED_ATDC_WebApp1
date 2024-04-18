@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="entradas" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="P_AREA" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT A.NANO,
+    A.NORIGEN,
+    (CASE A.NORIGEN
+     WHEN 1 THEN 'INTERNO'
+     WHEN 2 THEN 'EXTERNO'
+    END) ORIGEN,
+    A.VTIPODOC,
+    T.VDESCRIPCION AS TIPODOC,
+    A.NCORRELATIVO AS CORR,
+    A.VNUMDOC,
+    A.VMESAPARTE,
+    A.NREMITENTE,
+    A.VREMITENTE,
+    A.DFECDOC,
+    A.DFECREGISTRO,
+    A.NDIRIGIDO,
+    UPPER(D.VDESCRIPCION) AS AREADIRIGIDO,
+    A.VASUNTO,
+    A.VREFERENCIA,
+    A.VOBSERVACION,
+    A.VPRIORIDAD,
+    A.VACCION,
+  -- P.VDESCRIPCION  ACCION,
+    A.VUBIARCHIVO,
+    A.DFECPLAZO,
+    A.NDIASPLAZO,
+    A.VESTADO,
+    UPPER(E.VDESCRIPCION) AS ESTADO,
+    A.NINDICADOR,
+    A.DFECCRE,
+    A.DFECACT,
+    A.VRESCRE,
+    A.VRESACT,
+    A.NCODAREA,
+    UPPER(R.VDESCRIPCION) AS AREA,
+    A.VUBIARCHIVO,
+    A.NFICHA_DIRIGIDO,
+    A.NCODAREA_ORIGEN,
+    UPPER(O.VDESCRIPCION) AS AREAORIGEN,
+    A.NCODCENTRO,
+    UPPER(C.VNOMBRE) AS CENTRO
+    FROM ATD_DOC_ENTR A,
+    ATD_DOC_ENTR_DIRIGIDO P,
+     TIPO T,
+    ATD_REMITENTE D,
+    TIPO E,
+      AREA R,
+    AREA O,
+     CENTRO C
+    WHERE A.NANO=P.NANO AND
+    A.NORIGEN=P.NORIGEN AND
+    A.VTIPODOC=P.VTIPODOC AND
+    A.NCORRELATIVO=P.NCORRELATIVO AND
+    P.NCODAREA = $P{P_AREA} AND
+    A.VTIPODOC=T.VCODTIPO AND
+    T.VOBSERVACIONES ='TIPO DE DOCUMENTO ATD' AND
+    T.VESTADO = 'A' AND
+    A.NDIRIGIDO=D.NCODREMITENTE AND
+    D.VESTADO='A' AND
+    A.VESTADO=E.VCODTIPO AND
+    E.VOBSERVACIONES ='ESTADO ATD' AND
+    E.VESTADO = 'A' AND
+    P.NCODAREA=R.NCODAREA AND
+    R.CTIPAREA IN  ('E ','G', 'D') AND
+    R.NINDICADOR=0 AND
+    A.NCODAREA_ORIGEN=O.NCODAREA AND
+    O.CTIPAREA IN  ('E ','G', 'D') AND
+    O.NINDICADOR=0 AND
+    A.NCODCENTRO=C.NCODCENTRO AND
+    C.NESTADO=1
+    --A.DFECREGISTRO >= ls_fecha_desde  AND
+   -- A.DFECREGISTRO <= ls_fecha_hasta
+UNION
+    SELECT A.NANO,
+    A.NORIGEN,
+    (CASE A.NORIGEN
+     WHEN 1 THEN 'INTERNO'
+     WHEN 2 THEN 'EXTERNO'
+    END) ORIGEN,
+    A.VTIPODOC,
+    T.VDESCRIPCION AS TIPODOC,
+    A.NCORRELATIVO AS CORR,
+    A.VNUMDOC,
+    A.VMESAPARTE,
+    A.NREMITENTE,
+    A.VREMITENTE,
+    A.DFECDOC,
+    A.DFECREGISTRO,
+    A.NDIRIGIDO AS NDIRIGIDO,
+    UPPER(D.VDESCRIPCION) AS AREADIRIGIDO,
+    A.VASUNTO,
+    A.VREFERENCIA,
+    A.VOBSERVACION,
+    A.VPRIORIDAD,
+    A.VACCION,
+   -- P.VDESCRIPCION  ACCION,
+    A.VUBIARCHIVO,
+    A.DFECPLAZO,
+    A.NDIASPLAZO,
+    A.VESTADO,
+    UPPER(E.VDESCRIPCION) AS ESTADO,
+    A.NINDICADOR,
+    A.DFECCRE,
+    A.DFECACT,
+    A.VRESCRE,
+    A.VRESACT,
+    P.NCODAREA,
+    UPPER(R.VDESCRIPCION) AS AREA,
+    A.VUBIARCHIVO,
+    --A.NFICHA_DIRIGIDO,
+    P.NFICHA_DIRIGIDO,
+    A.NCODAREA_ORIGEN,
+    UPPER(O.VDESCRIPCION) AS AREAORIGEN,
+    A.NCODCENTRO,
+    UPPER(C.VNOMBRE) AS CENTRO
+    FROM ATD_DOC_ENTR A,
+    ATD_DOC_ENTR_DIRIGIDO P,
+     TIPO T,
+    AREA D,
+    TIPO E,
+      AREA R,
+    AREA O,
+     CENTRO C
+    WHERE
+    A.NANO=P.NANO AND
+    A.NORIGEN=P.NORIGEN AND
+    A.VTIPODOC=P.VTIPODOC AND
+    A.NCORRELATIVO=P.NCORRELATIVO AND
+    P.NORIGEN = 1 AND
+    P.NCODAREA= $P{P_AREA} AND
+    A.NDIRIGIDO <> $P{P_AREA} AND
+    A.VTIPODOC=T.VCODTIPO AND
+    T.VOBSERVACIONES ='TIPO DE DOCUMENTO ATD' AND
+    T.VESTADO = 'A' AND
+    A.NDIRIGIDO=D.NCODAREA AND
+    D.CTIPAREA IN  ('E ','G', 'D') AND
+    D.NINDICADOR=0 AND
+    A.VESTADO=E.VCODTIPO AND
+    E.VOBSERVACIONES ='ESTADO ATD' AND
+    E.VESTADO = 'A' AND
+    P.NCODAREA=R.NCODAREA AND
+    R.CTIPAREA IN  ('E ','G', 'D') AND
+    R.NINDICADOR=0 AND
+    A.NCODAREA_ORIGEN=O.NCODAREA AND
+    O.CTIPAREA IN  ('E ','G', 'D') AND
+    O.NINDICADOR=0 AND
+    A.NCODCENTRO=C.NCODCENTRO AND
+    C.NESTADO=1
+    --A.DFECREGISTRO >= ls_fecha_desde  AND
+    --A.DFECREGISTRO <= ls_fecha_hasta
+UNION
+    SELECT A.NANO,
+    A.NORIGEN,
+    (CASE A.NORIGEN
+     WHEN 1 THEN 'INTERNO'
+     WHEN 2 THEN 'EXTERNO'
+    END) ORIGEN,
+    A.VTIPODOC,
+    T.VDESCRIPCION AS TIPODOC,
+    A.NCORRELATIVO AS CORR,
+    A.VNUMDOC,
+    A.VMESAPARTE,
+    A.NREMITENTE,
+    A.VREMITENTE,
+    A.DFECDOC,
+    A.DFECREGISTRO,
+    A.NDIRIGIDO AS NDIRIGIDO,
+    UPPER(D.VDESCRIPCION) AS AREADIRIGIDO,
+    A.VASUNTO,
+    A.VREFERENCIA,
+    A.VOBSERVACION,
+    A.VPRIORIDAD,
+    A.VACCION,
+  -- P.VDESCRIPCION  ACCION,
+    A.VUBIARCHIVO,
+    A.DFECPLAZO,
+    A.NDIASPLAZO,
+    A.VESTADO,
+    UPPER(E.VDESCRIPCION) AS ESTADO,
+    A.NINDICADOR,
+    A.DFECCRE,
+    A.DFECACT,
+    A.VRESCRE,
+    A.VRESACT,
+    A.NCODAREA,
+    UPPER(R.VDESCRIPCION) AS AREA,
+    A.VUBIARCHIVO,
+    A.NFICHA_DIRIGIDO,
+    A.NCODAREA_ORIGEN,
+    UPPER(O.VDESCRIPCION) AS AREAORIGEN,
+    A.NCODCENTRO,
+    UPPER(C.VNOMBRE) AS CENTRO
+    FROM ATD_DOC_ENTR A,
+     TIPO T,
+    AREA D,
+    TIPO E,
+      AREA R,
+    AREA O,
+     CENTRO C
+    WHERE
+    A.NCODAREA=$P{P_AREA}AND
+    A.NORIGEN = 1 AND
+    A.VTIPODOC=T.VCODTIPO AND
+    T.VOBSERVACIONES ='TIPO DE DOCUMENTO ATD' AND
+    T.VESTADO = 'A' AND
+    A.NDIRIGIDO=D.NCODAREA AND
+    D.CTIPAREA IN  ('E ','G', 'D') AND
+    D.NINDICADOR=0 AND
+    A.VESTADO=E.VCODTIPO AND
+    E.VOBSERVACIONES ='ESTADO ATD' AND
+    E.VESTADO = 'A' AND
+    A.NCODAREA=R.NCODAREA AND
+    R.CTIPAREA IN  ('E ','G', 'D') AND
+    R.NINDICADOR=0 AND
+    A.NCODAREA_ORIGEN=O.NCODAREA AND
+    O.CTIPAREA IN  ('E ','G', 'D') AND
+    O.NINDICADOR=0 AND
+    A.NCODCENTRO=C.NCODCENTRO AND
+    C.NESTADO=1
+    --A.DFECREGISTRO >= ls_fecha_desde  AND
+    --A.DFECREGISTRO <= ls_fecha_hasta
+    ORDER BY CORR DESC]]>
+	</queryString>
+	<field name="NANO" class="java.math.BigDecimal"/>
+	<field name="NORIGEN" class="java.math.BigDecimal"/>
+	<field name="ORIGEN" class="java.lang.String"/>
+	<field name="VTIPODOC" class="java.lang.String"/>
+	<field name="TIPODOC" class="java.lang.String"/>
+	<field name="CORR" class="java.math.BigDecimal"/>
+	<field name="VNUMDOC" class="java.lang.String"/>
+	<field name="VMESAPARTE" class="java.lang.String"/>
+	<field name="NREMITENTE" class="java.math.BigDecimal"/>
+	<field name="VREMITENTE" class="java.lang.String"/>
+	<field name="DFECDOC" class="java.sql.Timestamp"/>
+	<field name="DFECREGISTRO" class="java.sql.Timestamp"/>
+	<field name="NDIRIGIDO" class="java.math.BigDecimal"/>
+	<field name="AREADIRIGIDO" class="java.lang.String"/>
+	<field name="VASUNTO" class="java.lang.String"/>
+	<field name="VREFERENCIA" class="java.lang.String"/>
+	<field name="VOBSERVACION" class="java.lang.String"/>
+	<field name="VPRIORIDAD" class="java.lang.String"/>
+	<field name="VACCION" class="java.lang.String"/>
+	<field name="VUBIARCHIVO" class="java.lang.String"/>
+	<field name="DFECPLAZO" class="java.sql.Timestamp"/>
+	<field name="NDIASPLAZO" class="java.math.BigDecimal"/>
+	<field name="VESTADO" class="java.lang.String"/>
+	<field name="ESTADO" class="java.lang.String"/>
+	<field name="NINDICADOR" class="java.math.BigDecimal"/>
+	<field name="DFECCRE" class="java.sql.Timestamp"/>
+	<field name="DFECACT" class="java.sql.Timestamp"/>
+	<field name="VRESCRE" class="java.lang.String"/>
+	<field name="VRESACT" class="java.lang.String"/>
+	<field name="NCODAREA" class="java.math.BigDecimal"/>
+	<field name="AREA" class="java.lang.String"/>
+	<field name="NFICHA_DIRIGIDO" class="java.math.BigDecimal"/>
+	<field name="NCODAREA_ORIGEN" class="java.math.BigDecimal"/>
+	<field name="AREAORIGEN" class="java.lang.String"/>
+	<field name="NCODCENTRO" class="java.math.BigDecimal"/>
+	<field name="CENTRO" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<image>
+				<reportElement x="11" y="3" width="147" height="56"/>
+				<imageExpression class="java.lang.String"><![CDATA["sedapal.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="309" y="26" width="259" height="20" forecolor="#003366"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lista de Documentos Entrantes]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="11" y="59" width="135" height="20" forecolor="#003366"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{AREA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="682" y="58" width="80" height="20" forecolor="#003366"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Pag. "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="763" y="58" width="40" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="25" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="40" y="5" width="61" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NUM DOC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="347" y="5" width="194" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASUNTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="661" y="5" width="33" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PLAZO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="699" y="5" width="51" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FEC.PLAZO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="610" y="5" width="50" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FEC.DOC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="101" y="5" width="136" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REMITE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="239" y="5" width="108" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DERIVADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="751" y="5" width="46" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="541" y="5" width="64" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO DOC.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="23" width="797" height="2" forecolor="#003366"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="797" height="2" forecolor="#003366"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="5" width="39" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REG]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement x="40" y="0" width="61" height="20"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VNUMDOC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="347" y="0" width="194" height="20"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VASUNTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="661" y="0" width="33" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{NDIASPLAZO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="699" y="0" width="51" height="20"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{DFECPLAZO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="610" y="0" width="50" height="20"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{DFECDOC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="101" y="0" width="136" height="20"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{AREADIRIGIDO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="239" y="0" width="108" height="20"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{AREA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="751" y="0" width="46" height="20"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ESTADO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="541" y="0" width="64" height="20"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TIPODOC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="39" height="20"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{CORR}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="29" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="1" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="1" splitType="Stretch"/>
+	</summary>
+</jasperReport>

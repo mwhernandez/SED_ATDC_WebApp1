@@ -1,0 +1,41 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component" >
+    
+    <body>
+    <ice:form partialSubmit="true">
+     <ice:panelTabSet id="icePnlTbSet">
+
+        <!-- Panel Tab 1 defined with some basic content -->
+        <ice:panelTab label="Luz"
+                      title="Titulo Luz">
+            <div style="height:150px;">
+                <ice:outputText
+                        value="Hola"
+                        style="font-weight:bold;"/>
+                <ice:outputText
+                        value="Listo!"/>
+                                 
+                <ice:inputText value="#{paises.empresa}"></ice:inputText>
+                <ice:outputResource shared="false"  styleClass="boton" attachment="false" fileName="ticket.pdf"
+                 id="pdfbutton" label="Imprimir Reporte"  mimeType="application/pdf"   resource="#{paises.recursoReport}"  
+                 type="button">
+                     
+                 </ice:outputResource>
+      <br/>
+      <br/>    
+        <ice:commandButton actionListener="#{paises.verArgentina}"  value="ARGETINA"/>
+              
+                <br/>
+            </div>
+    </ice:panelTab>
+    </ice:panelTabSet>
+    </ice:form>
+         
+        <b>Source: </b><a target="_blank" href="http://en.wikipedia.org/wiki/Chile">Chile - Wikipedia</a>
+    </body>
+</html>

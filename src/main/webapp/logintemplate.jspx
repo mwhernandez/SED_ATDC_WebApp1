@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ice="http://www.icesoft.com/icefaces/component" >
+      
+    <!-- Eli comenta este codigo por que accesa a internet  -->
+    <!-- 
+    <ice:outputDeclaration doctypeRoot="HTML"
+                           doctypePublic="-//W3C//DTD HTML 4.01 Transitional//EN"
+                           doctypeSystem="http://www.w3.org/TR/html4/loose.dtd"/>
+     -->
+    
+     <head>
+    <!--  <center><ui:insert name="top"><ui:include src="/content/main.xhtml"/></ui:insert></center>-->     
+    </head>
+    
+    <body>        
+        <div id="top" align="center">
+            <!--<ui:insert name="top"><ice:graphicImage url="images/Fondo_header1.jpg" style="border:0;"/> </ui:insert>-->
+             <ui:insert name="top"><ice:graphicImage url="images/cabecera_tramite.png" style="border:0;"/> </ui:insert>
+            <!-- 
+            <center><ui:insert name="top"><ui:include src="/content/main.xhtml"/></ui:insert></center>
+             --> 
+            	
+                    
+        </div>                     
+        <div  id="center_content" class="center_content" style="font-size:12px; font-family: Verdana, Verdana CE,  Arial, Arial CE, Lucida Grande CE, lucida, Helvetica CE, sans-serif;">
+            <ui:insert name="center_content"></ui:insert>                                  
+        </div>           
+        <div id="bottom" style="font-size:11px; font-family: Arial; color: blue;" align="center" >
+            <ui:insert name="top">Copyright; 20 Diciembre 2023 Sedapal - Designed by: Equipo de Tecnologías de la Información y Comunicaciones</ui:insert>
+        </div>  
+    </body>
+  
+</html>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+<body>
+
+<ui:composition template="mainTemplate.jspx">
+    <ui:define name="faceletHeader">
+        <meta http-equiv="Content-Type"
+              content="text/html; charset=utf-8"></meta>
+        <!-- 
+        <title>
+            <ice:outputText value="Tramite Documentario Corporativo"/>
+        </title>
+         -->
+        <title>
+            Trámite Documentario Corporativo
+ 		</title>
+        
+         <link href="./css/rime/rime.css" rel="stylesheet" type="text/css"/>
+         <link href="nova.css" rel="stylesheet" type="text/css"/>
+    </ui:define>
+
+</ui:composition>
+
+
+</body>
+</html>

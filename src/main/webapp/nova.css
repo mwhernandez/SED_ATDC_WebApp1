@@ -1,0 +1,39 @@
+#top {
+	width:auto;
+	height:3px;
+    /*background:url(images/tramite_baner.swf);*/
+    background-position: center;
+    /*background:url(content/main.xhtml);*/
+    /*color: white;*/
+    color: #d4e1e9;
+    padding: 3px;
+    margin: 0px 0px 10px 0px;
+	position: relative;
+	 
+}
+
+#top2{
+    position: relative;
+    background-color: #ffffff;
+    color: white;
+    padding: 5px;
+    height:20%;
+    margin: 0px 0px 0px 0px;
+}
+
+#center_content {
+    position: relative;
+    background-color: #ffffff;
+    font-family: Arial; 
+    font-size: 9px;
+    padding: 5px;
+    height:100px;
+}
+
+#bottom {
+    position: relative;
+    background-color: #F9FCFF;
+    padding: 5px;
+    margin: 10px 0px 0px 0px;
+    font-size: 9px;
+}

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+<!-- Eli comenta este codigo por que pueda ser que ingrese a internet -->
+<!-- 
+<ice:outputDeclaration doctypeRoot="HTML"
+	doctypePublic="-//W3C//DTD HTML 4.01 Transitional//EN"
+	doctypeSystem="http://www.w3.org/TR/html4/loose.dtd" />
+ -->
+<head>
+<ui:insert name="faceletHeader">Headers </ui:insert>
+<link href="/content/main.xhtml" rel="stylesheet" type="text/css" />
+<td></td>
+<td></td>
+</head>
+<body>
+<ui:composition template="logintemplate.jspx">
+	<ui:define name="center_content">
+		<ice:form>
+			<!--  width="680px" -->
+			<table width="760px" height="380px"  border="0" cellpadding="5" cellspacing="0"
+				align="center">
+				<tr>
+					<td height="20px"></td>
+				</tr>
+				<tr>
+					
+					<td align="center" valign="top" background="images/fnd_logueo.jpg"
+						style="background-repeat: no-repeat;">	
+					<!-- width="720" -->				
+					<table border="0" width="860px" height="500px" cellpadding="0"
+						cellspacing="0" align="right">
+						<tr>
+							<td><img src="images/fnd_transparente.gif" width="250px"
+								height="80px" /></td>
+							<td><img src="images/fnd_transparente.gif" width="250px"
+								height="80px" /></td>
+							
+							<td><img src="images/fnd_transparente.gif" width="50px"
+								height="80px" /></td>
+							
+						</tr>
+						<tr>
+							<td></td>
+							<!-- width="760" height="200"-->
+							<td align="left" width="800" height="120" bgcolor="">
+							<ice:panelGroup rendered="#{mLogin.verLoginInicio}" style="width: 600px; height: 250px;">
+								<ice:panelGrid columns="2">
+								<ice:outputLabel value="#{dateSelect.fecha1}"  
+										style="font-family: Arial; font-size: 14px; color: #ffffff;" />
+								<ice:outputLabel value="   "/>
+								</ice:panelGrid>			
+								<ice:panelGrid columns="2"> 													
+									<ice:outputText value="Login  :"
+										style="font-family: Arial; font-size: 14px; text-align: center; color: #ffffff;" />
+									<ice:inputText value="#{mLogin.usuario}"
+										style="font-family: Arial; font-size: 14px;" maxlength="20"
+										size="20" />
+									<ice:outputLabel value="Clave  :"
+										style="font-family: Arial; font-size: 14px; color: #ffffff;" />
+									<ice:inputSecret value="#{mLogin.clave}"
+										action="#{mLogin.autenticar}"
+										style="font-family: Arial; font-size: 14px;" maxlength="20"
+										size="20" />
+								</ice:panelGrid>
+								<ice:panelGrid columns="3" cellpadding="10">
+									<ice:commandButton value=" Entrar "
+										action="#{mLogin.autenticar}"
+										title="Entrar" image="/images/entrar48.png"
+										styleClass=""
+										style="size: width: 40px; height: 40px; font-family: Arial; font-size: 12px;" />
+									<ice:outputText value="" />
+									<ice:commandButton value="Cancelar"
+										image="/images/salir1.png"										
+										title="Cancelar"
+										style="size: width: 42px; height: 42px; color: blue; font-family: Arial; font-size: 12px;">
+									</ice:commandButton>
+								</ice:panelGrid>
+								<ice:panelGrid columns="1">
+									<ice:commandLink value="Ha olvidado su clave?"
+										action="#{mLogin.showRecuperarPass}"										
+										style="color: white;font-family: Arial, Helvetica, sans-serif;cursor: pointer;text-decoration: underline; color: #ffffff;" />
+									<ice:messages showDetail="true" 
+										showSummary="true"										
+										style="font-family: Arial; font-size: 12px; color: #ffffff; text-align: right;" />
+								</ice:panelGrid>
+							</ice:panelGroup>	
+							 												 
+							<ice:panelGroup rendered="#{mLogin.verLoginInicio}" style="width: 250px; height: 50px;">
+									<ice:panelGrid columns="2" style="width: 250px; height: 50px;">
+									<ice:outputText value="Versión  9.5 -"
+										style="font-family: Arial; font-size: 14px; text-align: right; color: #ffffff;" />
+									<ice:outputText value=" 01 Noviembre 2023"
+										style="font-family: Arial; font-size: 14px; text-align: right; color: #ffffff;" />
+									<ice:outputText value="Servidor  :"
+										style="font-family: Arial; font-size: 14px; text-align: right; color: #ffffff;" />
+									<ice:outputText value=" Tomcat 8 Producción"
+										style="font-family: Arial; font-size: 14px; text-align: right; color: #ffffff;" />									
+									<ice:outputText value=" Interface :"
+										style="font-family: Arial; font-size: 14px; text-align: right; color: #ffffff;" />
+									<ice:outputText value=" Sede Electrónica"
+										style="font-family: Arial; font-size: 14px; text-align: right; color: #ffffff;" />
+									</ice:panelGrid>
+							 </ice:panelGroup>
+							
+							<ice:panelGroup rendered="#{mLogin.verLoginRecuperarPass}">
+								<ice:panelGroup rendered="#{mLogin.verIniRecuperarPass}">
+									<ice:panelGrid columns="1">
+										<ice:outputLabel value="Escribe tu usuario del Sistema:"
+											style="font-family: Arial; text-align: right;
+											font-size: 14px; color: #ffffff;" />										
+										<ice:inputText value="#{mLogin.codigoUsuario}"
+											style="font-family: Arial; font-size: 12px;" maxlength="30"
+											size="30" />
+									</ice:panelGrid>
+								</ice:panelGroup>
+								<ice:panelGroup rendered="#{mLogin.verMsgResultadoOk}">
+									<ice:panelGrid columns="1" >
+										<ice:outputText value="#{mLogin.msgResultado}"
+											style="font-family: Arial; font-size: 14px; color: #ffffff; text-align: right;" />
+									</ice:panelGrid>
+								</ice:panelGroup>
+								<ice:panelGroup rendered="#{mLogin.verMsgResultadoErr}">
+									<ice:panelGrid columns="1">
+										<ice:outputText value="#{mLogin.msgResultado}" 
+											style="font-family: Arial; font-size: 14px; color: #ffffff; text-align: right;" />
+									</ice:panelGrid>
+								</ice:panelGroup>
+							</ice:panelGroup>							
+							</td>
+							
+						</tr>
+						<tr>
+							<td></td>
+							<!--width="750" height="50"-->
+							<td align="left" width="740" height="50">							
+							<ice:panelGroup rendered="#{mLogin.verLoginRecuperarPass}">
+								<ice:panelGroup rendered="#{mLogin.verIniRecuperarPass}">
+									<ice:panelGrid columns="3" cellpadding="10">
+										<ice:commandButton value="Enviar Correo"
+											title="Enviar Correo"
+											image="/images/mailcheck.png"
+											actionListener="#{mLogin.enviarCorreoRecPass}"
+											style="font-family: Arial; font-size: 14px; color: #ffffff; size: width: 32px; height: 32px;" />
+										<ice:commandButton value="Volver"
+											title="Regresar"
+											image="/images/retorno.png"
+											actionListener="#{mLogin.showVolverInicioLogin}"
+											style="font-family: Arial; font-size: 14px; color: #ffffff; size: width: 30px; height: 30px;" />
+									</ice:panelGrid>
+								</ice:panelGroup>
+								<ice:panelGroup rendered="#{mLogin.verMsgResultadoOk}">
+									<ice:panelGrid columns="1">
+										<ice:commandButton 
+											type="submit" 
+											image="/images/retorno.png"
+											style="font-family: Arial; font-size: 14px; color: #ffffff; size: width: 30px; height: 30px;"
+											value="Volver al Inicio"
+											actionListener="#{mLogin.showVolverInicioLogin}" />
+									</ice:panelGrid>
+								</ice:panelGroup>
+								<ice:panelGroup rendered="#{mLogin.verMsgResultadoErr}">
+									<ice:panelGrid columns="1">
+										<ice:commandButton type="submit"
+											value="Volver a Recuperar Contraseña"
+											style="font-family: Arial; font-size: 14px; color: #006EAA; size: width: 30px; height: 30px;"
+											actionListener="#{mLogin.showVolverInicioRecuperarPass}" />
+									</ice:panelGrid>
+								</ice:panelGroup>
+							</ice:panelGroup>
+							</td>
+							<td></td>
+						</tr>					
+					</table>
+					</td>
+				</tr>
+			</table>
+			<table width="510px" border="0">
+				<tr>
+					<td valign="top" class="css_fuente_contenido_pie" align="center"></td>
+				</tr>
+			</table>
+		</ice:form>
+	</ui:define>
+</ui:composition>
+</body>
+</html>

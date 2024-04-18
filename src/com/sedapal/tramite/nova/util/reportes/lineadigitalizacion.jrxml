@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="entradas" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="P_AREA" class="java.lang.String"/>
+	<parameter name="P_INICIO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_FIN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_ANO" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+A.NANO,
+A.NORIGEN,
+(CASE A.NORIGEN
+ WHEN 1 THEN 'INTERNO'
+ WHEN 2 THEN 'EXTERNO'
+END) ORIGEN,
+A.VTIPODOC,
+T.VDESCRIPCION AS TIPODOC,
+A.NCORRELATIVO,
+A.VNUMDOC,
+A.VMESAPARTE,
+A.NREMITENTE,
+A.VREMITENTE,
+A.DFECDOC,
+A.DFECREGISTRO,
+A.NDIRIGIDO,
+UPPER(D.VDESCRIPCION) AS AREADIRIGIDO,
+A.VASUNTO,
+A.VREFERENCIA,
+A.VOBSERVACION,
+A.VPRIORIDAD,
+A.VACCION,
+A.VUBIARCHIVO,
+A.DFECPLAZO,
+A.NDIASPLAZO,
+A.NFOLIOS,
+A.VESTADO,
+UPPER(E.VDESCRIPCION) AS ESTADO,
+A.NINDICADOR,
+A.DFECCRE,
+A.DFECACT,
+A.VRESCRE,
+A.VRESACT,
+A.NCODAREA,
+UPPER(R.VDESCRIPCION) AS AREA,
+A.VUBIARCHIVO,
+A.NFICHA_DIRIGIDO,
+A.NCODAREA_ORIGEN,
+UPPER(O.VDESCRIPCION) AS AREAORIGEN,
+A.NCODCENTRO,
+UPPER(C.VNOMBRE) AS CENTRO,
+A.VTIPOORIGEN AS TIPOORIGEN
+FROM ATD_DOC_ENTR A,
+TIPO T,
+ATD_REMITENTE D,
+TIPO E,
+AREA R,
+AREA O,
+CENTRO C
+WHERE A.NCODAREA_ORIGEN = $P{P_AREA} AND
+A.NANO = $P{P_ANO} AND
+A.VTIPODOC=T.VCODTIPO AND
+T.VOBSERVACIONES ='TIPO DE DOCUMENTO ATD' AND
+T.VESTADO = 'A' AND
+A.NDIRIGIDO=D.NCODREMITENTE AND
+D.VESTADO='A' AND
+A.VESTADO=E.VCODTIPO AND
+E.VOBSERVACIONES ='ESTADO ATD' AND
+E.VESTADO = 'A' AND
+A.NCODAREA=R.NCODAREA AND
+R.CTIPAREA IN  ('E ','G', 'D','P','M') AND
+R.NINDICADOR=0 AND
+A.NCODAREA_ORIGEN=O.NCODAREA AND
+O.CTIPAREA IN  ('E ','G', 'D','P','M') AND
+O.NINDICADOR=0 AND
+A.NCODCENTRO=C.NCODCENTRO AND
+C.NESTADO=1 AND
+A.VESTADO<>'ESTA004' AND
+A.VTIPOORIGEN = 'PRESENCIAL' AND
+A.NCORRELATIVO >= $P{P_INICIO} AND
+A.NCORRELATIVO <= $P{P_FIN}
+ORDER BY NCORRELATIVO DESC]]>
+	</queryString>
+	<field name="NANO" class="java.math.BigDecimal"/>
+	<field name="NORIGEN" class="java.math.BigDecimal"/>
+	<field name="ORIGEN" class="java.lang.String"/>
+	<field name="VTIPODOC" class="java.lang.String"/>
+	<field name="TIPODOC" class="java.lang.String"/>
+	<field name="NCORRELATIVO" class="java.math.BigDecimal"/>
+	<field name="VNUMDOC" class="java.lang.String"/>
+	<field name="VMESAPARTE" class="java.lang.String"/>
+	<field name="NREMITENTE" class="java.math.BigDecimal"/>
+	<field name="VREMITENTE" class="java.lang.String"/>
+	<field name="DFECDOC" class="java.sql.Timestamp"/>
+	<field name="DFECREGISTRO" class="java.sql.Timestamp"/>
+	<field name="NDIRIGIDO" class="java.math.BigDecimal"/>
+	<field name="AREADIRIGIDO" class="java.lang.String"/>
+	<field name="VASUNTO" class="java.lang.String"/>
+	<field name="VREFERENCIA" class="java.lang.String"/>
+	<field name="VOBSERVACION" class="java.lang.String"/>
+	<field name="VPRIORIDAD" class="java.lang.String"/>
+	<field name="VACCION" class="java.lang.String"/>
+	<field name="VUBIARCHIVO" class="java.lang.String"/>
+	<field name="DFECPLAZO" class="java.sql.Timestamp"/>
+	<field name="NDIASPLAZO" class="java.math.BigDecimal"/>
+	<field name="NFOLIOS" class="java.math.BigDecimal"/>
+	<field name="VESTADO" class="java.lang.String"/>
+	<field name="ESTADO" class="java.lang.String"/>
+	<field name="NINDICADOR" class="java.math.BigDecimal"/>
+	<field name="DFECCRE" class="java.sql.Timestamp"/>
+	<field name="DFECACT" class="java.sql.Timestamp"/>
+	<field name="VRESCRE" class="java.lang.String"/>
+	<field name="VRESACT" class="java.lang.String"/>
+	<field name="NCODAREA" class="java.math.BigDecimal"/>
+	<field name="AREA" class="java.lang.String"/>
+	<field name="NFICHA_DIRIGIDO" class="java.math.BigDecimal"/>
+	<field name="NCODAREA_ORIGEN" class="java.math.BigDecimal"/>
+	<field name="AREAORIGEN" class="java.lang.String"/>
+	<field name="NCODCENTRO" class="java.math.BigDecimal"/>
+	<field name="CENTRO" class="java.lang.String"/>
+	<field name="TIPOORIGEN" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="241" y="33" width="402" height="20" forecolor="#003366"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lista de Documentos Entrantes Línea Digitalización]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="682" y="58" width="80" height="20" forecolor="#003366"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Pag. "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="763" y="58" width="40" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="690" y="33" width="100" height="20" forecolor="#003366" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="1" y="3" width="138" height="50"/>
+				<imageExpression class="java.lang.String"><![CDATA["sedapal.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="28" y="59" width="98" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Línea de Digitalización]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="25" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="45" y="5" width="61" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NUM DOC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="352" y="5" width="194" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASUNTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="666" y="5" width="33" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FOLIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="704" y="5" width="51" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRIORIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="615" y="5" width="50" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FEC.DOC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="106" y="5" width="136" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REMITE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="244" y="5" width="108" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DERIVADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="756" y="5" width="46" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INGRESO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="546" y="5" width="64" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO DOC.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="23" width="797" height="2" forecolor="#003366"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="797" height="2" forecolor="#003366"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="5" width="39" height="20" forecolor="#003366"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REG]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement x="44" y="0" width="61" height="20"/>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VNUMDOC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="105" y="0" width="136" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{AREADIRIGIDO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="3" width="43" height="17"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{NCORRELATIVO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="244" y="3" width="108" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{AREA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="352" y="3" width="194" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VASUNTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="546" y="3" width="69" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TIPODOC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="615" y="3" width="51" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="7" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{DFECDOC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="666" y="3" width="33" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{NFOLIOS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="704" y="3" width="52" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{VPRIORIDAD}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="754" y="3" width="47" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TIPOORIGEN}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="29" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="1" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="1" splitType="Stretch"/>
+	</summary>
+</jasperReport>

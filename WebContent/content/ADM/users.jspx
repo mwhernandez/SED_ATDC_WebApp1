@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+<body>
+<!-- Ventana de administracion de usuarios
+	 Realizado Por : Eli Diaz Horna
+	 Fecha Creacion : 24/01/2011
+	 Descripcion  : creacion de usuario al sistema tramite documentario
+	-->
+<ice:form partialSubmit="true">
+	<ice:panelTabSet id="icePnlTbSet1">
+
+		<!-- Panel Tab 1 defined with some basic content -->
+		<ice:panelTab label="Usuarios" title="Catalogo">
+			<ice:panelGroup rendered="#{mBeanUsers.verCatalogo}">
+				<ice:panelGrid columns="5">
+					<ice:commandButton value="Nuevo"
+						actionListener="#{mBeanUsers.eventNuevo}" title="Nuevo"
+						image="/images/nuevo2.png" style="size: width: 40px; height: 40px" />
+					
+					<ice:commandButton value="Actualizar"
+						actionListener="#{mBeanUsers.eventActualizar}" title="Modificar"
+						image="/images/modificar2.png" style="size: width: 40px; height: 40px" />
+						
+					<ice:commandButton value="Eliminar"
+						actionListener="#{mBeanUsers.eventEliminar}" title="Eliminar"
+						image="/images/eliminar2.png" style="size: width: 40px; height: 40px" />
+						
+					<ice:dataExporter for="idProductos" ignorePagination="true"
+						label="Excel" type="excel" image="/images/excel2010.jpg"
+						style="border:none;" styleClass="size: width: 25px; height: 25px"
+						popupBlockerLabel="Popup Blocker detected - click here to resume download..."
+						clickToCreateFileText="Excel" />					
+					
+					<ice:commandButton value="Refrescar"
+						actionListener="#{mBeanUsers.eventRefrescar}" title="Refrescar"
+						image="/images/resert.png" style="size: width: 25px; height: 25px">
+					</ice:commandButton>					
+				
+					<ice:outputText value="Nuevo" style="font-size: 10px; color: blue;"/>
+				
+					<ice:outputText value="Actualizar" style="font-size: 10px; color: blue;"/>					
+									
+					<ice:outputText value="Eliminar" style="font-size: 10px; color: blue;"/>					
+														
+					<ice:outputText value="Exportar"  style="font-size: 10px; color: blue;"/>
+														
+					<ice:outputText value="Refrescar"  style="font-size: 10px; color: blue;"/>
+				</ice:panelGrid>
+				<ice:panelGrid columns="1" border="1">
+				<ice:panelGrid columns="7">
+					<ice:outputLabel value="F.INICIAL:" style="font-size: 9px; color: green;"></ice:outputLabel>
+					<ice:selectInputDate renderMonthAsDropdown="true"
+						renderYearAsDropdown="true" value="#{mBeanUsers.date1}"
+						title="Fec1" renderAsPopup="true" style="size: 12">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}" />
+					</ice:selectInputDate>
+					<ice:outputLabel value="F.FINAL:" style="font-size: 9px; color: green;"></ice:outputLabel>
+					<ice:selectInputDate style="font-size: 10px"
+						renderMonthAsDropdown="true" renderYearAsDropdown="true"
+						value="#{mBeanUsers.date2}" title="Fec2" renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}" />
+					</ice:selectInputDate>
+					<ice:outputLabel value="TIPO PERFIL :" style="font-size: 9px; color: green;"></ice:outputLabel>
+					<ice:selectOneMenu binding="#{mBeanUsers.combo}"
+						value="#{mBeanUsers.itemSeleccionado}" style="font-size: 9px;"
+						title="Perfil">
+						<f:selectItems id="slctCreacionUsuario"
+							value="#{mBeanUsers.items}" />
+					</ice:selectOneMenu>
+					<ice:commandButton value="Ejecutar"
+						actionListener="#{mBeanUsers.eventFiltros}"
+						image="/images/buscar2.png"
+						style="size: width: 25px; height: 25px"></ice:commandButton>
+				</ice:panelGrid>
+				</ice:panelGrid>
+				<ice:panelGrid columns="7" cellpadding="1" border="1">
+					<h:selectOneRadio value="#{mBeanUsers.opcion}"
+						style="font-size: 9px; color: green;">
+						<f:selectItem itemValue="USUARIO" itemLabel="USUARIO" />
+						<f:selectItem itemValue="FICHA" itemLabel="FICHA" />
+						<f:selectItem itemValue="NOMBRE" itemLabel="NOMBRE" />
+						<f:selectItem itemValue="ESTADO" itemLabel="ESTADO" />
+						<f:selectItem itemValue="EQUIPO" itemLabel="EQUIPO" />						
+						<f:selectItem itemValue="PERFIL" itemLabel="PERFIL" />					
+					</h:selectOneRadio>
+					<ice:inputText value="#{mBeanUsers.detalle}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 9px;" size="50" />
+					<ice:commandButton value="Ejecutar"
+						actionListener="#{mBeanUsers.eventBusquedas}" title="Buscar"
+						image="/images/buscar2.png"
+						style="size: width: 25px; height: 25px">
+					</ice:commandButton>
+				</ice:panelGrid>
+			</ice:panelGroup>
+
+			<ice:panelGroup rendered="#{mBeanUsers.verCatalogo}">
+				<ice:dataTable var="pro" value="#{mBeanUsers.users}"
+					columnClasses="tableCol" style="font-size: 9px;" rows="10"
+					id="idProductos" scrollable="false">
+					<ice:column>
+						<ice:rowSelector id="selected" value="#{pro.selected}"
+							multiple="#{mBeanUsers.multiple}"
+							enhancedMultiple="#{mBeanUsers.enhancedMultiple}"
+							selectionListener="#{mBeanUsers.rowSelectionListener}"
+							preStyleOnSelection="true" />
+
+						<f:facet name="header">
+							<ice:outputText value="Usuario" />
+						</f:facet>
+						<ice:outputText id="idCB" value="#{pro.login}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Password" />
+						</f:facet>
+						<ice:outputText value="#{pro.password}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Ficha" />
+						</f:facet>
+						<ice:outputText value="#{pro.ficha}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Nombre" />
+						</f:facet>
+						<ice:outputText value="#{pro.nombre}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Estado" />
+						</f:facet>
+						<ice:outputText value="#{pro.estado}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Fecha" />
+						</f:facet>
+						<ice:outputText value="#{pro.fecha}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</ice:outputText>
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Equipo" />
+						</f:facet>
+						<ice:outputText value="#{pro.nomequipo}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Perfil" />
+						</f:facet>
+						<ice:outputText value="#{pro.perfil}" />
+					</ice:column>
+					<ice:column>
+						<f:facet name="header">
+							<ice:outputText value="Email" />
+						</f:facet>
+						<ice:outputText value="#{pro.correo}" />
+					</ice:column>
+
+				</ice:dataTable>
+
+
+				<ice:panelGrid columns="5">
+					<ice:outputText value=" " />
+					<!-- Paginator with page controls hh:mm:ss-->
+					<ice:dataPaginator id="dataScroll_3" for="idProductos"
+						paginator="true" fastStep="3" paginatorMaxPages="5">
+						<f:facet name="first">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-first.gif"
+								style="border:none;" title="First Page" />
+						</f:facet>
+						<f:facet name="last">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-last.gif"
+								style="border:none;" title="Last Page" />
+						</f:facet>
+						<f:facet name="previous">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-previous.gif"
+								style="border:none;" title="Previous Page" />
+						</f:facet>
+						<f:facet name="next">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-next.gif"
+								style="border:none;" title="Next Page" />
+						</f:facet>
+						<f:facet name="fastforward">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-ff.gif"
+								style="border:none;" title="Fast Forward" />
+						</f:facet>
+						<f:facet name="fastrewind">
+							<ice:graphicImage
+								url="./xmlhttp/css/rime/css-images/arrow-fr.gif"
+								style="border:none;" title="Fast Backwards" />
+						</f:facet>
+					</ice:dataPaginator>
+
+					<ice:outputText value="" />
+
+					<!-- Display counts about the table and the currently displayed page -->
+					<ice:dataPaginator id="dataScroll_2" for="idProductos"
+						rowsCountVar="rowsCount"
+						displayedRowsCountVar="displayedRowsCount"
+						firstRowIndexVar="firstRowIndex" lastRowIndexVar="lastRowIndex"
+						pageCountVar="pageCount" pageIndexVar="pageIndex">
+						<ice:outputFormat
+							value="{0} usuarios encontrados, mostrando {1}, de {2} hasta {3}. Pagina {4} / {5}."
+							styleClass="standard">
+							<f:param value="#{rowsCount}" />
+							<f:param value="#{displayedRowsCount}" />
+							<f:param value="#{firstRowIndex}" />
+							<f:param value="#{lastRowIndex}" />
+							<f:param value="#{pageIndex}" />
+							<f:param value="#{pageCount}" />
+						</ice:outputFormat>
+					</ice:dataPaginator>
+
+				</ice:panelGrid>
+			</ice:panelGroup>
+
+			<ice:panelGroup rendered="#{mBeanUsers.verActualizar}">
+				<ice:panelGrid columns="1" border="1">
+				<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="USUARIO :" />
+					<ice:inputText value="#{mBeanUsers.loginA}" readonly="True"
+						style="font-size: 9px; background: #c2dfef" />
+					<ice:outputText value="NOMBRE USERS :" />
+					<ice:inputText value="#{mBeanUsers.nombreA}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 9px;" size="50" />
+					<ice:outputText value="PASSWORD :" />
+					<ice:inputText value="#{mBeanUsers.passwordA}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 9px;" size="50" />
+					<ice:outputText value="FICHA :" />
+					<ice:inputText value="#{mBeanUsers.fichaA}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 9px;" />
+					<ice:outputText value="FECHA :" />
+					<ice:selectInputDate renderMonthAsDropdown="true"
+						renderYearAsDropdown="true" value="#{mBeanUsers.fechaA}"
+						style="font-size: 9px;" title="Fec1" renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}" />
+					</ice:selectInputDate>
+					<ice:outputText value="ESTADO :" />
+					<h:selectOneMenu value="#{mBeanUsers.estadoA}"
+						style="font-size: 9px;">
+						<f:selectItem itemValue="ACTIVO" itemLabel="ACTIVO" />
+						<f:selectItem itemValue="INACTIVO" itemLabel="INACTIVO" />
+					</h:selectOneMenu>
+					<ice:outputText value="EQUIPO :" />
+					<ice:selectOneMenu value="#{mBeanUsers.ncodareaA}"
+						style="font-size: 9px;" title="Equipo">
+						<f:selectItems value="#{mBeanUsers.items1}" />
+					</ice:selectOneMenu>
+					<ice:outputText value="PERFIL :" />
+					<ice:selectOneMenu value="#{mBeanUsers.nperfilA}"
+						style="font-size: 9px;" title="Perfil">
+						<f:selectItems value="#{mBeanUsers.items}" />
+					</ice:selectOneMenu>
+					<ice:outputText value="IND. EMAIL :" />
+					<h:selectOneMenu value="#{mBeanUsers.nconexionA}"
+						style="font-size: 9px;">
+						<f:selectItem itemValue="0" itemLabel="ACTIVO" />
+						<f:selectItem itemValue="1" itemLabel="INACTIVO" />
+					</h:selectOneMenu>
+					</ice:panelGrid>
+					</ice:panelGrid>	
+					<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:commandButton value="Aceptar"
+						actionListener="#{mBeanUsers.eventActualizarUsers}" title="Grabar"
+						image="/images/grabar.png" style="size: width: 30px; height: 30px" />
+					<ice:commandButton value="Regresar"
+						actionListener="#{mBeanUsers.eventCancelar}" title="Regresar"
+						image="/images/retorno.png"
+						style="size: width: 25px; height: 25px" />
+					<ice:outputText value="Grabar" style="font-size: 10px; color: blue;"/>
+					<ice:outputText value="Regresar" style="font-size: 10px; color: blue;"/>
+					</ice:panelGrid>
+								
+			</ice:panelGroup>
+			<ice:panelGroup rendered="#{mBeanUsers.verNuevo}">
+				<ice:panelGrid columns="1" border="1">
+				<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:outputText value="USUARIO :" />
+					<ice:inputText value="#{mBeanUsers.loginN}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 9px;" />
+					<ice:outputText value="NOMBRE USERS :" />
+					<ice:inputText value="#{mBeanUsers.nombreN}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 9px;" size="50" />
+					<ice:outputText value="PASSWORD :" />
+					<ice:inputText value="#{mBeanUsers.passwordN}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 9px;" size="50" />
+					<ice:outputText value="FICHA :" />
+					<ice:inputText value="#{mBeanUsers.fichaN}"
+						onchange="this.value = this.value.toUpperCase();"
+						style="font-size: 9px;" />
+					<ice:outputText value="FECHA :" />
+					<ice:selectInputDate renderMonthAsDropdown="true"
+						renderYearAsDropdown="true" value="#{mBeanUsers.fechaN}"
+						style="font-size: 9px;" title="Fec1" renderAsPopup="true">
+						<f:convertDateTime pattern="dd/MM/yyyy"
+							timeZone="#{dateSelect.timeZone}" />
+					</ice:selectInputDate>
+					<ice:outputText value="ESTADO :" />
+					<h:selectOneMenu value="#{mBeanUsers.estadoN}"
+						style="font-size: 9px;">
+						<f:selectItem itemValue="ACTIVO" itemLabel="ACTIVO" />
+						<f:selectItem itemValue="INACTIVO" itemLabel="INACTIVO" />
+					</h:selectOneMenu>
+					<ice:outputText value="EQUIPO :" />
+					<ice:selectOneMenu value="#{mBeanUsers.nomequipoN}"
+						style="font-size: 9px;" title="Equipo">
+						<f:selectItems value="#{mBeanUsers.items1}" />
+					</ice:selectOneMenu>
+					<ice:outputText value="PERFIL :" />
+					<ice:selectOneMenu value="#{mBeanUsers.perfilN}"
+						style="font-size: 9px;" title="Perfil">
+						<f:selectItems value="#{mBeanUsers.items}" />
+					</ice:selectOneMenu>
+					<ice:outputText value="IND. EMAIL :" />
+					<h:selectOneMenu value="#{mBeanUsers.nconexionN}"
+						style="font-size: 9px;">
+						<f:selectItem itemValue="0" itemLabel="ACTIVO" />
+						<f:selectItem itemValue="1" itemLabel="INACTIVO" />
+					</h:selectOneMenu>
+					</ice:panelGrid>
+					</ice:panelGrid>
+					<ice:panelGrid columns="2" style="font-size: 9px;">
+					<ice:commandButton value="Aceptar"
+						actionListener="#{mBeanUsers.eventRegistrarUsers}" title="Grabar"
+						image="/images/grabar.png" style="size: width: 30px; height: 30px" />
+					<ice:commandButton value="Regresar"
+						actionListener="#{mBeanUsers.eventCancelar}" title="Regresar"
+						image="/images/retorno.png"
+						style="size: width: 25px; height: 25px" />
+					<ice:outputText value="Grabar" style="font-size: 10px; color: blue;"/>
+					<ice:outputText value="Regresar" style="font-size: 10px; color: blue;"/>
+					</ice:panelGrid>
+				
+			</ice:panelGroup>
+
+			<!-- Alerta de mensaje -->
+			<ice:panelPopup id="modalPnlPopError" draggable="false" modal="true"
+				style="width: 200px; height: 120px; background-color: #0085BC;" 
+				visible="#{mBeanUsers.ver}"
+				autoCentre="true" styleClass="icePnlPop">
+				<f:facet name="header">
+					<ice:panelGroup styleClass="popupHeaderWrapper">
+						<ice:outputText value="Mensaje" styleClass="popupHeaderText" 
+						style="font-size: 12px; color: blue;"/>
+					</ice:panelGroup>
+				</f:facet>
+				<f:facet name="body">
+					<ice:panelGroup styleClass="popupBody">
+						<ice:outputText value="#{mBeanUsers.error}" 
+						style="font-size: 12px; color: white;"/>
+						<br></br>
+						<br></br>
+						<ice:commandButton id="modalPnlCBError" type="submit"
+							value="Aceptar" actionListener="#{mBeanUsers.cerrar}" />
+					</ice:panelGroup>
+				</f:facet>
+			</ice:panelPopup>
+
+		</ice:panelTab>
+	</ice:panelTabSet>
+	<ice:menuPopup id="menuPopupEffects">
+		<ice:menuItem id="mnuNuevo" actionListener="#{mBeanUsers.eventoNuevo}"
+			value="Nuevo" title="Ingresar Usuario">
+		</ice:menuItem>
+		<ice:menuItem id="mnuModificar" value="Modificar"
+			title="Modificar Usuario">
+		</ice:menuItem>
+
+		<ice:menuItem id="mnuAuditoria" value="Auditoria"
+			title="Consultar auditoria">
+		</ice:menuItem>
+	</ice:menuPopup>
+
+
+</ice:form>
+</body>
+</html>

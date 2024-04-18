@@ -1,0 +1,9 @@
+#top {
+	width:auto;
+	height:75px;
+    /*background:url(/images/Fondo_header1.jpg);*/
+    color: white;
+    padding: 3px;
+    margin: 0px 0px 10px 0px;
+	position: relative;
+}

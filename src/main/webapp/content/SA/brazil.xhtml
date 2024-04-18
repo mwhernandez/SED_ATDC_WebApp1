@@ -1,0 +1,95 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ice="http://www.icesoft.com/icefaces/component">
+
+<body>
+<ice:form partialSubmit="true">
+	<ice:loadBundle basename="com.sedapal.tramite.files.parametros" var="msg" />
+	<ice:panelTabSet id="icePnlTbSet" title="Carga de Datos">
+		<!-- Panel Tab 1 Grid -->
+		<ice:panelTab label="Carga de Datos" title="Carga de Datos">
+			<ice:panelGroup>
+				<!-- file upload usage with progress callback. -->
+				<ice:panelGrid>
+					<ice:outputText value="Seleccione un archivo a cargar:"
+						style="font: bold;" />
+					<ice:inputFile id="inputFileName" uniqueFolder="false"
+						uploadDirectoryAbsolute="true"
+						uploadDirectory="#{msg['path.carga']}"
+						progressListener="#{mCarga.fileUploadProgress}"
+						actionListener="#{mCarga.uploadFile}" />
+					<!-- progress bar, percent value is upated via progressListener-->
+
+					<ice:outputProgress value="#{mCarga.fileProgress}"
+						styleClass="uploadProgressBar" />
+					<ice:message for="inputFileName" />
+					<br />
+					<ice:outputText value="#{mCarga.componentStatus}"
+						style="color: blue;font: bold;" />
+					<br />
+					<ice:commandButton visible="false"
+						actionListener="#{mCarga.ejecutar}" value="Ejecutar Carga"
+						binding="#{mCarga.botonCarga}" />
+				</ice:panelGrid>
+			</ice:panelGroup>
+		</ice:panelTab>
+	</ice:panelTabSet>
+	
+	<!-- Popup para la carga -->
+	<ice:panelPopup id="modalPnlPopCarga" draggable="false" modal="true" 
+	  	style="width: 200px; height: 120px;"
+		visible="#{mCarga.verConfirmacion}" autoCentre="true"
+		styleClass="icePnlPop">
+		<f:facet name="header">
+			<ice:panelGroup styleClass="popupHeaderWrapper">
+				<ice:outputText
+					value="Alerta"
+					styleClass="popupHeaderText" />
+			</ice:panelGroup>
+		</f:facet>
+		<f:facet name="body">
+			<ice:panelGroup styleClass="popupBody">
+			<center>
+				<ice:outputText value="#{mCarga.msg}" />
+				<br></br>
+				<ice:commandButton  type="submit"
+					value="Aceptar"
+					actionListener="#{mCarga.okConfirm}" />
+				<ice:commandButton 
+					value="Cancelar"
+					actionListener="#{mCarga.cancelar}" />
+			</center>		
+		  </ice:panelGroup>
+		</f:facet>
+	</ice:panelPopup>
+	
+	<!-- Popup para mensaje -->
+	<ice:panelPopup  draggable="false" modal="true" 
+	  	style="width: 200px; height: 120px;"
+		visible="#{mCarga.verAlerta}" autoCentre="true"
+		styleClass="icePnlPop">
+		<f:facet name="header">
+			<ice:panelGroup styleClass="popupHeaderWrapper">
+				<ice:outputText
+					value="Alerta"
+					styleClass="popupHeaderText" />
+			</ice:panelGroup>
+		</f:facet>
+		<f:facet name="body">
+			<ice:panelGroup styleClass="popupBody">
+			<center>
+				<ice:outputText value="#{mCarga.msgAlerta}" />
+				<br></br>
+				<ice:commandButton  type="submit"
+					value="Aceptar"
+					actionListener="#{mCarga.okAlerta}" />
+			</center>		
+		  </ice:panelGroup>
+		</f:facet>
+	</ice:panelPopup>
+</ice:form>
+</body>
+</html>

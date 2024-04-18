@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE web-app PUBLIC
+  "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+  "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/applicationContext*.xml</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>com.icesoft.faces.debugDOMUpdate</param-name>
+		<param-value>false</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+		<param-value>.jspx</param-value>
+	</context-param>
+
+
+	<context-param>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>server</param-value>
+		<description>
+			State saving method: "client" or "server" (= default)
+			See
+			JSF Specification 2.5.2
+		</description>
+	</context-param>
+
+	<context-param>
+		<param-name>com.icesoft.faces.concurrentDOMViews</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<!-- Ojo para file upload no es necesario, cambiar a false! tampoco se i 
+		cuando No hay eventos iniciado por el servidor -->
+	<context-param>
+		<param-name>com.icesoft.faces.synchronousUpdate</param-name>
+		<param-value>false</param-value>
+	</context-param>
+
+	<!-- Upload file, ponerlo aun que no se esta usando -->
+	<context-param>
+		<param-name>com.icesoft.faces.uploadDirectory</param-name>
+		<param-value>upload</param-value>
+	</context-param>
+	
+	<!--  10485760 - 10 MB -->
+	<!--  20971520 - 20 MB -->
+	<!--  
+	<context-param>
+		<param-name>com.icesoft.faces.uploadMaxFileSize</param-name>
+		<param-value>20971520</param-value>		
+	</context-param>
+	-->
+	
+	<!-- 40MB 10/07/2020 EDH-->
+	<context-param>
+        <param-name>com.icesoft.faces.uploadMaxFileSize</param-name>
+        <param-value>41943040</param-value>
+      </context-param>
+
+	<filter>
+		<filter-name>FilterSecure</filter-name>
+		<display-name>FilterSecure</display-name>
+		<description></description>
+		<filter-class>com.sedapal.tramite.filters.FilterSecure</filter-class>
+	</filter>
+	<filter>
+		<filter-name>SReport</filter-name>
+		<display-name>SReport</display-name>
+		<description></description>
+		<filter-class>com.sedapal.tramite.filters.SReport</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>FilterSecure</filter-name>
+		<url-pattern>/content/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>SReport</filter-name>
+		<servlet-name>ServletReporte</servlet-name> <!-- Filtrando llamada a ServletReporte -->
+	</filter-mapping>
+
+	<!-- Listeners Spring -->
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+
+	<!-- Faces Servlet -->
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>Persistent Faces Servlet</servlet-name>
+		<servlet-class>com.icesoft.faces.webapp.xmlhttp.PersistentFacesServlet</servlet-class>
+		<load-on-startup> 1 </load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>Blocking Servlet</servlet-name>
+		<servlet-class>com.icesoft.faces.webapp.xmlhttp.BlockingServlet</servlet-class>
+		<load-on-startup> 1 </load-on-startup>
+	</servlet>
+
+	<!-- File upload Servlet, necesario -->
+	<servlet>
+		<servlet-name>uploadServlet</servlet-name>
+		<servlet-class>com.icesoft.faces.component.inputfile.FileUploadServlet</servlet-class>
+		<load-on-startup> 1 </load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>ServletCarga</servlet-name>
+		<display-name>ServletCarga</display-name>
+		<description></description>
+		<servlet-class>
+			com.sedapal.tramite.servlets.ServletCarga</servlet-class>
+
+		<init-param>
+			<param-name>setup</param-name>
+			<param-value>/WEB-INF/log4j.properties</param-value>
+			<!-- es el nombre y ruta del archivo de configuracion properties del log -->
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<!-- Servlet -->
+	<servlet>
+		<servlet-name>ServletReporte</servlet-name>
+		<display-name>ServletReporte</display-name>
+		<description></description>
+		<servlet-class>
+			com.sedapal.tramite.servlets.ServletReporte</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ServletGeneraClave</servlet-name>
+		<display-name>ServletGeneraClave</display-name>
+		<description></description>
+		<servlet-class>
+			com.sedapal.tramite.servlets.ServletGeneraClave</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ServletImagen</servlet-name>
+		<display-name>ServletImagen</display-name>
+		<description></description>
+		<servlet-class>
+			com.sedapal.tramite.servlets.ServletImagen</servlet-class>
+	</servlet>
+
+	<!-- extension mapping -->
+
+
+	<servlet-mapping>
+		<servlet-name>Persistent Faces Servlet</servlet-name>
+		<url-pattern>*.jsf</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Persistent Faces Servlet</servlet-name>
+		<url-pattern>*.iface</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Persistent Faces Servlet</servlet-name>
+		<url-pattern>/xmlhttp/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Blocking Servlet</servlet-name>
+		<url-pattern>/block/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- File Upload -->
+	<!-- extension mapping necesario -->
+
+	<servlet-mapping>
+		<servlet-name>uploadServlet</servlet-name>
+		<url-pattern>/uploadHtml</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ServletCarga</servlet-name>
+		<url-pattern>/ServletCarga</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ServletReporte</servlet-name>
+		<url-pattern>/ServletReporte</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ServletGeneraClave</servlet-name>
+		<url-pattern>/ServletGeneraClave</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ServletImagen</servlet-name>
+		<url-pattern>/ServletImagen</url-pattern>
+	</servlet-mapping>
+	<!-- fin extension mapping necesario -->
+
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+
+	<!-- Welcome files -->
+	<welcome-file-list>
+		<welcome-file>index.jsf</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+
+</web-app>
